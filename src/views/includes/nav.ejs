@@ -1,0 +1,21 @@
+<nav class="main-nav">
+  <div class="left-nav">
+    <ul>
+      <li><a href="/" class="nav-trevo"><img src="/assets/img/trevo-4.png" alt="Home"></a></li>
+    </ul>
+  </div>
+  <div class="ritgh-nav">
+    <ul>
+      <% if (typeof user !== 'undefined' && user) { %>
+        <li><a href="/meusjogos">Meus Números</a></li>
+        <li><a href="/jogosrecebidos">Recebidos</a></li>
+      <% } %>
+      <% if (messages.user || (typeof user !== 'undefined' && user)) { %>
+        
+        <li><a href="/logout" id="btn-login">Logout</a></li>
+      <% } else { %>
+        <li><a href="/login" id="btn-login">Login</a></li>
+      <% } %>
+    </ul>
+  </div>
+</nav>

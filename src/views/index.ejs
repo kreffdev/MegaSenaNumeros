@@ -1,0 +1,100 @@
+<%- include('includes/head'); %>
+<%- include('includes/nav'); %>
+   
+      
+    <main class="home-container">
+        <div>
+            <h1>Bem-vindo ao Mega Sena</h1>
+            <% if (user) { %>
+                <p class="user-name">Olá, <%= user.username %>!</p>
+            <% } else { %>
+                <p>Por favor, faça login para acessar seus jogos.</p>
+            <% } %>
+        </div>
+        <section class="main-container">
+            <div class="numeros-criador">
+                <div class="header-criador">
+                    <h2>Escolha seus números</h2>
+                    <button id="btn-gerar-aleatorio" class="btn-gerar-aleatorio">🎲 Aleatório</button>
+                </div>
+                <ul>
+                    <li><button>1</button></li>
+                    <li><button>2</button></li>
+                    <li><button>3</button></li>
+                    <li><button>4</button></li>
+                    <li><button>5</button></li>
+                    <li><button>6</button></li>
+                    <li><button>7</button></li>
+                    <li><button>8</button></li>
+                    <li><button>9</button></li>
+                    <li><button>10</button></li>
+                    <li><button>11</button></li>
+                    <li><button>12</button></li>
+                    <li><button>13</button></li>
+                    <li><button>14</button></li>
+                    <li><button>15</button></li>
+                    <li><button>16</button></li>
+                    <li><button>17</button></li>
+                    <li><button>18</button></li>
+                    <li><button>19</button></li>
+                    <li><button>20</button></li>
+                    <li><button>21</button></li>
+                    <li><button>22</button></li>
+                    <li><button>23</button></li>
+                    <li><button>24</button></li>
+                    <li><button>25</button></li>
+                    <li><button>26</button></li>
+                    <li><button>27</button></li>
+                    <li><button>28</button></li>
+                    <li><button>29</button></li>
+                    <li><button>30</button></li>
+                    <li><button>31</button></li>
+                    <li><button>32</button></li>
+                    <li><button>33</button></li>
+                    <li><button>34</button></li>
+                    <li><button>35</button></li>
+                    <li><button>36</button></li>
+                    <li><button>37</button></li>
+                    <li><button>38</button></li>
+                    <li><button>39</button></li>
+                    <li><button>40</button></li>
+                    <li><button>41</button></li>
+                    <li><button>42</button></li>
+                    <li><button>43</button></li>
+                    <li><button>44</button></li>
+                    <li><button>45</button></li>
+                    <li><button>46</button></li>
+                    <li><button>47</button></li>
+                    <li><button>48</button></li>
+                    <li><button>49</button></li>
+                    <li><button>50</button></li>
+                    <li><button>51</button></li>
+                    <li><button>52</button></li>
+                    <li><button>53</button></li>
+                    <li><button>54</button></li>
+                    <li><button>55</button></li>
+                    <li><button>56</button></li>
+                    <li><button>57</button></li>
+                    <li><button>58</button></li>
+                    <li><button>59</button></li>
+                    <li><button>60</button></li>
+                </ul>
+            </div>
+            <div class="numeros-escolhidos">
+                <h2>Números escolhidos</h2>
+                <div class="escolhidos-lista">
+                    <!-- Números escolhidos aparecerão aqui -->
+                </div>
+                <div class="meus-numeros-preview">
+                    <span class="label-contagem">Sequências: </span><span class="contagem-sequencias">0</span>
+                </div>
+                <button id="btn-registrar-sequencias" class="btn-registrar" style="display: none;">
+                    💾 Registrar Sequências
+                </button>
+            </div>
+
+        </section>
+    </main>
+     
+
+<%- include('includes/footer'); %>

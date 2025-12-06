@@ -1,0 +1,304 @@
+<%- include('includes/head'); %>
+<%- include('includes/nav'); %>
+
+<!-- Modal de envio de jogos -->
+<div id="modal-enviar-jogos" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Enviar Meus Jogos</h2>
+            <button class="modal-close" onclick="fecharModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Digite o nome do usuário para o qual deseja enviar seus jogos:</p>
+            <input type="text" id="nome-usuario-envio" placeholder="Nome do usuário" class="modal-input">
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
+            <button class="btn-confirmar" onclick="enviarJogos()">Enviar</button>
+        </div>
+    </div>
+</div>
+
+<main class="meus-jogos-container">
+    <div class="meus-jogos-header">
+        <div class="verifica-numeos">
+            <input type="text" id="verifica-numeros-input" placeholder="Ex: 05,12,23,34,45,56" aria-label="Verificar números">
+            <button class="btn-verificar" title="Verificar Números">
+                🔍 Verificar
+            </button>
+        </div>
+
+        <div class="header-content">
+            <h1>Meus Números</h1>
+            <% if (user) { %>
+                <p class="user-info">Bem-vindo, <strong><%= user.username %></strong></p>
+            <% } %>
+        </div>
+
+        <button class="btn-enviar-jogos" title="Enviar meus jogos" onclick="abrirModal()">
+            📤 Enviar Meus Jogos
+        </button>
+    </div>
+
+    <% if (jogos.length === 0) { %>
+        <div class="empty-state">
+            <div class="empty-icon">🎲</div>
+            <h2>Nenhuma sequência salva ainda</h2>
+            <p>Você ainda não salvou nenhuma sequência de números.</p>
+            <a href="/" class="btn-criar-novo">Criar uma Sequência</a>
+        </div>
+    <% } else { %>
+        <div class="jogos-stats">
+            <div class="stat-card">
+                <span class="stat-label">Total de Sequências</span>
+                <span class="stat-value"><%= jogos.length %></span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Última Sequência</span>
+                <span class="stat-value">
+                    <% 
+                    const dataUltima = new Date(jogos[0].criadoEm);
+                    const hoje = new Date();
+                    const diferenca = Math.floor((hoje - dataUltima) / (1000 * 60 * 60 * 24));
+                    if (diferenca === 0) { %>
+                        Hoje
+                    <% } else if (diferenca === 1) { %>
+                        Ontem
+                    <% } else { %>
+                        <%= diferenca %> dias atrás
+                    <% } %>
+                </span>
+            </div>
+        </div>
+
+        <div class="jogos-grid">
+            <% jogos.forEach((jogo, index) => { %>
+                <div class="jogo-card" data-jogo-id="<%= jogo._id %>">
+                    <div class="jogo-header">
+                        <span class="jogo-numero">#<%= index + 1 %></span>
+                        <span class="jogo-data">
+                            <% 
+                            const data = new Date(jogo.criadoEm);
+                            const dia = String(data.getDate()).padStart(2, '0');
+                            const mes = String(data.getMonth() + 1).padStart(2, '0');
+                            const ano = data.getFullYear();
+                            const horas = String(data.getHours()).padStart(2, '0');
+                            const minutos = String(data.getMinutes()).padStart(2, '0');
+                            %>
+                            <%= dia %>/<%= mes %>/<%= ano %> às <%= horas %>:<%= minutos %>
+                        </span>
+                    </div>
+                    
+                    <div class="jogo-numeros">
+                        <% jogo.numeros.forEach(numero => { %>
+                            <span class="numero-badge"><%= numero %></span>
+                        <% }); %>
+                    </div>
+                    
+                    <div class="jogo-actions">
+                        <button class="btn-copiar" onclick="copiarNumeros('<%= jogo.numeros.join(', ') %>')" title="Copiar números">
+                            📋 Copiar
+                        </button>
+                        <button class="btn-deletar" onclick="deletarJogo('<%= jogo._id %>')" title="Deletar sequência">
+                            🗑️ Deletar
+                        </button>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    <% } %>
+
+    <div class="volta-home">
+        <a href="/" class="btn-voltar">← Voltar à Página Principal</a>
+    </div>
+</main>
+
+<script>
+    function copiarNumeros(numeros) {
+        navigator.clipboard.writeText(numeros).then(() => {
+            alert('✓ Números copiados para a área de transferência!');
+        }).catch(() => {
+            alert('✗ Erro ao copiar. Tente novamente.');
+        });
+    }
+
+    // Função para verificar e destacar números acertados
+    function verificarNumeros() {
+        const raw = document.getElementById('verifica-numeros-input').value || '';
+        // Extrai números separados por vírgula, aceita espaços e zeros à esquerda
+        const parts = raw.split(',').map(s => s.trim()).filter(Boolean);
+        if (parts.length === 0) {
+            alert('Digite entre 1 e 6 números separados por vírgula.');
+            return;
+        }
+
+        if (parts.length > 6) {
+            alert('Máximo de 6 números.');
+            return;
+        }
+
+        const numeros = [];
+        for (let p of parts) {
+            // remover zeros à esquerda e converter
+            const num = parseInt(p, 10);
+            if (Number.isNaN(num) || num < 1 || num > 60) {
+                alert(`Número inválido: ${p}. Use valores entre 1 e 60.`);
+                return;
+            }
+            if (!numeros.includes(num)) numeros.push(num);
+        }
+
+        // Limpa destaques anteriores
+        document.querySelectorAll('.numero-badge.acertou').forEach(el => el.classList.remove('acertou'));
+        document.querySelectorAll('.jogo-card').forEach(card => { card.classList.remove('has-acertos'); card.classList.remove('ganhou'); });
+
+        // Para cada jogo, verifica quais números batem e marca
+        document.querySelectorAll('.jogo-card').forEach(card => {
+            const badges = Array.from(card.querySelectorAll('.numero-badge'));
+            let matches = 0;
+            badges.forEach(b => {
+                const text = b.textContent.trim();
+                const val = parseInt(text, 10);
+                if (numeros.includes(val)) {
+                    b.classList.add('acertou');
+                    matches += 1;
+                }
+            });
+
+            if (matches > 0) card.classList.add('has-acertos');
+
+            // Se acertou todos os números do cartão (ganhou)
+            if (matches === badges.length && badges.length > 0) {
+                card.classList.add('ganhou');
+            }
+        });
+
+        // Rolagem suave para área de jogos para ver os resultados (opcional)
+        const grid = document.querySelector('.jogos-grid');
+        if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Ligar o botão ao evento
+    document.addEventListener('DOMContentLoaded', function() {
+        const btn = document.querySelector('.btn-verificar');
+        if (btn) btn.addEventListener('click', verificarNumeros);
+        // Permitir enter no input para executar verificação
+        const input = document.getElementById('verifica-numeros-input');
+        if (input) {
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    verificarNumeros();
+                }
+            });
+        }
+    });
+
+    function deletarJogo(jogoId) {
+        if (!confirm('Tem certeza que deseja deletar esta sequência?')) {
+            return;
+        }
+
+        const card = document.querySelector(`[data-jogo-id="${jogoId}"]`);
+        card.classList.add('deleting');
+
+        fetch(`/api/jogos/${jogoId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.sucesso) {
+                card.style.animation = 'fadeOut 0.3s ease-out';
+                setTimeout(() => {
+                    card.remove();
+                    // Se não houver mais cards, recarrega a página
+                    if (document.querySelectorAll('.jogo-card').length === 0) {
+                        location.reload();
+                    }
+                }, 300);
+            } else {
+                alert(`✗ Erro: ${data.mensagem}`);
+                card.classList.remove('deleting');
+            }
+        })
+        .catch(erro => {
+            console.error('Erro:', erro);
+            alert('✗ Erro ao deletar sequência');
+            card.classList.remove('deleting');
+        });
+    }
+
+    // Modal de envio
+    function abrirModal() {
+        document.getElementById('modal-enviar-jogos').style.display = 'flex';
+        document.getElementById('nome-usuario-envio').focus();
+    }
+
+    function fecharModal() {
+        document.getElementById('modal-enviar-jogos').style.display = 'none';
+        document.getElementById('nome-usuario-envio').value = '';
+    }
+
+    function enviarJogos() {
+        const nomeUsuario = document.getElementById('nome-usuario-envio').value.trim();
+
+        if (!nomeUsuario) {
+            alert('Digite um nome de usuário');
+            return;
+        }
+
+        const btn = document.querySelector('.modal-footer .btn-confirmar');
+        btn.disabled = true;
+        btn.textContent = '📤 Enviando...';
+
+        fetch('/api/jogos/enviar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ nomeUsuario: nomeUsuario })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.sucesso) {
+                alert(`✓ ${data.mensagem}`);
+                fecharModal();
+            } else {
+                alert(`✗ ${data.mensagem}`);
+            }
+        })
+        .catch(erro => {
+            console.error('Erro:', erro);
+            alert('✗ Erro ao enviar jogos');
+        })
+        .finally(() => {
+            btn.disabled = false;
+            btn.textContent = 'Enviar';
+        });
+    }
+
+    // Permitir envio com Enter na modal
+    document.addEventListener('DOMContentLoaded', function() {
+        const input = document.getElementById('nome-usuario-envio');
+        if (input) {
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    enviarJogos();
+                }
+            });
+        }
+        // Fechar modal ao clicar fora
+        const modal = document.getElementById('modal-enviar-jogos');
+        if (modal) {
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) fecharModal();
+            });
+        }
+    });
+</script>
+
+<%- include('includes/footer'); %>
