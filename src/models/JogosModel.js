@@ -14,7 +14,7 @@ const JogosSchema = new mongoose.Schema ({
     },
     criadoPor: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'login',
+        ref: 'Login',
         required: true
     },
     criadoEm: {

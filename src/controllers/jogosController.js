@@ -248,7 +248,16 @@ exports.enviarJogos = async (req, res) => {
         }
 
         // Obter todos os jogos do usuário logado
-        const meusjogos = await JogosModel.find({ criadoPor: req.session.user.id });
+        let meusjogos = await JogosModel.find({ criadoPor: req.session.user.id });
+
+        // Remover possíveis duplicatas locais (mesma sequência numérica)
+        const seen = new Set();
+        meusjogos = meusjogos.filter(j => {
+            const key = (j.numeros || []).slice().sort((a,b)=>a-b).join(',');
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        });
 
         if (meusjogos.length === 0) {
             return res.status(400).json({ 
