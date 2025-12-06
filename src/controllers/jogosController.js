@@ -257,9 +257,31 @@ exports.enviarJogos = async (req, res) => {
             });
         }
 
-        // Criar registros de jogos recebidos
-        const jogosParaEnviar = meusjogos.map(jogo => ({
-            numeros: jogo.numeros,
+        // Buscar jogos já enviados deste usuário para o destinatário, para evitar duplicatas
+        const jaEnviados = await JogosRecebidosModel.find({
+            enviadoPor: req.session.user.id,
+            recebidoEm: usuarioDestino._id
+        }).select('numeros');
+
+        // Criar um set de chaves para comparar (numeros ordenados em string)
+        const chaveEnviadas = new Set(jaEnviados.map(j => (j.numeros || []).slice().sort((a,b)=>a-b).join(',')));
+
+        // Filtrar apenas jogos que ainda não foram enviados para esse destinatário
+        const jogosNaoEnviados = meusjogos.filter(jogo => {
+            const chave = (jogo.numeros || []).slice().sort((a,b)=>a-b).join(',');
+            return !chaveEnviadas.has(chave);
+        });
+
+        if (jogosNaoEnviados.length === 0) {
+            return res.json({
+                sucesso: true,
+                mensagem: `Nenhuma sequência nova para enviar a ${nomeUsuario}.`
+            });
+        }
+
+        // Criar registros de jogos recebidos apenas para os não enviados
+        const jogosParaEnviar = jogosNaoEnviados.map(jogo => ({
+            numeros: jogo.numeros.slice().sort((a,b)=>a-b),
             enviadoPor: req.session.user.id,
             recebidoEm: usuarioDestino._id,
             criadoEm: jogo.criadoEm
