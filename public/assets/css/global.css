@@ -398,6 +398,180 @@
 
 .numeros-criador ul li button:disabled:hover {
     background-color: #cccccc;
+}
+
+/* History (Meus Envios) styles */
+.envios-container {
+    max-width: 1100px;
+    margin: 2rem auto;
+    padding: 1rem;
+    min-height: auto;
+    display: block;
+}
+
+/* Override .container styles for envios page */
+main.container {
+    height: auto;
+    display: block;
+    background: #f5f5f5;
+    min-height: 100vh;
+}
+
+main.container .envios-container {
+    width: 100%;
+    max-width: 1100px;
+    padding: 2rem;
+    margin: 0 auto;
+}
+
+.envios-container h1 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: var(--black-color);
+}
+
+.envios-container p {
+    font-size: 1rem;
+    color: #666;
+    text-align: center;
+    padding: 2rem;
+}
+.envios-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+}
+.envio-card {
+    background: #fff;
+    border-radius: 0.6rem;
+    padding: 1rem;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.envio-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+}
+
+/* Visual layout for header (clickable) */
+.envio-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 0.8rem;
+    margin-bottom: 0;
+    font-size: 0.95rem;
+    user-select: none;
+}
+.envio-header:hover {
+    background: #f9f9f9;
+    border-radius: 0.4rem;
+}
+.envio-header:focus {
+    outline: 2px dashed rgba(0,0,0,0.12);
+}
+.envio-header .destino {
+    font-weight: 700;
+    color: var(--black-color);
+}
+
+.envio-meta {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+    flex: 1;
+}
+
+.envio-body .numeros {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    padding-left: 0;
+    margin-top: 0.6rem;
+}
+.envio-body .numero {
+    background: var(--primary-color);
+    color: #000;
+    padding: 0.45rem 0.7rem;
+    border-radius: 0.4rem;
+    font-weight: 700;
+    list-style: none;
+}
+.envio-card .data {
+    color: #666;
+    font-size: 0.85rem;
+}
+
+/* Collapsible behaviour */
+.envio-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 240ms ease;
+    padding: 0 0.8rem;
+}
+.envio-card.expanded .envio-body {
+    /* max-height set dynamically by JS based on scrollHeight */
+    max-height: 600px;
+    padding: 0.8rem;
+}
+
+.envio-message {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.envio-count {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.sequencias-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.sequencia-row {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.6rem;
+    background: #f9f9f9;
+    border-radius: 0.4rem;
+    border-left: 3px solid var(--primary-color);
+}
+
+.seq-num {
+    font-weight: 700;
+    color: var(--black-color);
+    font-size: 0.85rem;
+    min-width: 30px;
+}
+
+.sequencia-row .numeros {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+}
+
+.toggle-indicator {
+    font-size: 1.1rem;
+    transform: rotate(0deg);
+    transition: transform 200ms ease;
+    flex-shrink: 0;
+}
+.envio-card.expanded .toggle-indicator {
+    transform: rotate(90deg);
+}
+
+@media (max-width: 600px) {
+    .envios-list { grid-template-columns: repeat(1, 1fr); }
+}
     transform: none;
     box-shadow: none;
 }

@@ -1,0 +1,47 @@
+<%- include('includes/head') %>
+<%- include('includes/nav', { user: user, messages: messages }) %>
+
+<main class="container">
+  <section class="envios-container">
+    <h1><%= titulo %></h1>
+
+    <% if (!enviados || enviados.length === 0) { %>
+      <p>Você ainda não enviou jogos para outros usuários.</p>
+    <% } else { %>
+      <div class="envios-list">
+        <% enviados.forEach(function(env) { %>
+          <article class="envio-card" data-env-id="<%= env._id %>">
+            <div class="envio-header" role="button" tabindex="0">
+              <div class="envio-meta">
+                <span class="destino"><strong>Para</strong>: <%= env.recebidoEm ? env.recebidoEm.username : env.recebidoUsername %></span>
+                <span class="data">• <%= new Date(env.dataEnvio).toLocaleString() %></span>
+              </div>
+              <div class="toggle-indicator" aria-expanded="false">▸</div>
+            </div>
+            <div class="envio-body" aria-hidden="true">
+              <div class="envio-message">
+                <div class="envio-count">Enviado: <%= env.quantidade || (env.sequencias || []).length %> sequência(s)</div>
+                <div class="sequencias-group">
+                  <% (env.sequencias || []).forEach(function(seq, idx) { %>
+                    <div class="sequencia-row">
+                      <span class="seq-num">#<%= idx + 1 %></span>
+                      <ul class="numeros">
+                        <% (seq.numeros || []).forEach(function(n) { %>
+                          <li class="numero"><%= n %></li>
+                        <% }); %>
+                      </ul>
+                    </div>
+                  <% }); %>
+                </div>
+              </div>
+            </div>
+          </article>
+        <% }); %>
+      </div>
+    <% } %>
+
+  </section>
+</main>
+
+<script src="/assets/js/enviados.js"></script>
+<%- include('includes/footer') %>

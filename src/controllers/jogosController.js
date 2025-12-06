@@ -1,5 +1,6 @@
 const JogosModel = require('../models/JogosModel');
 const JogosRecebidosModel = require('../models/JogosRecebidosModel');
+const JogosEnviadosModel = require('../models/JogosEnviadosModel');
 const LoginModel = require('../models/LoginModel');
 
 // Salvar uma única sequência
@@ -297,6 +298,26 @@ exports.enviarJogos = async (req, res) => {
         }));
 
         const jogosEnviados = await JogosRecebidosModel.insertMany(jogosParaEnviar);
+
+        // Registrar histórico de envios como um único lote (groupado por envio)
+        try {
+            const envioHistorico = new JogosEnviadosModel({
+                sequencias: jogosEnviados.map(j => ({
+                    numeros: j.numeros.slice().sort((a,b)=>a-b),
+                    jogoRecebidoRef: j._id
+                })),
+                enviadoPor: req.session.user.id,
+                recebidoEm: usuarioDestino._id,
+                recebidoUsername: usuarioDestino.username,
+                quantidade: jogosEnviados.length,
+                dataEnvio: Date.now()
+            });
+
+            await envioHistorico.save();
+        } catch (errEnv) {
+            console.error('Erro ao registrar histórico de envios:', errEnv);
+            // Não falhar a operação principal se o registro de histórico falhar
+        }
 
         res.json({ 
             sucesso: true, 
