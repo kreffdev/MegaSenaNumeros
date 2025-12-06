@@ -503,11 +503,11 @@ main.container .envios-container {
     font-size: 0.85rem;
 }
 
-/* Collapsible behaviour */
+/* Collapsible behaviour: animate height so opened body fits content naturally */
 .envio-body {
-    max-height: 0;
+    height: 0;
     overflow: hidden;
-    transition: max-height 240ms ease;
+    transition: height 240ms ease;
     padding: 0 0.8rem;
 }
 

@@ -39,5 +39,7 @@ route.get('/api/jogos-enviados', enviadosController.apiList);
 route.get('/api/jogos-recebidos', jogosController.obterJogosRecebidos);
 route.delete('/api/jogos-recebidos/:id', jogosController.deletarJogoRecebido);
 
+// NOTE: removed development-only client logging endpoint
+
 
 module.exports = route;
