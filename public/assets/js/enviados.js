@@ -1,28 +1,45 @@
 document.addEventListener('DOMContentLoaded', function() {
-  // Get all envio-card elements
-  const cards = document.querySelectorAll('.envio-card');
+  const headers = document.querySelectorAll('.envio-header');
   
-  cards.forEach(card => {
-    const header = card.querySelector('.envio-header');
+  headers.forEach((header, idx) => {
+    const card = header.closest('.envio-card');
     const body = card.querySelector('.envio-body');
     const indicator = header.querySelector('.toggle-indicator');
     
-    if (!header || !body) return;
+    if (!card || !body) return;
 
-    // Click handler on header
+    // Initialize body
+    body.style.maxHeight = '0px';
+    body.setAttribute('aria-hidden', 'true');
+    
+    // Click handler - only on this specific header
     header.addEventListener('click', function(e) {
+      e.stopImmediatePropagation();
       e.preventDefault();
-      e.stopPropagation();
       
-      // Toggle ONLY this card
+      // Close all other cards first (accordion behavior)
+      document.querySelectorAll('.envio-card.expanded').forEach(otherCard => {
+        if (otherCard !== card) {
+          otherCard.classList.remove('expanded');
+          const otherBody = otherCard.querySelector('.envio-body');
+          const otherIndicator = otherCard.querySelector('.toggle-indicator');
+          if (otherBody) {
+            otherBody.style.maxHeight = '0px';
+            otherBody.setAttribute('aria-hidden', 'true');
+          }
+          if (otherIndicator) {
+            otherIndicator.setAttribute('aria-expanded', 'false');
+          }
+        }
+      });
+      
+      // Toggle current card
       const isExpanded = card.classList.toggle('expanded');
       
-      // Update indicator for this card
       if (indicator) {
         indicator.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
       }
 
-      // Handle max-height for smooth transition
       if (isExpanded) {
         const scrollHeight = body.scrollHeight;
         body.style.maxHeight = scrollHeight + 'px';
@@ -31,10 +48,6 @@ document.addEventListener('DOMContentLoaded', function() {
         body.style.maxHeight = '0px';
         body.setAttribute('aria-hidden', 'true');
       }
-    });
-
-    // Initialize: set aria-hidden and ensure max-height is 0
-    body.style.maxHeight = '0px';
-    body.setAttribute('aria-hidden', 'true');
+    }, true); // use capture phase
   });
 });
