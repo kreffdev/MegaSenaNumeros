@@ -2,7 +2,7 @@ const path = require('path'); // CommonJS
 
 module.exports = {
   mode: 'development',
-  entry: './frontend/main.js',
+  entry: './public/assets/js/selectNumbers.js',
   output: {
     path: path.resolve(__dirname, 'public', 'assets', 'js'),
     filename: 'bundle.js'
