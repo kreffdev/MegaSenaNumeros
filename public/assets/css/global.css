@@ -572,9 +572,6 @@ main.container .envios-container {
 @media (max-width: 600px) {
     .envios-list { grid-template-columns: repeat(1, 1fr); }
 }
-    transform: none;
-    box-shadow: none;
-}
 
 /* Estilo para números escolhidos na lista */
 .escolhido-numero {
