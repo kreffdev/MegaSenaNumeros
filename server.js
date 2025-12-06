@@ -10,7 +10,14 @@ const MongoStore = require('connect-mongo');
 
 mongoose.connect(process.env.CONNECTIONSTRING, {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  retryWrites: true,
+  w: 'majority',
+  ssl: true,
+  tlsAllowInvalidCertificates: false,
+  tlsAllowInvalidHostnames: false,
+  serverSelectionTimeoutMS: 10000,
+  socketTimeoutMS: 45000,
 })
 .then(() => {
   app.emit('pronto');
