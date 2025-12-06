@@ -176,10 +176,6 @@ function initSelectNumbers() {
 
   // Função para registrar sequências no backend
   async function registrarSequenciasBackend() {
-    if (sequenciasConfirmadas.length === 0) {
-      alert('Nenhuma sequência para registrar!');
-      return;
-    }
 
     btnRegistrar.disabled = true;
     btnRegistrar.textContent = '💾 Registrando...';
