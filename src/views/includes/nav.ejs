@@ -7,12 +7,17 @@
   <div class="ritgh-nav">
     <ul>
       <% if (typeof user !== 'undefined' && user) { %>
+        <li id="nav-notifications">
+          <button id="notif-btn" class="notif-btn" aria-label="Notificações" aria-expanded="false">
+            <span class="notif-icon">🔔</span>
+            <span id="notif-count" class="notif-count" aria-hidden="true">0</span>
+          </button>
+        </li>
         <li><a href="/meusjogos">Meus Números</a></li>
         <li><a href="/jogosrecebidos">Recebidos</a></li>
         <li><a href="/meusenvios">Meus Envios</a></li>
       <% } %>
       <% if (messages.user || (typeof user !== 'undefined' && user)) { %>
-        
         <li><a href="/logout" id="btn-login">Logout</a></li>
       <% } else { %>
         <li><a href="/login" id="btn-login">Login</a></li>

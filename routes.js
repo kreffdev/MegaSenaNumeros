@@ -7,6 +7,7 @@ const meusNumerosController = require('./src/controllers/meusNumerosController')
 const jogosRecebidosController = require('./src/controllers/jogosRecebidosController');
 const jogosController = require('./src/controllers/jogosController');
 const enviadosController = require('./src/controllers/enviadosController');
+const notificationsController = require('./src/controllers/notificationsController');
 
 // CSRF protection com cookie ao invés de session
 const csrfProtection = csurf({ 
@@ -28,6 +29,11 @@ route.get('/meusjogos', csrfProtection, meusNumerosController.index);
 route.get('/jogosrecebidos', csrfProtection, jogosRecebidosController.index);
 // Rotas de meus envios (histórico)
 route.get('/meusenvios', csrfProtection, enviadosController.index);
+
+// Notifications API
+route.get('/api/notifications', notificationsController.apiList);
+route.post('/api/notifications/mark-read', notificationsController.markRead);
+route.post('/api/notifications/mark-read-single', notificationsController.markReadSingle);
 
 // API - Rotas de jogos (sequências)
 route.post('/api/jogos/salvar', jogosController.salvarSequencia);
