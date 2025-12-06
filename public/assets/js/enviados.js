@@ -2,64 +2,63 @@ document.addEventListener('DOMContentLoaded', function() {
   const enviosList = document.querySelector('.envios-list');
   if (!enviosList) return;
 
-  // Event listener único na lista com delegação
-  enviosList.addEventListener('click', handleCardClick);
+  // Get all cards
+  const allCards = Array.from(enviosList.querySelectorAll('.envio-card'));
 
-  function handleCardClick(e) {
+  // Initialize all bodies as closed
+  allCards.forEach((card) => {
+    const body = card.querySelector('.envio-body');
+    if (body) {
+      body.style.maxHeight = '0px';
+      body.style.overflow = 'hidden';
+      body.style.padding = '0 0.8rem';
+      body.setAttribute('aria-hidden', 'true');
+    }
+  });
+
+  // Single delegated listener
+  enviosList.addEventListener('click', function(e) {
     const clickedHeader = e.target.closest('.envio-header');
     if (!clickedHeader) return;
 
     const clickedCard = clickedHeader.closest('.envio-card');
     if (!clickedCard) return;
 
-    // Fechar todos os outros cards
-    document.querySelectorAll('.envio-card.expanded').forEach(openCard => {
-      if (openCard !== clickedCard) {
-        closeCard(openCard);
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Step 1: Close ALL cards (including this one)
+    allCards.forEach((card) => {
+      const body = card.querySelector('.envio-body');
+      const indicator = card.querySelector('.toggle-indicator');
+
+      card.classList.remove('expanded');
+      
+      if (body) {
+        body.style.maxHeight = '0px';
+        body.style.padding = '0 0.8rem';
+        body.setAttribute('aria-hidden', 'true');
+      }
+      
+      if (indicator) {
+        indicator.setAttribute('aria-expanded', 'false');
       }
     });
 
-    // Toggle do card clicado
-    if (clickedCard.classList.contains('expanded')) {
-      closeCard(clickedCard);
-    } else {
-      openCard(clickedCard);
-    }
-  }
+    // Step 2: Open ONLY the clicked card
+    const body = clickedCard.querySelector('.envio-body');
+    const indicator = clickedCard.querySelector('.toggle-indicator');
 
-  function openCard(card) {
-    card.classList.add('expanded');
-    const body = card.querySelector('.envio-body');
-    const indicator = card.querySelector('.toggle-indicator');
-
+    clickedCard.classList.add('expanded');
+    
     if (body) {
       body.style.maxHeight = body.scrollHeight + 'px';
+      body.style.padding = '0.8rem';
       body.setAttribute('aria-hidden', 'false');
     }
-
+    
     if (indicator) {
       indicator.setAttribute('aria-expanded', 'true');
     }
-  }
-
-  function closeCard(card) {
-    card.classList.remove('expanded');
-    const body = card.querySelector('.envio-body');
-    const indicator = card.querySelector('.toggle-indicator');
-
-    if (body) {
-      body.style.maxHeight = '0px';
-      body.setAttribute('aria-hidden', 'true');
-    }
-
-    if (indicator) {
-      indicator.setAttribute('aria-expanded', 'false');
-    }
-  }
-
-  // Inicializar todos os bodies
-  document.querySelectorAll('.envio-body').forEach(body => {
-    body.style.maxHeight = '0px';
-    body.setAttribute('aria-hidden', 'true');
   });
 });

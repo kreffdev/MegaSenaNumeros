@@ -510,11 +510,6 @@ main.container .envios-container {
     transition: max-height 240ms ease;
     padding: 0 0.8rem;
 }
-.envio-card.expanded .envio-body {
-    /* max-height set dynamically by JS based on scrollHeight */
-    max-height: 600px;
-    padding: 0.8rem;
-}
 
 .envio-message {
     display: flex;
