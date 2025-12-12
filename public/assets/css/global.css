@@ -1472,6 +1472,37 @@ main.container .envios-container {
     transform: translateY(0);
 }
 
+.jogos-footer {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.btn-deletar-todos {
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+    color: white;
+    border: none;
+    border-radius: 0.4rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(211, 47, 47, 0.3);
+}
+
+.btn-deletar-todos:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(211, 47, 47, 0.4);
+    background: linear-gradient(135deg, #e53935 0%, #c62828 100%);
+}
+
+.btn-deletar-todos:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(211, 47, 47, 0.3);
+}
+
 .empty-state {
     text-align: center;
     padding: 3rem 1rem;

@@ -1,4 +1,4 @@
-const JogosModel = require('../models/JogosModel');
+const LoginModel = require('../models/LoginModel');
 
 exports.index = async (req, res) => {
     try {
@@ -8,9 +8,9 @@ exports.index = async (req, res) => {
             return res.redirect('/login');
         }
 
-        // Buscar todos os jogos do usuário
-        const jogos = await JogosModel.find({ criadoPor: req.session.user.id })
-            .sort({ criadoEm: 1 });
+        // Buscar todos os jogos embutidos no documento do usuário
+        const usuario = await LoginModel.findById(req.session.user.id).lean();
+        const jogos = (usuario && usuario.jogos) ? usuario.jogos.slice().sort((a,b) => new Date(b.criadoEm) - new Date(a.criadoEm)) : [];
 
         res.render('meusNumeros', {
             titulo: 'Meus Números',

@@ -87,6 +87,12 @@
                 </div>
             <% }); %>
         </div>
+
+        <div class="jogos-footer">
+            <button class="btn-deletar-todos" onclick="deletarTodosRecebidos()" title="Deletar todos os jogos recebidos">
+                🗑️ Deletar Todos os Recebidos
+            </button>
+        </div>
     <% } %>
 
     <div class="volta-home">
@@ -146,6 +152,32 @@
             console.error('Erro:', erro);
             alert('✗ Erro ao deletar jogo');
             card.classList.remove('deleting');
+        });
+    }
+
+    function deletarTodosRecebidos() {
+        if (!confirm('Tem certeza que deseja deletar TODOS os jogos recebidos? Esta ação não pode ser desfeita.')) {
+            return;
+        }
+
+        fetch('/api/jogos-recebidos/deletar-todos', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.sucesso) {
+                alert(`✓ ${data.mensagem}`);
+                location.reload();
+            } else {
+                alert(`✗ ${data.mensagem}`);
+            }
+        })
+        .catch(erro => {
+            console.error('Erro:', erro);
+            alert('✗ Erro ao deletar jogos recebidos');
         });
     }
 </script>

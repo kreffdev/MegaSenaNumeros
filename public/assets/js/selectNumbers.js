@@ -7,7 +7,12 @@ function initSelectNumbers() {
   const btnRegistrar = document.getElementById('btn-registrar-sequencias');
   if (!container || !escolhidosLista || !previewDiv) return;
 
+  // Garantir que os botões de número estejam habilitados ao iniciar
+  container.querySelectorAll('button').forEach(b => { b.disabled = false; b.style.pointerEvents = 'auto'; });
+
   const MAX_SELECTIONS = 6;
+  // Ativar debug para verificação rápida no console
+  const DEBUG_SELECT_NUMBERS = true;
   let sequenciasConfirmadas = []; // Armazena sequências confirmadas localmente
 
   // Função para gerar números aleatórios
@@ -229,9 +234,28 @@ function initSelectNumbers() {
   // Event listener para os botões de número
   container.addEventListener('click', function (e) {
     const btn = e.target.closest('button');
+    if (DEBUG_SELECT_NUMBERS) console.log('selectNumbers: click event', { target: e.target, closestBtn: btn });
     if (!btn) return;
     // ignorar se estiver desabilitado
-    if (btn.disabled) return;
+    if (btn.disabled) {
+      if (DEBUG_SELECT_NUMBERS) {
+        // inspeciona qual elemento está realmente recebendo o clique no centro do botão
+        try {
+          const r = btn.getBoundingClientRect();
+          const center = { x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2) };
+          const elAtPoint = document.elementFromPoint(center.x, center.y);
+          console.log('selectNumbers: button appears disabled; elementFromPoint at center:', center, elAtPoint);
+          // log pointer-events up the tree
+          let cur = elAtPoint;
+          const ancestors = [];
+          while (cur) { ancestors.push({ tag: cur.tagName, cls: cur.className, stylePointer: window.getComputedStyle(cur).pointerEvents }); cur = cur.parentElement; }
+          console.log('selectNumbers: ancestors pointer-events chain:', ancestors);
+        } catch (err) {
+          console.warn('selectNumbers: debug elementFromPoint failed', err);
+        }
+      }
+      return;
+    }
 
     const isSelected = btn.classList.contains('selected');
 
@@ -257,10 +281,16 @@ function initSelectNumbers() {
     }
 
     // Atualiza a lista de números escolhidos
+    if (DEBUG_SELECT_NUMBERS) console.log('selectNumbers: updated selection count', container.querySelectorAll('button.selected').length);
     updateEscolhidos();
   });
 }
 
-initSelectNumbers();
+// Inicializa de forma segura quando o DOM estiver pronto
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initSelectNumbers);
+} else {
+  initSelectNumbers();
+}
 // Disponibiliza a função globalmente para ser chamada quando desejar
 window.initSelectNumbers = initSelectNumbers;

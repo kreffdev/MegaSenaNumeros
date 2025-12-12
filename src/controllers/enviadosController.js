@@ -1,4 +1,3 @@
-const JogosEnviadosModel = require('../models/JogosEnviadosModel');
 const LoginModel = require('../models/LoginModel');
 
 exports.index = async (req, res) => {
@@ -8,9 +7,9 @@ exports.index = async (req, res) => {
             return res.redirect('/login');
         }
 
-        const enviados = await JogosEnviadosModel.find({ enviadoPor: req.session.user.id })
-            .populate('recebidoEm', 'username')
-            .sort({ dataEnvio: -1 });
+        // Ler envios do documento de usuário (embedded)
+        const usuario = await LoginModel.findById(req.session.user.id).populate('jogosEnviados.recebidoEm', 'username').lean();
+        const enviados = (usuario && usuario.jogosEnviados) ? usuario.jogosEnviados.slice().sort((a,b) => new Date(b.dataEnvio) - new Date(a.dataEnvio)) : [];
 
         res.render('meusEnvios', {
             titulo: 'Meus Envios',
@@ -31,9 +30,8 @@ exports.apiList = async (req, res) => {
             return res.status(401).json({ sucesso: false, mensagem: 'Você precisa estar logado' });
         }
 
-        const enviados = await JogosEnviadosModel.find({ enviadoPor: req.session.user.id })
-            .populate('recebidoEm', 'username')
-            .sort({ dataEnvio: -1 });
+        const usuario = await LoginModel.findById(req.session.user.id).populate('jogosEnviados.recebidoEm', 'username').lean();
+        const enviados = (usuario && usuario.jogosEnviados) ? usuario.jogosEnviados.slice().sort((a,b) => new Date(b.dataEnvio) - new Date(a.dataEnvio)) : [];
 
         res.json({ sucesso: true, enviados: enviados, quantidade: enviados.length });
     } catch (erro) {

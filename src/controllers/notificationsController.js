@@ -1,54 +1,46 @@
-const JogosRecebidosModel = require('../models/JogosRecebidosModel');
 const LoginModel = require('../models/LoginModel');
-const mongoose = require('mongoose');
 
 exports.apiList = async (req, res) => {
   try {
     if (!req.session.user) return res.status(401).json({ error: 'Não autenticado' });
 
     const userId = req.session.user.id;
-    const user = await LoginModel.findById(userId);
+    const user = await LoginModel.findById(userId).populate('jogosRecebidos.enviadoPor', 'username');
     if (!user) return res.status(404).json({ error: 'Usuário não encontrado' });
 
-    const since = user.ultimoAcessoNotificacoes || new Date(0);
+    // Agrupar jogosRecebidos por enviadoPor + dataEnvio
+    const grouped = {};
+    (user.jogosRecebidos || []).forEach(jr => {
+      const key = `${jr.enviadoPor ? String(jr.enviadoPor._id) : 'unknown'}_${jr.dataEnvio ? new Date(jr.dataEnvio).getTime() : 0}`;
+      if (!grouped[key]) {
+        grouped[key] = {
+          enviadoPor: jr.enviadoPor ? String(jr.enviadoPor._id) : null,
+          enviadoPorUsername: jr.enviadoPor ? jr.enviadoPor.username : (jr.enviadoPorUsername || 'Usuário'),
+          dataEnvio: jr.dataEnvio || new Date()
+        };
+      }
+    });
 
-    // Aggregate received games grouped by envio (enviadoPor + dataEnvio)
-    const agg = await JogosRecebidosModel.aggregate([
-      { $match: { recebidoEm: new mongoose.Types.ObjectId(userId) } },
-      { $sort: { dataEnvio: -1 } },
-      { $group: {
-          _id: { enviadoPor: '$enviadoPor', dataEnvio: '$dataEnvio' },
-          docId: { $first: '$_id' },
-          enviadoPor: { $first: '$enviadoPor' },
-          dataEnvio: { $first: '$dataEnvio' }
-      } },
-      { $lookup: { from: 'logins', localField: 'enviadoPor', foreignField: '_id', as: 'sender' } },
-      { $unwind: { path: '$sender', preserveNullAndEmptyArrays: true } },
-      { $project: { id: '$docId', enviadoPor: '$enviadoPor', sender: '$sender.username', dataEnvio: '$dataEnvio' } },
-      { $limit: 20 }
-    ]);
-
-    // We'll compute unreadCount after filtering out envios the user already marked as read
-
-    // filter out envios the user already marked as read (readEnvios)
+    // Filtrar envios já marcados como lidos
     const readEnvios = (user.readEnvios || []).map(r => ({
       enviadoPor: String(r.enviadoPor),
       dataEnvioTs: r.dataEnvio ? new Date(r.dataEnvio).getTime() : null
     }));
 
-    const payload = agg
+    const payload = Object.values(grouped)
       .filter(n => {
         const dataTs = n.dataEnvio ? new Date(n.dataEnvio).getTime() : null;
         return !readEnvios.find(r => r.enviadoPor === String(n.enviadoPor) && r.dataEnvioTs === dataTs);
       })
-      .map(n => ({
-        id: n.id,
-        enviadoPor: n.enviadoPor ? String(n.enviadoPor) : null,
-        sender: n.sender || 'Usuário',
-        dataEnvio: n.dataEnvio || new Date()
+      .sort((a, b) => new Date(b.dataEnvio) - new Date(a.dataEnvio))
+      .slice(0, 20)
+      .map((n, idx) => ({
+        id: `notif_${idx}`,
+        enviadoPor: n.enviadoPor,
+        sender: n.enviadoPorUsername,
+        dataEnvio: n.dataEnvio
       }));
 
-    // unreadCount is what we will show (envios not yet marked by user)
     const unreadCount = payload.length;
 
     return res.json({ unreadCount, notifications: payload });

@@ -39,13 +39,12 @@ route.post('/api/notifications/mark-read-single', notificationsController.markRe
 route.post('/api/jogos/salvar', jogosController.salvarSequencia);
 route.post('/api/jogos/salvar-multiplas', jogosController.salvarMultiplas);
 route.get('/api/jogos/meus', jogosController.obterMeuJogos);
+route.delete('/api/jogos/deletar-todos', jogosController.deletarTodasSequencias);
 route.delete('/api/jogos/:id', jogosController.deletarSequencia);
 route.post('/api/jogos/enviar', jogosController.enviarJogos);
 route.get('/api/jogos-enviados', enviadosController.apiList);
 route.get('/api/jogos-recebidos', jogosController.obterJogosRecebidos);
 route.delete('/api/jogos-recebidos/:id', jogosController.deletarJogoRecebido);
-
-// NOTE: removed development-only client logging endpoint
-
+route.delete('/api/jogos-recebidos/deletar-todos', jogosController.deletarTodosRecebidos);
 
 module.exports = route;

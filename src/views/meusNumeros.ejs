@@ -106,8 +106,13 @@
                 </div>
             <% }); %>
         </div>
-    <% } %>
 
+        <div class="jogos-footer">
+            <button class="btn-deletar-todos" onclick="deletarTodas()" title="Deletar todas as sequências">
+                🗑️ Deletar Todas as Sequências
+            </button>
+        </div>
+    <% } %>
     <div class="volta-home">
         <a href="/" class="btn-voltar">← Voltar à Página Principal</a>
     </div>
@@ -266,6 +271,10 @@
             if (data.sucesso) {
                 alert(`✓ ${data.mensagem}`);
                 fecharModal();
+                // Redirecionar para meus envios após sucesso
+                setTimeout(() => {
+                    window.location.href = '/meusenvios';
+                }, 500);
             } else {
                 alert(`✗ ${data.mensagem}`);
             }
@@ -277,6 +286,32 @@
         .finally(() => {
             btn.disabled = false;
             btn.textContent = 'Enviar';
+        });
+    }
+
+    function deletarTodas() {
+        if (!confirm('Tem certeza que deseja deletar TODAS as sequências? Esta ação não pode ser desfeita.')) {
+            return;
+        }
+
+        fetch('/api/jogos/deletar-todos', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.sucesso) {
+                alert(`✓ ${data.mensagem}`);
+                location.reload();
+            } else {
+                alert(`✗ ${data.mensagem}`);
+            }
+        })
+        .catch(erro => {
+            console.error('Erro:', erro);
+            alert('✗ Erro ao deletar sequências');
         });
     }
 

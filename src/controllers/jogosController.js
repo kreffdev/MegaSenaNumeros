@@ -1,6 +1,3 @@
-const JogosModel = require('../models/JogosModel');
-const JogosRecebidosModel = require('../models/JogosRecebidosModel');
-const JogosEnviadosModel = require('../models/JogosEnviadosModel');
 const LoginModel = require('../models/LoginModel');
 
 // Salvar uma única sequência
@@ -40,19 +37,17 @@ exports.salvarSequencia = async (req, res) => {
             });
         }
 
-        // Criar novo jogo
-        const novoJogo = new JogosModel({
-            numeros: numeros.sort((a, b) => a - b),
-            criadoPor: req.session.user.id
-        });
+        // Salvar como subdocumento no usuário
+        const usuario = await LoginModel.findById(req.session.user.id);
+        if (!usuario) return res.status(404).json({ sucesso: false, mensagem: 'Usuário não encontrado' });
 
-        await novoJogo.save();
+        const sorted = numeros.slice().sort((a,b)=>a-b);
+        usuario.jogos = usuario.jogos || [];
+        usuario.jogos.push({ numeros: sorted, criadoEm: Date.now() });
+        await usuario.save();
 
-        res.json({ 
-            sucesso: true, 
-            mensagem: 'Sequência salva com sucesso!',
-            jogo: novoJogo
-        });
+        const saved = usuario.jogos[usuario.jogos.length - 1];
+        res.json({ sucesso: true, mensagem: 'Sequência salva com sucesso!', jogo: saved });
 
     } catch (erro) {
         console.error('Erro ao salvar sequência:', erro);
@@ -110,20 +105,22 @@ exports.salvarMultiplas = async (req, res) => {
             }
 
             jogosParaSalvar.push({
-                numeros: seq.numeros.sort((a, b) => a - b),
-                criadoPor: req.session.user.id
+                numeros: seq.numeros.slice().sort((a, b) => a - b)
             });
         }
 
-        // Salvar todos os jogos
-        const jogosSalvos = await JogosModel.insertMany(jogosParaSalvar);
+        // Salvar como subdocumentos no usuário
+        const usuario = await LoginModel.findById(req.session.user.id);
+        if (!usuario) return res.status(404).json({ sucesso: false, mensagem: 'Usuário não encontrado' });
 
-        res.json({ 
-            sucesso: true, 
-            mensagem: `${jogosSalvos.length} sequência(s) salva(s) com sucesso!`,
-            jogos: jogosSalvos,
-            quantidade: jogosSalvos.length
-        });
+        usuario.jogos = usuario.jogos || [];
+        for (const j of jogosParaSalvar) {
+            usuario.jogos.push({ numeros: j.numeros, criadoEm: Date.now() });
+        }
+        await usuario.save();
+
+        const saved = usuario.jogos.slice(-jogosParaSalvar.length);
+        res.json({ sucesso: true, mensagem: `${saved.length} sequência(s) salva(s) com sucesso!`, jogos: saved, quantidade: saved.length });
 
     } catch (erro) {
         console.error('Erro ao salvar sequências:', erro);
@@ -145,14 +142,10 @@ exports.obterMeuJogos = async (req, res) => {
             });
         }
 
-        const jogos = await JogosModel.find({ criadoPor: req.session.user.id })
-            .sort({ criadoEm: -1 });
+        const usuario = await LoginModel.findById(req.session.user.id).lean();
+        const jogos = (usuario && usuario.jogos) ? usuario.jogos.slice().sort((a,b) => new Date(b.criadoEm) - new Date(a.criadoEm)) : [];
 
-        res.json({ 
-            sucesso: true, 
-            jogos: jogos,
-            quantidade: jogos.length
-        });
+        res.json({ sucesso: true, jogos: jogos, quantidade: jogos.length });
 
     } catch (erro) {
         console.error('Erro ao recuperar jogos:', erro);
@@ -176,29 +169,16 @@ exports.deletarSequencia = async (req, res) => {
 
         const { id } = req.params;
 
-        // Verificar se o jogo pertence ao usuário
-        const jogo = await JogosModel.findById(id);
+        // Usar $pull para remover subdocumento pelo _id
+        const result = await LoginModel.findByIdAndUpdate(
+            req.session.user.id,
+            { $pull: { jogos: { _id: id } } },
+            { new: true }
+        );
 
-        if (!jogo) {
-            return res.status(404).json({ 
-                sucesso: false, 
-                mensagem: 'Sequência não encontrada' 
-            });
-        }
+        if (!result) return res.status(404).json({ sucesso: false, mensagem: 'Usuário não encontrado' });
 
-        if (jogo.criadoPor.toString() !== req.session.user.id.toString()) {
-            return res.status(403).json({ 
-                sucesso: false, 
-                mensagem: 'Você não tem permissão para deletar esta sequência' 
-            });
-        }
-
-        await JogosModel.findByIdAndDelete(id);
-
-        res.json({ 
-            sucesso: true, 
-            mensagem: 'Sequência deletada com sucesso!'
-        });
+        res.json({ sucesso: true, mensagem: 'Sequência deletada com sucesso!' });
 
     } catch (erro) {
         console.error('Erro ao deletar sequência:', erro);
@@ -248,10 +228,13 @@ exports.enviarJogos = async (req, res) => {
             });
         }
 
-        // Obter todos os jogos do usuário logado
-        let meusjogos = await JogosModel.find({ criadoPor: req.session.user.id });
+        // Obter todos os jogos do usuário logado (embedded)
+        const remetente = await LoginModel.findById(req.session.user.id);
+        if (!remetente) return res.status(404).json({ sucesso: false, mensagem: 'Usuário remetente não encontrado' });
 
-        // Remover possíveis duplicatas locais (mesma sequência numérica)
+        let meusjogos = (remetente.jogos || []).slice();
+
+        // Remover duplicatas locais
         const seen = new Set();
         meusjogos = meusjogos.filter(j => {
             const key = (j.numeros || []).slice().sort((a,b)=>a-b).join(',');
@@ -261,69 +244,37 @@ exports.enviarJogos = async (req, res) => {
         });
 
         if (meusjogos.length === 0) {
-            return res.status(400).json({ 
-                sucesso: false, 
-                mensagem: 'Você não tem sequências para enviar' 
-            });
+            return res.status(400).json({ sucesso: false, mensagem: 'Você não tem sequências para enviar' });
         }
 
-        // Buscar jogos já enviados deste usuário para o destinatário, para evitar duplicatas
-        const jaEnviados = await JogosRecebidosModel.find({
-            enviadoPor: req.session.user.id,
-            recebidoEm: usuarioDestino._id
-        }).select('numeros');
+        // Buscar jogos já recebidos pelo destinatário para evitar duplicatas
+        const destino = await LoginModel.findById(usuarioDestino._id);
+        if (!destino) return res.status(404).json({ sucesso: false, mensagem: 'Usuário destino não encontrado' });
 
-        // Criar um set de chaves para comparar (numeros ordenados em string)
-        const chaveEnviadas = new Set(jaEnviados.map(j => (j.numeros || []).slice().sort((a,b)=>a-b).join(',')));
+        const jaEnviadasSet = new Set((destino.jogosRecebidos || []).map(j => (j.numeros || []).slice().sort((a,b)=>a-b).join(',')));
 
-        // Filtrar apenas jogos que ainda não foram enviados para esse destinatário
         const jogosNaoEnviados = meusjogos.filter(jogo => {
             const chave = (jogo.numeros || []).slice().sort((a,b)=>a-b).join(',');
-            return !chaveEnviadas.has(chave);
+            return !jaEnviadasSet.has(chave);
         });
 
         if (jogosNaoEnviados.length === 0) {
-            return res.json({
-                sucesso: true,
-                mensagem: `Nenhuma sequência nova para enviar a ${nomeUsuario}.`
-            });
+            return res.json({ sucesso: true, mensagem: `Nenhuma sequência nova para enviar a ${nomeUsuario}.` });
         }
 
-        // Criar registros de jogos recebidos apenas para os não enviados
-        const jogosParaEnviar = jogosNaoEnviados.map(jogo => ({
-            numeros: jogo.numeros.slice().sort((a,b)=>a-b),
-            enviadoPor: req.session.user.id,
-            recebidoEm: usuarioDestino._id,
-            criadoEm: jogo.criadoEm
-        }));
+        // Inserir nos jogosRecebidos do destinatário
+        destino.jogosRecebidos = destino.jogosRecebidos || [];
+        const jogosParaInserir = jogosNaoEnviados.map(j => ({ numeros: j.numeros.slice().sort((a,b)=>a-b), enviadoPor: remetente._id, enviadoPorUsername: remetente.username, dataEnvio: j.criadoEm || Date.now() }));
+        for (const jj of jogosParaInserir) destino.jogosRecebidos.push(jj);
+        await destino.save();
 
-        const jogosEnviados = await JogosRecebidosModel.insertMany(jogosParaEnviar);
+        // Registrar histórico no remetente (jogosEnviados)
+        remetente.jogosEnviados = remetente.jogosEnviados || [];
+        const sequencias = jogosParaInserir.map(j => ({ numeros: j.numeros }));
+        remetente.jogosEnviados.push({ sequencias, recebidoEm: destino._id, recebidoUsername: destino.username, quantidade: sequencias.length, dataEnvio: Date.now() });
+        await remetente.save();
 
-        // Registrar histórico de envios como um único lote (groupado por envio)
-        try {
-            const envioHistorico = new JogosEnviadosModel({
-                sequencias: jogosEnviados.map(j => ({
-                    numeros: j.numeros.slice().sort((a,b)=>a-b),
-                    jogoRecebidoRef: j._id
-                })),
-                enviadoPor: req.session.user.id,
-                recebidoEm: usuarioDestino._id,
-                recebidoUsername: usuarioDestino.username,
-                quantidade: jogosEnviados.length,
-                dataEnvio: Date.now()
-            });
-
-            await envioHistorico.save();
-        } catch (errEnv) {
-            console.error('Erro ao registrar histórico de envios:', errEnv);
-            // Não falhar a operação principal se o registro de histórico falhar
-        }
-
-        res.json({ 
-            sucesso: true, 
-            mensagem: `${jogosEnviados.length} sequência(s) enviada(s) com sucesso para ${nomeUsuario}!`,
-            quantidade: jogosEnviados.length
-        });
+        res.json({ sucesso: true, mensagem: `${jogosParaInserir.length} sequência(s) enviada(s) com sucesso para ${nomeUsuario}!`, quantidade: jogosParaInserir.length });
 
     } catch (erro) {
         console.error('Erro ao enviar sequências:', erro);
@@ -345,15 +296,10 @@ exports.obterJogosRecebidos = async (req, res) => {
             });
         }
 
-        const jogosRecebidos = await JogosRecebidosModel.find({ recebidoEm: req.session.user.id })
-            .populate('enviadoPor', 'username')
-            .sort({ dataEnvio: -1 });
-
-        res.json({ 
-            sucesso: true, 
-            jogos: jogosRecebidos,
-            quantidade: jogosRecebidos.length
-        });
+        // Ler do documento de usuário (embedded)
+        const usuario = await LoginModel.findById(req.session.user.id).populate('jogosRecebidos.enviadoPor', 'username').lean();
+        const jogosRecebidos = (usuario && usuario.jogosRecebidos) ? (usuario.jogosRecebidos.slice().sort((a,b) => new Date(b.dataEnvio) - new Date(a.dataEnvio))) : [];
+        res.json({ sucesso: true, jogos: jogosRecebidos, quantidade: jogosRecebidos.length });
 
     } catch (erro) {
         console.error('Erro ao recuperar jogos recebidos:', erro);
@@ -377,29 +323,16 @@ exports.deletarJogoRecebido = async (req, res) => {
 
         const { id } = req.params;
 
-        // Verificar se o jogo recebido pertence ao usuário
-        const jogo = await JogosRecebidosModel.findById(id);
+        // Usar $pull para remover subdocumento pelo _id
+        const result = await LoginModel.findByIdAndUpdate(
+            req.session.user.id,
+            { $pull: { jogosRecebidos: { _id: id } } },
+            { new: true }
+        );
 
-        if (!jogo) {
-            return res.status(404).json({ 
-                sucesso: false, 
-                mensagem: 'Jogo recebido não encontrado' 
-            });
-        }
+        if (!result) return res.status(404).json({ sucesso: false, mensagem: 'Usuário não encontrado' });
 
-        if (jogo.recebidoEm.toString() !== req.session.user.id.toString()) {
-            return res.status(403).json({ 
-                sucesso: false, 
-                mensagem: 'Você não tem permissão para deletar este jogo' 
-            });
-        }
-
-        await JogosRecebidosModel.findByIdAndDelete(id);
-
-        res.json({ 
-            sucesso: true, 
-            mensagem: 'Jogo recebido deletado com sucesso!'
-        });
+        res.json({ sucesso: true, mensagem: 'Jogo recebido deletado com sucesso!' });
 
     } catch (erro) {
         console.error('Erro ao deletar jogo recebido:', erro);
@@ -409,3 +342,61 @@ exports.deletarJogoRecebido = async (req, res) => {
         });
     }
 }
+
+// Deletar todas as sequências do usuário
+exports.deletarTodasSequencias = async (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.status(401).json({ 
+                sucesso: false, 
+                mensagem: 'Você precisa estar logado' 
+            });
+        }
+
+        const resultado = await LoginModel.findByIdAndUpdate(
+            req.session.user.id,
+            { jogos: [] },
+            { new: true }
+        );
+
+        if (!resultado) return res.status(404).json({ sucesso: false, mensagem: 'Usuário não encontrado' });
+
+        res.json({ sucesso: true, mensagem: 'Todas as sequências foram deletadas com sucesso!' });
+
+    } catch (erro) {
+        console.error('Erro ao deletar todas as sequências:', erro);
+        res.status(500).json({ 
+            sucesso: false, 
+            mensagem: 'Erro ao deletar sequências' 
+        });
+    }
+};
+
+// Deletar todos os jogos recebidos do usuário
+exports.deletarTodosRecebidos = async (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.status(401).json({ 
+                sucesso: false, 
+                mensagem: 'Você precisa estar logado' 
+            });
+        }
+
+        const resultado = await LoginModel.findByIdAndUpdate(
+            req.session.user.id,
+            { jogosRecebidos: [] },
+            { new: true }
+        );
+
+        if (!resultado) return res.status(404).json({ sucesso: false, mensagem: 'Usuário não encontrado' });
+
+        res.json({ sucesso: true, mensagem: 'Todos os jogos recebidos foram deletados com sucesso!' });
+
+    } catch (erro) {
+        console.error('Erro ao deletar todos os recebidos:', erro);
+        res.status(500).json({ 
+            sucesso: false, 
+            mensagem: 'Erro ao deletar jogos recebidos' 
+        });
+    }
+};

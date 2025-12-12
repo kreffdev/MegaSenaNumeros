@@ -1,4 +1,3 @@
-const JogosRecebidosModel = require('../models/JogosRecebidosModel');
 const LoginModel = require('../models/LoginModel');
 
 exports.index = async (req, res) => {
@@ -8,10 +7,9 @@ exports.index = async (req, res) => {
             return res.redirect('/login');
         }
 
-        // Obter jogos recebidos
-        const jogos = await JogosRecebidosModel.find({ recebidoEm: req.session.user.id })
-            .populate('enviadoPor', 'username')
-            .sort({ dataEnvio: -1 });
+        // Obter jogos recebidos a partir do documento de usuário (embedded)
+        const usuario = await LoginModel.findById(req.session.user.id).populate('jogosRecebidos.enviadoPor', 'username').lean();
+        const jogos = (usuario && usuario.jogosRecebidos) ? usuario.jogosRecebidos.slice().sort((a,b) => new Date(b.dataEnvio) - new Date(a.dataEnvio)) : [];
 
         res.render('jogosRecebidos', {
             jogos: jogos,
