@@ -13,10 +13,13 @@
             <span id="notif-count" class="notif-count" aria-hidden="true">0</span>
           </button>
         </li>
-        <li><a href="/meusjogos">Meus Números</a></li>
-        <li><a href="/jogosrecebidos">Recebidos</a></li>
-        <li><a href="/meusenvios">Meus Envios</a></li>
+        <li class="nav-links-group">
+          <a href="/meusjogos">Meus Números</a>
+          <a href="/jogosrecebidos">Recebidos</a>
+          <a href="/meusenvios">Meus Envios</a>
+        </li>
       <% } %>
+      
       <% if (messages.user || (typeof user !== 'undefined' && user)) { %>
         <li><a href="/logout" id="btn-login">Logout</a></li>
       <% } else { %>

@@ -71,6 +71,18 @@
     font-weight: bold;
 }
 
+/* Grupo de links - desktop normal */
+.nav-links-group {
+    display: contents;
+}
+
+.nav-links-group a {
+    color: var(--black-color);
+    font-size: 2rem;
+    font-weight: bold;
+    margin-left: 2rem;
+}
+
 
 .user-name {
     color: var(--black-color);
@@ -1133,64 +1145,125 @@ main.container .envios-container {
         font-size: 0.9rem;
     }
 
-    /* Navbar */
+    /* Navbar Mobile */
     .main-nav {
-        flex-direction: column;
-        gap: 0.8rem;
-        padding: 1rem;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0rem;
+        padding: 0.5rem 0.3rem;
+        width: 100%;
+        box-sizing: border-box;
+        overflow: hidden;
     }
 
+    /* Primeira linha: logo à esquerda */
     .left-nav {
-        width: 100%;
-        order: -1;
-    }
-
-    .left-nav ul {
-        justify-content: center;
-    }
-
-    .left-nav ul li a {
-        font-size: 1.2rem;
-    }
-
-    .ritgh-nav {
-        width: 100%;
+        flex: 0 0 auto;
         order: 1;
     }
 
-    .ritgh-nav ul {
-        flex-direction: row;
-        width: 100%;
+    .left-nav ul {
+        justify-content: flex-start;
+        margin: 0;
         padding: 0;
-        margin-left: 0;
-        gap: 0.6rem;
-        justify-content: center;
     }
 
-    .ritgh-nav ul li {
-        margin-left: 0;
-        flex: 1;
-        text-align: center;
-        min-width: 0;
-    }
-
-    .ritgh-nav ul li a {
-        font-size: 0.9rem;
-        display: block;
-        padding: 0.6rem 0.5rem;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .user-name {
+    .left-nav ul li a {
         font-size: 1rem;
     }
 
-    #btn-login {
-        padding: 0.5rem 0.8rem;
-        font-size: 0.9rem;
+    .nav-trevo img {
+        width: 32px;
+        height: 32px;
+    }
+
+    /* Primeira linha: sino e login à direita */
+    .ritgh-nav {
+        flex: 1 1 auto;
+        order: 2;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        overflow: hidden;
+    }
+
+    .ritgh-nav ul {
         width: 100%;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 0.3rem;
+        box-sizing: border-box;
+    }
+
+    /* Notificação fica na primeira linha */
+    #nav-notifications {
+        order: 1;
+        margin: 0;
+        flex-shrink: 0;
+    }
+
+    .notif-btn {
+        padding: 0.2rem 0.3rem;
+        font-size: 1rem;
+    }
+
+    .notif-icon {
+        font-size: 1rem;
+    }
+
+    /* Login fica na primeira linha */
+    .ritgh-nav ul li:has(#btn-login) {
+        order: 2;
+        margin: 0;
+        flex-shrink: 0;
+    }
+
+    /* Grupo de links ocupa toda a segunda linha (largura completa da nav) */
+    .nav-links-group {
+        order: 3;
+        flex-basis: 100%;
+        display: flex;
+        gap: 0.2rem;
+        justify-content: space-between;
+        width: 100%;
+        margin: 0.4rem 0 0 0;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    .nav-links-group a {
+        flex: 1 1 0;
+        text-align: center;
+        font-size: 0.62rem !important;
+        font-weight: 600 !important;
+        padding: 0.5rem 0.05rem;
+        background: rgba(0, 0, 0, 0.08);
+        border-radius: 0.3rem;
+        white-space: nowrap;
+        box-sizing: border-box;
+        display: block;
+        overflow: hidden;
+    }
+
+    .ritgh-nav ul li a {
+        font-size: 0.7rem;
+        display: block;
+        padding: 0.3rem 0.3rem;
+    }
+
+    .user-name {
+        font-size: 0.75rem;
+    }
+
+    #btn-login {
+        padding: 0.3rem 0.4rem;
+        font-size: 0.68rem;
+        white-space: nowrap;
     }
 }
 
