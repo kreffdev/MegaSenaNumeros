@@ -265,6 +265,7 @@ exports.enviarJogos = async (req, res) => {
         // Inserir nos jogosRecebidos do destinatário
         destino.jogosRecebidos = destino.jogosRecebidos || [];
         const jogosParaInserir = jogosNaoEnviados.map(j => ({ numeros: j.numeros.slice().sort((a,b)=>a-b), enviadoPor: remetente._id, enviadoPorUsername: remetente.username, dataEnvio: j.criadoEm || Date.now() }));
+        
         for (const jj of jogosParaInserir) destino.jogosRecebidos.push(jj);
         await destino.save();
 
@@ -397,6 +398,52 @@ exports.deletarTodosRecebidos = async (req, res) => {
         res.status(500).json({ 
             sucesso: false, 
             mensagem: 'Erro ao deletar jogos recebidos' 
+        });
+    }
+};
+
+// Marcar aposta como feita (permanente)
+exports.marcarAposta = async (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.status(401).json({ 
+                sucesso: false, 
+                mensagem: 'Você precisa estar logado' 
+            });
+        }
+
+        const jogoId = req.params.id;
+
+        const usuario = await LoginModel.findById(req.session.user.id);
+        if (!usuario) {
+            return res.status(404).json({ 
+                sucesso: false, 
+                mensagem: 'Usuário não encontrado' 
+            });
+        }
+
+        const jogo = usuario.jogosRecebidos.id(jogoId);
+        if (!jogo) {
+            return res.status(404).json({ 
+                sucesso: false, 
+                mensagem: 'Jogo não encontrado' 
+            });
+        }
+
+        // Marcar aposta como feita
+        jogo.apostaMarcada = true;
+        await usuario.save();
+
+        res.json({ 
+            sucesso: true, 
+            mensagem: 'Aposta marcada com sucesso!' 
+        });
+
+    } catch (erro) {
+        console.error('Erro ao marcar aposta:', erro);
+        res.status(500).json({ 
+            sucesso: false, 
+            mensagem: 'Erro ao marcar aposta' 
         });
     }
 };

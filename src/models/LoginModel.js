@@ -26,7 +26,8 @@ const JogosRecebidosSubSchema = new mongoose.Schema({
     enviadoPor: { type: mongoose.Schema.Types.ObjectId, ref: 'Login' },
     enviadoPorUsername: { type: String },
     dataEnvio: { type: Date, default: Date.now },
-    originalId: { type: mongoose.Schema.Types.ObjectId }
+    originalId: { type: mongoose.Schema.Types.ObjectId },
+    apostaMarcada: { type: Boolean, default: false }
 }, { timestamps: false });
 
 const JogosEnviadosSubSchema = new mongoose.Schema({

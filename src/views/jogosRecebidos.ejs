@@ -3,6 +3,13 @@
 
 <main class="meus-jogos-container">
     <div class="meus-jogos-header">
+        <div class="verifica-numeos">
+            <input type="text" id="verifica-numeros-input" placeholder="Ex: 05,12,23,34,45,56" aria-label="Verificar números">
+            <button class="btn-verificar" title="Verificar Números">
+                🔍 Verificar
+            </button>
+        </div>
+
         <div class="header-content">
             <h1>Jogos Recebidos</h1>
             <% if (user) { %>
@@ -25,28 +32,16 @@
                 <span class="stat-value"><%= jogos.length %></span>
             </div>
             <div class="stat-card">
-                <span class="stat-label">Último Jogo</span>
-                <span class="stat-value">
-                    <% 
-                    const dataUltima = new Date(jogos[0].dataEnvio);
-                    const hoje = new Date();
-                    const diferenca = Math.floor((hoje - dataUltima) / (1000 * 60 * 60 * 24));
-                    if (diferenca === 0) { %>
-                        Hoje
-                    <% } else if (diferenca === 1) { %>
-                        Ontem
-                    <% } else { %>
-                        <%= diferenca %> dias atrás
-                    <% } %>
-                </span>
+                <span class="stat-label">Valor Total das Apostas</span>
+                <span class="stat-value">R$ <%= (jogos.length * 6).toFixed(2).replace('.', ',') %></span>
             </div>
         </div>
 
         <div class="jogos-grid">
             <% jogos.forEach((jogo, index) => { %>
-                <div class="jogo-card jogo-recebido" data-jogo-id="<%= jogo._id %>">
+                <div class="jogo-card jogo-recebido<%= jogo.apostaMarcada ? ' aposta-feita' : '' %>" data-jogo-id="<%= jogo._id %>">
                     <div class="jogo-checkbox-container">
-                        <input type="checkbox" class="checkbox-aposta" onchange="marcarAposta(this)">
+                        <input type="checkbox" class="checkbox-aposta" onchange="marcarAposta(this)" <%= jogo.apostaMarcada ? 'checked disabled' : '' %>>
                         <span class="aposta-label">aposta feita</span>
                     </div>
 
@@ -63,6 +58,11 @@
                             %>
                             <%= dia %>/<%= mes %>/<%= ano %> às <%= horas %>:<%= minutos %>
                         </span>
+                    </div>
+
+                    <div class="jogo-preco">
+                        <span class="preco-label">💰</span>
+                        <span class="preco-valor">R$ 6,00</span>
                     </div>
 
                     <div class="jogo-origem">
@@ -100,86 +100,6 @@
     </div>
 </main>
 
-<script>
-    function copiarNumeros(numeros) {
-        navigator.clipboard.writeText(numeros).then(() => {
-            alert('✓ Números copiados para a área de transferência!');
-        }).catch(() => {
-            alert('✗ Erro ao copiar. Tente novamente.');
-        });
-    }
-
-    function marcarAposta(checkbox) {
-        const card = checkbox.closest('.jogo-card');
-        if (checkbox.checked) {
-            card.classList.add('aposta-feita');
-        } else {
-            card.classList.remove('aposta-feita');
-        }
-    }
-
-    function deletarJogoRecebido(jogoId) {
-        if (!confirm('Tem certeza que deseja deletar este jogo recebido?')) {
-            return;
-        }
-
-        const card = document.querySelector(`[data-jogo-id="${jogoId}"]`);
-        card.classList.add('deleting');
-
-        fetch(`/api/jogos-recebidos/${jogoId}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.sucesso) {
-                card.style.animation = 'fadeOut 0.3s ease-out';
-                setTimeout(() => {
-                    card.remove();
-                    // Se não houver mais cards, recarrega a página
-                    if (document.querySelectorAll('.jogo-card').length === 0) {
-                        location.reload();
-                    }
-                }, 300);
-            } else {
-                alert(`✗ Erro: ${data.mensagem}`);
-                card.classList.remove('deleting');
-            }
-        })
-        .catch(erro => {
-            console.error('Erro:', erro);
-            alert('✗ Erro ao deletar jogo');
-            card.classList.remove('deleting');
-        });
-    }
-
-    function deletarTodosRecebidos() {
-        if (!confirm('Tem certeza que deseja deletar TODOS os jogos recebidos? Esta ação não pode ser desfeita.')) {
-            return;
-        }
-
-        fetch('/api/jogos-recebidos/deletar-todos', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.sucesso) {
-                alert(`✓ ${data.mensagem}`);
-                location.reload();
-            } else {
-                alert(`✗ ${data.mensagem}`);
-            }
-        })
-        .catch(erro => {
-            console.error('Erro:', erro);
-            alert('✗ Erro ao deletar jogos recebidos');
-        });
-    }
-</script>
+<script src="/assets/js/jogosRecebidos.js"></script>
 
 <%- include('includes/footer'); %>

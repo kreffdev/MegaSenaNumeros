@@ -46,5 +46,6 @@ route.get('/api/jogos-enviados', enviadosController.apiList);
 route.get('/api/jogos-recebidos', jogosController.obterJogosRecebidos);
 route.delete('/api/jogos-recebidos/deletar-todos', jogosController.deletarTodosRecebidos);
 route.delete('/api/jogos-recebidos/:id', jogosController.deletarJogoRecebido);
+route.post('/api/jogos-recebidos/:id/marcar-aposta', jogosController.marcarAposta);
 
 module.exports = route;

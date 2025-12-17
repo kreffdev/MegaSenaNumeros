@@ -1395,6 +1395,28 @@ main.container .envios-container {
     white-space: nowrap;
 }
 
+.jogo-preco {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    margin-bottom: 0.8rem;
+    padding: 0.5rem;
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border-radius: 8px;
+    border: 2px solid #86efac;
+}
+
+.preco-label {
+    font-size: 1.1rem;
+}
+
+.preco-valor {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #15803d;
+}
+
 .jogo-numeros {
     display: flex;
     flex-wrap: nowrap;
@@ -2068,15 +2090,27 @@ main.container .envios-container {
     white-space: nowrap;
 }
 
-/* Card desativado quando aposta feita */
+/* Card com aposta marcada - visual mais discreto mas funcional */
 .jogo-card.aposta-feita {
-    opacity: 0.6;
-    pointer-events: none;
+    opacity: 0.75;
 }
 
 .jogo-card.aposta-feita .jogo-header,
 .jogo-card.aposta-feita .jogo-origem,
-.jogo-card.aposta-feita .jogo-numeros,
-.jogo-card.aposta-feita .jogo-actions {
+.jogo-card.aposta-feita .jogo-numeros {
     opacity: 0.7;
+}
+
+/* Desabilitar apenas o botão de copiar quando aposta marcada */
+.jogo-card.aposta-feita .btn-copiar {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+/* Manter botão deletar totalmente funcional */
+.jogo-card.aposta-feita .btn-deletar {
+    opacity: 1;
+    pointer-events: auto;
+    cursor: pointer;
 }
