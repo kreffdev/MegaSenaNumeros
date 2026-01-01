@@ -81,7 +81,7 @@ app.set('view engine', 'ejs');
 const routes = require('./routes');
 app.use(routes);
 
-let port = process.env.PORT || 3000;
+let port =  3000;
 
 app.on('pronto', () => {
   const server = app.listen(port)

@@ -402,7 +402,7 @@ exports.deletarTodosRecebidos = async (req, res) => {
     }
 };
 
-// Marcar aposta como feita (permanente)
+// Marcar aposta como feita (permanente) - para jogos recebidos
 exports.marcarAposta = async (req, res) => {
     try {
         if (!req.session.user) {
@@ -413,8 +413,8 @@ exports.marcarAposta = async (req, res) => {
         }
 
         const jogoId = req.params.id;
-
         const usuario = await LoginModel.findById(req.session.user.id);
+        
         if (!usuario) {
             return res.status(404).json({ 
                 sucesso: false, 
@@ -438,9 +438,53 @@ exports.marcarAposta = async (req, res) => {
             sucesso: true, 
             mensagem: 'Aposta marcada com sucesso!' 
         });
+    } catch (e) {
+        console.error('Erro ao marcar aposta:', e);
+        res.status(500).json({ 
+            sucesso: false, 
+            mensagem: 'Erro ao marcar aposta' 
+        });
+    }
+};
 
-    } catch (erro) {
-        console.error('Erro ao marcar aposta:', erro);
+// Marcar aposta como feita (permanente) - para jogos próprios
+exports.marcarApostaPropria = async (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.status(401).json({ 
+                sucesso: false, 
+                mensagem: 'Você precisa estar logado' 
+            });
+        }
+
+        const jogoId = req.params.id;
+        const usuario = await LoginModel.findById(req.session.user.id);
+        
+        if (!usuario) {
+            return res.status(404).json({ 
+                sucesso: false, 
+                mensagem: 'Usuário não encontrado' 
+            });
+        }
+
+        const jogo = usuario.jogos.id(jogoId);
+        if (!jogo) {
+            return res.status(404).json({ 
+                sucesso: false, 
+                mensagem: 'Jogo não encontrado' 
+            });
+        }
+
+        // Marcar aposta como feita
+        jogo.apostaMarcada = true;
+        await usuario.save();
+
+        res.json({ 
+            sucesso: true, 
+            mensagem: 'Aposta marcada com sucesso!' 
+        });
+    } catch (e) {
+        console.error('Erro ao marcar aposta própria:', e);
         res.status(500).json({ 
             sucesso: false, 
             mensagem: 'Erro ao marcar aposta' 

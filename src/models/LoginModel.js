@@ -17,6 +17,7 @@ const SequenciaSchema = new mongoose.Schema({
 const JogosSubSchema = new mongoose.Schema({
     numeros: SequenciaSchema.path('numeros').options,
     criadoEm: { type: Date, default: Date.now },
+    apostaMarcada: { type: Boolean, default: false },
     // opcional: manter referência original se veio de coleção antiga
     originalId: { type: mongoose.Schema.Types.ObjectId }
 }, { timestamps: false });

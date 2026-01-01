@@ -1,6 +1,27 @@
 <%- include('includes/head'); %>
 <%- include('includes/nav'); %>
 
+<!-- Modal de vencedor -->
+<div id="modal-vencedor" class="modal-vencedor">
+    <div class="modal-vencedor-content">
+        <div class="modal-vencedor-header">
+            <span class="modal-vencedor-icon">🎉</span>
+            <h2 class="modal-vencedor-titulo">PARABÉNS!</h2>
+            <p class="modal-vencedor-subtitulo">Você tem uma sequência vencedora!</p>
+            <p class="modal-vencedor-usuario"><span>Sequência de:</span> Você</p>
+        </div>
+        <div class="modal-vencedor-body">
+            <p class="vencedor-label">Números sorteados:</p>
+            <div class="vencedor-numeros">
+                <!-- Números serão inseridos aqui dinamicamente -->
+            </div>
+        </div>
+        <div class="modal-vencedor-footer">
+            <button class="btn-fechar-vencedor" onclick="fecharPopupVencedor()">Fechar</button>
+        </div>
+    </div>
+</div>
+
 <!-- Modal de envio de jogos -->
 <div id="modal-enviar-jogos" class="modal-overlay" style="display: none;">
     <div class="modal-content">
@@ -61,7 +82,12 @@
 
         <div class="jogos-grid">
             <% jogos.forEach((jogo, index) => { %>
-                <div class="jogo-card" data-jogo-id="<%= jogo._id %>">
+                <div class="jogo-card<%= jogo.apostaMarcada ? ' aposta-feita' : '' %>" data-jogo-id="<%= jogo._id %>">
+                    <div class="jogo-checkbox-container">
+                        <input type="checkbox" class="checkbox-aposta" onchange="marcarAposta(this)" <%= jogo.apostaMarcada ? 'checked disabled' : '' %>>
+                        <span class="aposta-label">aposta feita</span>
+                    </div>
+
                     <div class="jogo-header">
                         <span class="jogo-numero">#<%= index + 1 %></span>
                         <span class="jogo-data">
@@ -106,6 +132,56 @@
             </button>
         </div>
     <% } %>
+    
+    <!-- Estatísticas de Acertos -->
+    <div id="estatisticas-acertos" class="estatisticas-acertos">
+        <h3 class="estatisticas-titulo">📊 Estatísticas de Acertos</h3>
+        <div class="estatisticas-grid">
+            <div class="estatistica-item" data-acertos="0">
+                <div class="estatistica-numero">0</div>
+                <div class="estatistica-label">acertos</div>
+                <div class="estatistica-count">0</div>
+                <div class="estatistica-descricao">sequências</div>
+            </div>
+            <div class="estatistica-item" data-acertos="1">
+                <div class="estatistica-numero">1</div>
+                <div class="estatistica-label">acerto</div>
+                <div class="estatistica-count">0</div>
+                <div class="estatistica-descricao">sequências</div>
+            </div>
+            <div class="estatistica-item" data-acertos="2">
+                <div class="estatistica-numero">2</div>
+                <div class="estatistica-label">acertos</div>
+                <div class="estatistica-count">0</div>
+                <div class="estatistica-descricao">sequências</div>
+            </div>
+            <div class="estatistica-item" data-acertos="3">
+                <div class="estatistica-numero">3</div>
+                <div class="estatistica-label">acertos</div>
+                <div class="estatistica-count">0</div>
+                <div class="estatistica-descricao">sequências</div>
+            </div>
+            <div class="estatistica-item" data-acertos="4">
+                <div class="estatistica-numero">4</div>
+                <div class="estatistica-label">acertos</div>
+                <div class="estatistica-count">0</div>
+                <div class="estatistica-descricao">sequências</div>
+            </div>
+            <div class="estatistica-item" data-acertos="5">
+                <div class="estatistica-numero">5</div>
+                <div class="estatistica-label">acertos</div>
+                <div class="estatistica-count">0</div>
+                <div class="estatistica-descricao">sequências</div>
+            </div>
+            <div class="estatistica-item" data-acertos="6">
+                <div class="estatistica-numero">6</div>
+                <div class="estatistica-label">acertos 🏆</div>
+                <div class="estatistica-count">0</div>
+                <div class="estatistica-descricao">VENCEDORAS!</div>
+            </div>
+        </div>
+    </div>
+    
     <div class="volta-home">
         <a href="/" class="btn-voltar">← Voltar à Página Principal</a>
     </div>

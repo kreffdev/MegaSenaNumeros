@@ -60,6 +60,13 @@ function verificarNumeros() {
         card.classList.remove('ganhou'); 
     });
 
+    let vencedorEncontrado = false;
+    let numerosVencedores = [];
+    let nomeUsuario = '';
+    
+    // Contador de acertos por quantidade (0 a 6)
+    const estatisticas = [0, 0, 0, 0, 0, 0, 0];
+
     // Para cada jogo, verifica quais números batem e marca
     document.querySelectorAll('.jogo-card').forEach(card => {
         const badges = Array.from(card.querySelectorAll('.numero-badge'));
@@ -72,16 +79,98 @@ function verificarNumeros() {
                 matches += 1;
             }
         });
+        
+        // Incrementar estatística baseado no número de acertos
+        estatisticas[matches]++;
 
         if (matches > 0) card.classList.add('has-acertos');
 
         // Se acertou todos os números do cartão (ganhou)
         if (matches === badges.length && badges.length > 0) {
             card.classList.add('ganhou');
+            if (!vencedorEncontrado) {
+                vencedorEncontrado = true;
+                numerosVencedores = Array.from(badges).map(b => b.textContent.trim());
+                // Capturar nome do usuário que enviou
+                const origemUsuario = card.querySelector('.origem-usuario');
+                nomeUsuario = origemUsuario ? origemUsuario.textContent : 'Desconhecido';
+            }
         }
     });
+    
+    // Exibir estatísticas
+    exibirEstatisticas(estatisticas);
 
-    // Rolagem suave para área de jogos para ver os resultados (opcional)
+    // Se encontrou vencedor, mostra o popup
+    if (vencedorEncontrado) {
+        mostrarPopupVencedor(numerosVencedores, nomeUsuario);
+    } else {
+        // Rolagem suave para área de jogos para ver os resultados
+        const grid = document.querySelector('.jogos-grid');
+        if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+// Função para exibir estatísticas de acertos
+function exibirEstatisticas(estatisticas) {
+    const container = document.getElementById('estatisticas-acertos');
+    if (!container) return;
+    
+    // Atualizar contadores
+    for (let i = 0; i <= 6; i++) {
+        const countElement = container.querySelector(`[data-acertos="${i}"] .estatistica-count`);
+        if (countElement) {
+            countElement.textContent = estatisticas[i];
+        }
+    }
+    
+    // Mostrar container
+    container.classList.add('show');
+}
+
+// Função para mostrar popup de vencedor
+function mostrarPopupVencedor(numeros, nomeUsuario) {
+    const modal = document.getElementById('modal-vencedor');
+    const numerosContainer = modal.querySelector('.vencedor-numeros');
+    const usuarioElement = modal.querySelector('.modal-vencedor-usuario');
+    
+    // Limpar números anteriores
+    numerosContainer.innerHTML = '';
+    
+    // Adicionar números vencedores
+    numeros.forEach(num => {
+        const span = document.createElement('span');
+        span.className = 'vencedor-numero';
+        span.textContent = num;
+        numerosContainer.appendChild(span);
+    });
+    
+    // Atualizar nome do usuário
+    if (usuarioElement && nomeUsuario) {
+        usuarioElement.innerHTML = `<span>Enviado por:</span> ${nomeUsuario}`;
+    }
+    
+    // Mostrar modal
+    modal.classList.add('show');
+    
+    // Tocar música de vitória
+    try {
+        const audio = new Audio('/assets/audios/weAreTheChamp.m4a');
+        audio.volume = 0.5; // Volume a 50%
+        audio.play().catch(err => {
+            console.log('Não foi possível reproduzir o áudio:', err);
+        });
+    } catch(e) {
+        console.log('Erro ao carregar áudio:', e);
+    }
+}
+
+// Função para fechar popup de vencedor
+function fecharPopupVencedor() {
+    const modal = document.getElementById('modal-vencedor');
+    modal.classList.remove('show');
+    
+    // Rolagem suave para área de jogos após fechar
     const grid = document.querySelector('.jogos-grid');
     if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }

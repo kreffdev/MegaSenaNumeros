@@ -40,12 +40,17 @@ route.post('/api/jogos/salvar', jogosController.salvarSequencia);
 route.post('/api/jogos/salvar-multiplas', jogosController.salvarMultiplas);
 route.get('/api/jogos/meus', jogosController.obterMeuJogos);
 route.delete('/api/jogos/deletar-todos', jogosController.deletarTodasSequencias);
-route.delete('/api/jogos/:id', jogosController.deletarSequencia);
 route.post('/api/jogos/enviar', jogosController.enviarJogos);
+route.post('/api/jogos/:id/marcar-aposta', jogosController.marcarApostaPropria);
+route.delete('/api/jogos/:id', jogosController.deletarSequencia);
+
+// API - Rotas de jogos enviados
 route.get('/api/jogos-enviados', enviadosController.apiList);
+
+// API - Rotas de jogos recebidos
 route.get('/api/jogos-recebidos', jogosController.obterJogosRecebidos);
 route.delete('/api/jogos-recebidos/deletar-todos', jogosController.deletarTodosRecebidos);
-route.delete('/api/jogos-recebidos/:id', jogosController.deletarJogoRecebido);
 route.post('/api/jogos-recebidos/:id/marcar-aposta', jogosController.marcarAposta);
+route.delete('/api/jogos-recebidos/:id', jogosController.deletarJogoRecebido);
 
 module.exports = route;
