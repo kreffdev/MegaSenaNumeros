@@ -1,30 +1,73 @@
 <nav class="main-nav">
-  <div class="left-nav">
-    <ul>
-      <li><a href="/" class="nav-trevo"><img src="/assets/img/trevo-4.png" alt="Home"></a></li>
-    </ul>
+  <!-- Botão Hamburger (mobile) -->
+  <button class="hamburger-btn" id="hamburger-btn" aria-label="Menu" aria-expanded="false">
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+  </button>
+
+  <!-- Logo Central -->
+  <div class="nav-logo">
+    <a href="/" class="nav-trevo"><img src="/assets/img/trevo-4.png" alt="Home"></a>
   </div>
-  <div class="ritgh-nav">
+
+  <!-- Menu Desktop / Mobile -->
+  <div class="nav-menu" id="nav-menu">
     <ul>
       <% if (typeof user !== 'undefined' && user) { %>
-        <li id="nav-notifications">
-          <button id="notif-btn" class="notif-btn" aria-label="Notificações" aria-expanded="false">
-            <span class="notif-icon">🔔</span>
-            <span id="notif-count" class="notif-count" aria-hidden="true">0</span>
-          </button>
-        </li>
-        <li class="nav-links-group">
-          <a href="/meusjogos">Meus Números</a>
-          <a href="/jogosrecebidos">Recebidos</a>
-          <a href="/meusenvios">Meus Envios</a>
-        </li>
-      <% } %>
-      
-      <% if (messages.user || (typeof user !== 'undefined' && user)) { %>
-        <li><a href="/logout" id="btn-login">Logout</a></li>
-      <% } else { %>
-        <li><a href="/login" id="btn-login">Login</a></li>
+        <li><a href="/jogosrealizados">Jogos Realizados</a></li>
+        <li><a href="/meusjogos">Meus Números</a></li>
+        <li><a href="/jogosrecebidos">Recebidos</a></li>
+        <li><a href="/meusenvios">Meus Envios</a></li>
       <% } %>
     </ul>
   </div>
+
+  <!-- Notificações e Login -->
+  <div class="nav-actions">
+    <% if (typeof user !== 'undefined' && user) { %>
+      <button id="notif-btn" class="notif-btn" aria-label="Notificações" aria-expanded="false">
+        <span class="notif-icon">🔔</span>
+        <span id="notif-count" class="notif-count" aria-hidden="true">0</span>
+      </button>
+    <% } %>
+    
+    <% if (messages.user || (typeof user !== 'undefined' && user)) { %>
+      <a href="/logout" id="btn-login">Logout</a>
+    <% } else { %>
+      <a href="/login" id="btn-login">Login</a>
+    <% } %>
+  </div>
 </nav>
+
+<script>
+// Menu Hamburger Toggle
+const hamburgerBtn = document.getElementById('hamburger-btn');
+const navMenu = document.getElementById('nav-menu');
+
+if (hamburgerBtn && navMenu) {
+  hamburgerBtn.addEventListener('click', () => {
+    const isOpen = navMenu.classList.toggle('active');
+    hamburgerBtn.classList.toggle('active');
+    hamburgerBtn.setAttribute('aria-expanded', isOpen);
+  });
+
+  // Fechar menu ao clicar em um link
+  navMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      navMenu.classList.remove('active');
+      hamburgerBtn.classList.remove('active');
+      hamburgerBtn.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  // Fechar menu ao clicar fora
+  document.addEventListener('click', (e) => {
+    if (!navMenu.contains(e.target) && !hamburgerBtn.contains(e.target)) {
+      navMenu.classList.remove('active');
+      hamburgerBtn.classList.remove('active');
+      hamburgerBtn.setAttribute('aria-expanded', 'false');
+    }
+  });
+}
+</script>

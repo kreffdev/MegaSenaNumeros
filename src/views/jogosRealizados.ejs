@@ -1,0 +1,367 @@
+
+<%- include('includes/head'); %>
+<%- include('includes/nav'); %>
+
+<!-- Modal de vencedor -->
+<div id="modal-vencedor" class="modal-vencedor">
+    <div class="modal-vencedor-content">
+        <div class="modal-vencedor-header">
+            <span class="modal-vencedor-icon">🎉</span>
+            <h2 class="modal-vencedor-titulo">PARABÉNS!</h2>
+            <p class="modal-vencedor-subtitulo">Você tem uma sequência vencedora!</p>
+            <p class="modal-vencedor-usuario"><span>Aposta:</span> Realizada</p>
+        </div>
+        <div class="modal-vencedor-body">
+            <p class="vencedor-label">Números sorteados:</p>
+            <div class="vencedor-numeros">
+                <!-- Números serão inseridos aqui dinamicamente -->
+            </div>
+        </div>
+        <div class="modal-vencedor-footer">
+            <button class="btn-fechar-vencedor" onclick="fecharPopupVencedor()">Fechar</button>
+        </div>
+    </div>
+</div>
+
+<main class="meus-jogos-container">
+    <div class="meus-jogos-header">
+        <div class="verifica-numeos">
+            <input type="text" id="verifica-numeros-input" placeholder="Ex: 05,12,23,34,45,56" aria-label="Verificar números">
+            <button class="btn-verificar" title="Verificar Números" onclick="verificarNumeros()">
+                🔍 Verificar
+            </button>
+        </div>
+
+        <div class="header-content">
+            <h1>🎯 Apostas Realizadas</h1>
+            <% if (user) { %>
+                <p class="user-info">Bem-vindo, <strong><%= user.username %></strong></p>
+            <% } %>
+        </div>
+    </div>
+
+    <% if (jogos.length === 0) { %>
+        <div class="empty-state">
+            <div class="empty-icon">📋</div>
+            <h2>Nenhuma aposta realizada ainda</h2>
+            <p>Você ainda não marcou nenhuma sequência como "aposta feita".</p>
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem;">
+                <a href="/meusjogos" class="btn-criar-novo">Meus Jogos</a>
+                <a href="/jogosrecebidos" class="btn-criar-novo">Jogos Recebidos</a>
+            </div>
+        </div>
+    <% } else { %>
+        <div class="jogos-stats">
+            <div class="stat-card">
+                <span class="stat-label">Total de Apostas Realizadas</span>
+                <span class="stat-value"><%= totalJogos %></span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Valor Total Investido</span>
+                <span class="stat-value">R$ <%= valorTotal %></span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Jogos Próprios</span>
+                <span class="stat-value"><%= jogos.filter(j => j.tipo === 'proprio').length %></span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Jogos Recebidos</span>
+                <span class="stat-value"><%= jogos.filter(j => j.tipo === 'recebido').length %></span>
+            </div>
+        </div>
+
+        <% if (estatisticasUsuarios && estatisticasUsuarios.length > 0) { %>
+        <div class="estatisticas-usuarios">
+            <h3 class="estatisticas-titulo">👥 Apostas por Remetente</h3>
+            <div class="usuarios-grid">
+                <% estatisticasUsuarios.forEach((usuario, index) => { %>
+                    <div class="usuario-stat-card">
+                        <div class="usuario-posicao">#<%= index + 1 %></div>
+                        <div class="usuario-nome">👤 <%= usuario.nome %></div>
+                        <div class="usuario-info">
+                            <div class="usuario-quantidade">
+                                <span class="info-label">Sequências</span>
+                                <span class="info-valor"><%= usuario.quantidade %></span>
+                            </div>
+                            <div class="usuario-valor">
+                                <span class="info-label">Valor</span>
+                                <span class="info-valor">R$ <%= usuario.valor.toFixed(2).replace('.', ',') %></span>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+        <% } %>
+
+        <div class="jogos-grid">
+            <% jogos.forEach((jogo, index) => { %>
+                <div class="jogo-card aposta-feita" data-jogo-id="<%= jogo._id %>">
+                    <div class="jogo-checkbox-container">
+                        <input type="checkbox" class="checkbox-aposta" checked disabled>
+                        <span class="aposta-label">aposta feita</span>
+                    </div>
+
+                    <% if (jogo.tipo === 'recebido') { %>
+                        <div class="jogo-origem">
+                            <span class="origem-badge">📨 Recebido de: <strong><%= jogo.enviadoPorUsername %></strong></span>
+                        </div>
+                    <% } else { %>
+                        <div class="jogo-origem">
+                            <span class="origem-badge">✨ Jogo Próprio</span>
+                        </div>
+                    <% } %>
+
+                    <div class="jogo-header">
+                        <span class="jogo-numero">#<%= index + 1 %></span>
+                        <span class="jogo-data">
+                            <% 
+                            const dataJogo = jogo.criadoEm || jogo.dataEnvio;
+                            const data = new Date(dataJogo);
+                            const dia = String(data.getDate()).padStart(2, '0');
+                            const mes = String(data.getMonth() + 1).padStart(2, '0');
+                            const ano = data.getFullYear();
+                            const horas = String(data.getHours()).padStart(2, '0');
+                            const minutos = String(data.getMinutes()).padStart(2, '0');
+                            %>
+                            <%= dia %>/<%= mes %>/<%= ano %> às <%= horas %>:<%= minutos %>
+                        </span>
+                    </div>
+                    
+                    <div class="jogo-preco">
+                        <span class="preco-label">💰</span>
+                        <span class="preco-valor">R$ 6,00</span>
+                    </div>
+                    
+                    <div class="jogo-numeros">
+                        <% jogo.numeros.forEach(numero => { %>
+                            <span class="numero-badge"><%= numero %></span>
+                        <% }); %>
+                    </div>
+                    
+                    <div class="jogo-actions">
+                        <button class="btn-copiar" onclick="copiarNumeros('<%= jogo.numeros.join(', ') %>')" title="Copiar números">
+                            📋 Copiar
+                        </button>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    <% } %>
+    
+    <!-- Estatísticas de Acertos -->
+    <div id="estatisticas-acertos" class="estatisticas-acertos">
+        <h3 class="estatisticas-titulo">📊 Estatísticas de Acertos</h3>
+        <div class="estatisticas-grid">
+            <div class="estatistica-item" data-acertos="0">
+                <div class="estatistica-numero">0</div>
+                <div class="estatistica-label">acertos</div>
+                <div class="estatistica-count">0</div>
+                <div class="estatistica-descricao">sequências</div>
+            </div>
+            <div class="estatistica-item" data-acertos="1">
+                <div class="estatistica-numero">1</div>
+                <div class="estatistica-label">acerto</div>
+                <div class="estatistica-count">0</div>
+                <div class="estatistica-descricao">sequências</div>
+            </div>
+            <div class="estatistica-item" data-acertos="2">
+                <div class="estatistica-numero">2</div>
+                <div class="estatistica-label">acertos</div>
+                <div class="estatistica-count">0</div>
+                <div class="estatistica-descricao">sequências</div>
+            </div>
+            <div class="estatistica-item" data-acertos="3">
+                <div class="estatistica-numero">3</div>
+                <div class="estatistica-label">acertos</div>
+                <div class="estatistica-count">0</div>
+                <div class="estatistica-descricao">sequências</div>
+            </div>
+            <div class="estatistica-item" data-acertos="4">
+                <div class="estatistica-numero">4</div>
+                <div class="estatistica-label">acertos</div>
+                <div class="estatistica-count">0</div>
+                <div class="estatistica-descricao">sequências</div>
+            </div>
+            <div class="estatistica-item" data-acertos="5">
+                <div class="estatistica-numero">5</div>
+                <div class="estatistica-label">acertos</div>
+                <div class="estatistica-count">0</div>
+                <div class="estatistica-descricao">sequências</div>
+            </div>
+            <div class="estatistica-item" data-acertos="6">
+                <div class="estatistica-numero">6</div>
+                <div class="estatistica-label">acertos</div>
+                <div class="estatistica-count">0</div>
+                <div class="estatistica-descricao">sequências</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="volta-home-container">
+        <a href="/" class="volta-home">🏠 Voltar para Home</a>
+    </div>
+</main>
+
+<script>
+function verificarNumeros() {
+    const raw = document.getElementById('verifica-numeros-input').value || '';
+    const parts = raw.split(',').map(s => s.trim()).filter(Boolean);
+    if (parts.length === 0) {
+        alert('Digite entre 1 e 6 números separados por vírgula.');
+        return;
+    }
+
+    if (parts.length > 6) {
+        alert('Máximo de 6 números.');
+        return;
+    }
+
+    const numeros = [];
+    for (let p of parts) {
+        const num = parseInt(p, 10);
+        if (Number.isNaN(num) || num < 1 || num > 60) {
+            alert(`Número inválido: ${p}. Use valores entre 1 e 60.`);
+            return;
+        }
+        if (!numeros.includes(num)) numeros.push(num);
+    }
+
+    // Limpa destaques anteriores
+    document.querySelectorAll('.numero-badge.acertou').forEach(el => el.classList.remove('acertou'));
+    document.querySelectorAll('.jogo-card').forEach(card => { 
+        card.classList.remove('has-acertos'); 
+        card.classList.remove('ganhou'); 
+    });
+
+    let vencedorEncontrado = false;
+    let numerosVencedores = [];
+    let tipoVencedor = '';
+    
+    // Contador de acertos por quantidade (0 a 6)
+    const estatisticas = [0, 0, 0, 0, 0, 0, 0];
+
+    // Para cada jogo, verifica quais números batem e marca
+    document.querySelectorAll('.jogo-card').forEach(card => {
+        const badges = Array.from(card.querySelectorAll('.numero-badge'));
+        let matches = 0;
+        badges.forEach(b => {
+            const text = b.textContent.trim();
+            const val = parseInt(text, 10);
+            if (numeros.includes(val)) {
+                b.classList.add('acertou');
+                matches += 1;
+            }
+        });
+        
+        // Incrementar estatística baseado no número de acertos
+        estatisticas[matches]++;
+
+        if (matches > 0) card.classList.add('has-acertos');
+
+        // Se acertou todos os números do cartão (ganhou)
+        if (matches === badges.length && badges.length > 0) {
+            card.classList.add('ganhou');
+            if (!vencedorEncontrado) {
+                vencedorEncontrado = true;
+                numerosVencedores = Array.from(badges).map(b => b.textContent.trim());
+                // Identificar tipo da aposta
+                const origemBadge = card.querySelector('.origem-badge');
+                tipoVencedor = origemBadge ? origemBadge.textContent.trim() : 'Aposta Realizada';
+            }
+        }
+    });
+    
+    // Exibir estatísticas
+    exibirEstatisticas(estatisticas);
+
+    // Se encontrou vencedor, mostra o popup
+    if (vencedorEncontrado) {
+        mostrarPopupVencedor(numerosVencedores, tipoVencedor);
+    } else {
+        // Rolagem suave para área de jogos para ver os resultados
+        const grid = document.querySelector('.jogos-grid');
+        if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+function exibirEstatisticas(estatisticas) {
+    const container = document.getElementById('estatisticas-acertos');
+    if (!container) return;
+    
+    // Atualizar contadores
+    for (let i = 0; i <= 6; i++) {
+        const countElement = container.querySelector(`[data-acertos="${i}"] .estatistica-count`);
+        if (countElement) {
+            countElement.textContent = estatisticas[i];
+        }
+    }
+    
+    // Mostrar container
+    container.classList.add('show');
+}
+
+function mostrarPopupVencedor(numeros, tipo) {
+    const modal = document.getElementById('modal-vencedor');
+    const numerosContainer = modal.querySelector('.vencedor-numeros');
+    const usuarioElement = modal.querySelector('.modal-vencedor-usuario');
+    
+    // Limpar números anteriores
+    numerosContainer.innerHTML = '';
+    
+    // Adicionar números vencedores
+    numeros.forEach(num => {
+        const span = document.createElement('span');
+        span.className = 'vencedor-numero';
+        span.textContent = num;
+        numerosContainer.appendChild(span);
+    });
+    
+    // Atualizar tipo da aposta
+    if (usuarioElement && tipo) {
+        usuarioElement.innerHTML = `<span>Aposta:</span> ${tipo}`;
+    }
+    
+    // Mostrar modal
+    modal.classList.add('show');
+    
+    // Tocar música de vitória
+    try {
+        const audio = new Audio('/assets/audios/weAreTheChamp.m4a');
+        audio.volume = 0.5;
+        audio.play().catch(err => {
+            console.log('Não foi possível reproduzir o áudio:', err);
+        });
+    } catch(e) {
+        console.log('Erro ao carregar áudio:', e);
+    }
+}
+
+function fecharPopupVencedor() {
+    const modal = document.getElementById('modal-vencedor');
+    modal.classList.remove('show');
+    
+    // Rolagem suave para área de jogos após fechar
+    const grid = document.querySelector('.jogos-grid');
+    if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function copiarNumeros(numeros) {
+    navigator.clipboard.writeText(numeros).then(() => {
+        const btn = event.target;
+        const textoOriginal = btn.innerHTML;
+        btn.innerHTML = '✅ Copiado!';
+        btn.style.backgroundColor = '#22c55e';
+        
+        setTimeout(() => {
+            btn.innerHTML = textoOriginal;
+            btn.style.backgroundColor = '';
+        }, 2000);
+    }).catch(err => {
+        console.error('Erro ao copiar:', err);
+        alert('❌ Erro ao copiar números');
+    });
+}
+</script>
+
+<%- include('includes/footer'); %>
