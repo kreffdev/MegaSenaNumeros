@@ -1,0 +1,232 @@
+:root {
+    --primary-color: #0f172a;        /* Azul marinho profundo - cor principal elegante */
+    --secondary-color: #1e293b;      /* Azul escuro secundário */
+    --accent-purple: #8b5cf6;        /* Roxo vibrante elegante */
+    --accent-violet: #a855f7;        /* Violeta luminoso */
+    --accent-emerald: #10b981;       /* Verde esmeralda */
+    --text-dark: #0f172a;            /* Texto escuro */
+    --text-light: #f8fafc;           /* Texto claro */
+    --bg-light: #f8fafc;             /* Fundo claro */
+    --bg-card: #ffffff;              /* Fundo de cards */
+    --border-color: #e2e8f0;         /* Borda suave */
+    --hover-overlay: rgba(15, 23, 42, 0.05);  /* Overlay suave para hover */
+    --font: font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* ===== NAVBAR ===== */
+
+.main-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    padding: 1rem 2rem;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.15);
+}
+
+/* Botão Hamburger (escondido no desktop) */
+.hamburger-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px;
+    height: 24px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1001;
+}
+
+.hamburger-line {
+    width: 100%;
+    height: 3px;
+    background-color: var(--text-light);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.hamburger-btn.active .hamburger-line:nth-child(1) {
+    transform: translateY(10.5px) rotate(45deg);
+}
+
+.hamburger-btn.active .hamburger-line:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-btn.active .hamburger-line:nth-child(3) {
+    transform: translateY(-10.5px) rotate(-45deg);
+}
+
+/* Logo Central (Desktop: esquerda, Mobile: centro) */
+.nav-logo {
+    display: flex;
+    align-items: center;
+}
+
+.nav-trevo {
+    display: flex;
+    align-items: center;
+}
+
+.nav-trevo img {
+    width: 52px;
+    height: 52px;
+    object-fit: contain;
+    display: block;
+}
+
+/* Menu de Navegação */
+.nav-menu {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    justify-content: center;
+}
+
+.nav-menu ul {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.nav-menu ul li a {
+    color: var(--text-light);
+    font-size: 1.6rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+}
+
+.nav-menu ul li a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+    color: var(--accent-purple);
+}
+
+/* Ações (Notificações + Login) */
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+#btn-login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-violet) 100%);
+    color: var(--text-dark);
+    padding: 0.6rem 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.6rem;
+}
+
+#btn-login:hover {
+    background: linear-gradient(135deg, var(--accent-violet) 0%, var(--accent-purple) 100%);
+    color: var(--text-dark);
+    box-shadow: 0 6px 25px rgba(139, 92, 246, 0.5);
+    transition: all 0.3s ease-in-out;
+    transform: translateY(-2px);
+}
+
+/* ===== NAVBAR MOBILE ===== */
+@media (max-width: 768px) {
+    .main-nav {
+        padding: 0.8rem 1rem;
+    }
+
+    /* Mostrar botão hamburger */
+    .hamburger-btn {
+        display: flex;
+    }
+
+    /* Logo centralizada no mobile */
+    .nav-logo {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+    }
+
+    /* Logo menor no mobile */
+    .nav-trevo img {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* Esconder menu no mobile por padrão */
+    .nav-menu {
+        position: fixed;
+        top: 64px;
+        left: -100%;
+        width: 80%;
+        max-width: 300px;
+        height: calc(100vh - 64px);
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        box-shadow: 2px 0 10px rgba(15, 23, 42, 0.3);
+        transition: left 0.3s ease;
+        overflow-y: auto;
+        z-index: 999;
+        flex: none;
+        justify-content: flex-start;
+    }
+
+    .nav-menu.active {
+        left: 0;
+    }
+
+    .nav-menu ul {
+        flex-direction: column;
+        gap: 0;
+        padding: 1rem 0;
+    }
+
+    .nav-menu ul li {
+        width: 100%;
+    }
+
+    .nav-menu ul li a {
+        display: block;
+        width: 100%;
+        padding: 1rem 1.5rem;
+        font-size: 1.4rem;
+        border-radius: 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-menu ul li a:hover {
+        background-color: rgba(255, 255, 255, 0.12);
+        transform: none;
+        padding-left: 2rem;
+    }
+
+    /* Ações (notif + login) menores */
+    .nav-actions {
+        gap: 0.8rem;
+    }
+
+    #btn-login {
+        padding: 0.4rem 0.8rem;
+        font-size: 1.2rem;
+    }
+
+    .notif-btn {
+        padding: 0.3rem 0.5rem;
+        font-size: 1.2rem;
+    }
+
+    .notif-icon {
+        font-size: 1.2rem;
+    }
+}
+
