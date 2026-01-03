@@ -1,9 +1,59 @@
-node_modules
+# Dependências
+node_modules/
+package-lock.json
+
+# Variáveis de ambiente e configurações sensíveis
 .env
-.DS_Store
-dist
-build
+.env.local
+.env.*.local
+*.pem
+
+# Logs
 *.log
 npm-debug.log*
-.vscode
-.idea
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Sistema Operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs e Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*~
+.project
+.classpath
+.settings/
+
+# Build e distribuição
+dist/
+build/
+.cache/
+.next/
+out/
+
+# Testes
+coverage/
+.nyc_output/
+*.lcov
+
+# Arquivos temporários
+*.tmp
+*.temp
+*.bak
+*.orig
+
+# PM2
+.pm2/
+ecosystem.config.js
+
+# Uploads e cache (se aplicável)
+uploads/
+temp/
+.cache/
