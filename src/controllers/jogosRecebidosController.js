@@ -1,4 +1,5 @@
 const LoginModel = require('../models/LoginModel');
+const { getInfoModalidade } = require('../config/precos');
 
 exports.index = async (req, res) => {
     try {
@@ -24,7 +25,8 @@ exports.index = async (req, res) => {
             jogos: jogosLean,
             user: req.session.user,
             csrfToken: req.csrfToken(),
-            messages: req.flash()
+            messages: req.flash(),
+            getInfoModalidade: getInfoModalidade
         });
 
     } catch (erro) {

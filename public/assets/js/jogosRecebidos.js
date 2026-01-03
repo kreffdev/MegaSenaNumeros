@@ -305,3 +305,80 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// Função para mostrar popup com todos os números
+function mostrarTodosNumeros(jogoId, numeros, modalidade, extras = {}) {
+    const overlay = document.createElement('div');
+    overlay.className = 'popup-overlay';
+    
+    const popup = document.createElement('div');
+    popup.className = 'popup-numeros';
+    
+    let numerosHTML = numeros.map(n => `<span class="numero-popup">${String(n).padStart(2, '0')}</span>`).join('');
+    
+    let extrasHTML = '';
+    if (extras.trevos && extras.trevos.length > 0) {
+        extrasHTML += '<p style="color: var(--text-muted); margin: 1.5rem 0 0.8rem; text-align: center; font-weight: 600;">🍀 Trevos da Sorte</p>';
+        extrasHTML += '<div class="popup-numeros-grid">';
+        extras.trevos.forEach(trevo => {
+            extrasHTML += `<span class="numero-popup" style="background: linear-gradient(135deg, rgba(22, 57, 127, 0.2), rgba(22, 57, 127, 0.3)); border-color: rgba(22, 57, 127, 0.5);">${trevo}</span>`;
+        });
+        extrasHTML += '</div>';
+    }
+    
+    if (extras.mesDaSorte) {
+        extrasHTML += `<p style="background: linear-gradient(135deg, rgba(203, 133, 43, 0.2), rgba(203, 133, 43, 0.3)); border: 2px solid rgba(203, 133, 43, 0.5); color: rgba(203, 133, 43, 1); padding: 0.7rem 1.5rem; border-radius: 2rem; font-weight: bold; text-align: center; margin-top: 1.5rem;">📅 ${extras.mesDaSorte}</p>`;
+    }
+    
+    if (extras.timeCoracao) {
+        extrasHTML += `<p style="background: linear-gradient(135deg, rgba(0, 255, 72, 0.2), rgba(0, 255, 72, 0.3)); border: 2px solid rgba(0, 255, 72, 0.5); color: rgba(0, 255, 72, 1); padding: 0.7rem 1.5rem; border-radius: 2rem; font-weight: bold; text-align: center; margin-top: 1rem;">⚽ ${extras.timeCoracao}</p>`;
+    }
+    
+    popup.innerHTML = `
+        <div class="popup-header">
+            <h3>${modalidade} - Jogo #${jogoId}</h3>
+            <span class="popup-close">&times;</span>
+        </div>
+        <div class="popup-body">
+            <div class="popup-numeros-grid">
+                ${numerosHTML}
+            </div>
+            ${extrasHTML}
+        </div>
+    `;
+    
+    overlay.appendChild(popup);
+    document.body.appendChild(overlay);
+    
+    setTimeout(() => overlay.classList.add('active'), 10);
+    
+    const btnClose = popup.querySelector('.popup-close');
+    btnClose.addEventListener('click', () => fecharPopup(overlay));
+    
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) fecharPopup(overlay);
+    });
+    
+    const handleEsc = (e) => {
+        if (e.key === 'Escape') {
+            fecharPopup(overlay);
+            document.removeEventListener('keydown', handleEsc);
+        }
+    };
+    document.addEventListener('keydown', handleEsc);
+}
+
+function fecharPopup(overlay) {
+    overlay.classList.remove('active');
+    setTimeout(() => overlay.remove(), 300);
+}
+
+// Expor funções globalmente para serem acessíveis aos event handlers
+window.verificarNumeros = verificarNumeros;
+window.copiarNumeros = copiarNumeros;
+window.deletarJogoRecebido = deletarJogoRecebido;
+window.deletarTodosRecebidos = deletarTodosRecebidos;
+window.mostrarTodosNumeros = mostrarTodosNumeros;
+window.fecharPopup = fecharPopup;
+window.marcarAposta = marcarAposta;
+window.fecharPopupVencedor = fecharPopupVencedor;

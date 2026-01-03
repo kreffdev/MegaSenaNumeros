@@ -12,6 +12,10 @@ const JogosSchema = new mongoose.Schema ({
         }
 
     },
+    modalidade: {
+        type: String,
+        default: 'megasena'
+    },
     criadoPor: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Login',

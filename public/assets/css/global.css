@@ -1,8 +1,16 @@
 
 :root {
-    --primary-color: #ff9d13;
-    --secondary-color: #ababab;
-    --black-color: #000000;
+    --primary-color: #0f172a;        /* Azul marinho profundo - cor principal elegante */
+    --secondary-color: #1e293b;      /* Azul escuro secundário */
+    --accent-purple: #8b5cf6;        /* Roxo vibrante elegante */
+    --accent-violet: #a855f7;        /* Violeta luminoso */
+    --accent-emerald: #10b981;       /* Verde esmeralda */
+    --text-dark: #0f172a;            /* Texto escuro */
+    --text-light: #f8fafc;           /* Texto claro */
+    --bg-light: #f8fafc;             /* Fundo claro */
+    --bg-card: #ffffff;              /* Fundo de cards */
+    --border-color: #e2e8f0;         /* Borda suave */
+    --hover-overlay: rgba(15, 23, 42, 0.05);  /* Overlay suave para hover */
     --font: font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
@@ -16,6 +24,12 @@
     text-decoration: none;
 }
 
+body {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    min-height: 100vh;
+}
+
 /* NAVBAR STYLES */
 /* ===== NAVBAR ===== */
 
@@ -23,10 +37,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: var(--primary-color);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     padding: 1rem 2rem;
     position: relative;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.15);
 }
 
 /* Botão Hamburger (escondido no desktop) */
@@ -46,7 +60,7 @@
 .hamburger-line {
     width: 100%;
     height: 3px;
-    background-color: var(--black-color);
+    background-color: var(--text-light);
     border-radius: 2px;
     transition: all 0.3s ease;
 }
@@ -99,18 +113,19 @@
 }
 
 .nav-menu ul li a {
-    color: var(--black-color);
+    color: var(--text-light);
     font-size: 1.6rem;
-    font-weight: bold;
+    font-weight: 600;
     transition: all 0.3s ease;
     text-decoration: none;
     padding: 0.5rem 1rem;
-    border-radius: 0.3rem;
+    border-radius: 0.5rem;
 }
 
 .nav-menu ul li a:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.1);
     transform: translateY(-2px);
+    color: var(--accent-purple);
 }
 
 /* Ações (Notificações + Login) */
@@ -124,22 +139,22 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--black-color);
-    color: var(--primary-color);
-    padding: 0.5rem 1.2rem;
-    border-radius: 0.3rem;
-    box-shadow: 0.5rem 0.5rem rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-violet) 100%);
+    color: var(--text-dark);
+    padding: 0.6rem 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
     text-decoration: none;
-    font-weight: bold;
+    font-weight: 600;
     font-size: 1.6rem;
 }
 
 #btn-login:hover {
-    background: var(--black-color);
-    color: var(--primary-color);
-    box-shadow: 1rem 1rem rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, var(--accent-violet) 0%, var(--accent-purple) 100%);
+    color: var(--text-dark);
+    box-shadow: 0 6px 25px rgba(139, 92, 246, 0.5);
     transition: all 0.3s ease-in-out;
-    transform: translate(-0.2rem, -0.2rem);
+    transform: translateY(-2px);
 }
 /* login page STYLES */
 
@@ -149,7 +164,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: var(--primary-color);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
 
 }
 .container form {
@@ -157,17 +172,23 @@
     flex-direction: column;
     width: 25%;
     padding: 5rem 2rem;
-    border-radius: 0.5rem;
-    background: var(--primary-color);
-    box-shadow: 0 0  1rem 0  rgba(0, 0, 0, 0.3);
+    border-radius: 1rem;
+    background: var(--bg-card);
+    box-shadow: 0 10px 40px rgba(15, 23, 42, 0.2);
 }
 .container form input {
     margin-bottom: 2rem;
     padding: 0.8rem 1rem;
-    border: none;
-    border-radius: 0.3rem;
+    border: 2px solid var(--border-color);
+    border-radius: 0.5rem;
     font-size: 1.6rem;
+    transition: all 0.3s ease;
+}
 
+.container form input:focus {
+    outline: none;
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
 }
 
 /* LOGIN PAGE - ELEGANT STYLES */
@@ -178,7 +199,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(135deg, var(--primary-color) 0%, #e68a00 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     padding: 2rem;
 }
 
@@ -188,9 +209,9 @@
 }
 
 .login-card {
-    background: #ffffff;
-    border-radius: 1rem;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    background: var(--bg-card);
+    border-radius: 1.2rem;
+    box-shadow: 0 15px 50px rgba(15, 23, 42, 0.2);
     overflow: hidden;
     animation: slideIn 0.4s ease-out;
 }
@@ -207,10 +228,10 @@
 }
 
 .login-header {
-    background: linear-gradient(135deg, var(--primary-color) 0%, #e68a00 100%);
+    background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-violet) 100%);
     padding: 3rem 2rem;
     text-align: center;
-    color: var(--black-color);
+    color: var(--text-dark);
 }
 
 .login-title {
@@ -239,7 +260,7 @@
     margin-bottom: 0.6rem;
     font-size: 0.95rem;
     font-weight: 600;
-    color: var(--black-color);
+    color: var(--text-dark);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -258,19 +279,19 @@
 .form-input:focus {
     outline: none;
     background-color: #ffffff;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(255, 157, 19, 0.1);
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
 }
 
 .form-input::placeholder {
-    color: #999;
+    color: rgba(248, 250, 252, 0.5);
 }
 
 .login-btn {
     width: 100%;
     padding: 1rem;
-    background: linear-gradient(135deg, var(--primary-color) 0%, #e68a00 100%);
-    color: var(--black-color);
+    background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-violet) 100%);
+    color: var(--text-dark);
     font-size: 1rem;
     font-weight: 600;
     border: none;
@@ -280,22 +301,22 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-top: 0.5rem;
-    box-shadow: 0 4px 15px rgba(255, 157, 19, 0.3);
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
 }
 
 .login-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 157, 19, 0.4);
+    box-shadow: 0 6px 25px rgba(139, 92, 246, 0.5);
 }
 
 .login-btn:active {
     transform: translateY(0);
-    box-shadow: 0 2px 10px rgba(255, 157, 19, 0.3);
+    box-shadow: 0 2px 10px rgba(139, 92, 246, 0.3);
 }
 
 .login-info {
     font-size: 0.85rem;
-    color: #999;
+    color: rgba(248, 250, 252, 0.6);
     text-align: center;
     margin-top: 1rem;
     font-style: italic;
@@ -331,14 +352,24 @@
 .main-container {
     width: 100%;
     max-width: 1300px;
-    padding: 2rem;
+    padding: 1rem;
     display: flex;
     flex-direction: row;
     align-items: start;
     justify-content: s;
-    background-color: #ffffff;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    background-color: var(--primary-color);
+    border: 1px solid rgba(139, 92, 246, 0.3);
     margin-top: 0.8rem;
+    margin-bottom: 2rem;
+    border-radius: 1rem;
+}
+.container-numeros-escolhidos-instrucoes {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-right: 3rem;
 }
 .numeros-criador {
     width: 60%;
@@ -347,9 +378,11 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: #e68a00;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(168, 85, 247, 0.15) 100%);
     margin-right: 3rem;
-    border-radius: 0.5rem;
+    border-radius: 0.8rem;
+    /* box-shadow: 0 8px 25px rgba(139, 92, 246, 0.2); */
+    border: 2px solid rgba(139, 92, 246, 0.3);
 }
 
 .header-criador {
@@ -364,33 +397,33 @@
 .header-criador h2 {
     font-size: 2rem;
     font-weight: bold;
-    color: var(--black-color);
+    color: var(--text-light);
     margin: 0;
 }
 
 .btn-gerar-aleatorio {
     padding: 0.6rem 1.2rem;
-    background-color: var(--black-color);
-    color: var(--primary-color);
+    background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-violet) 100%);
+    color: var(--text-dark);
     font-size: 0.95rem;
     font-weight: 600;
     border: none;
-    border-radius: 0.4rem;
+    border-radius: 0.5rem;
     cursor: pointer;
     transition: all 0.3s ease;
     white-space: nowrap;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
 }
 
 .btn-gerar-aleatorio:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-    background-color: #333;
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+    background: linear-gradient(135deg, var(--accent-violet) 0%, var(--accent-purple) 100%);
 }
 
 .btn-gerar-aleatorio:active {
     transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
 }
 
 .numeros-criador ul {
@@ -409,22 +442,23 @@
     width: 3rem;
     height: 3rem;
     border-radius: 50%;
-    border: none;
-    background-color: var(--black-color);
-    color: var(--primary-color);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.9);
+    color: var(--text-dark);
     font-size: 1.2rem;
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
-
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1);
 }
 
 /* Efeito de selecionado para os botões de número */
 .numeros-criador ul li button.selected {
-    background-color: var(--primary-color);
-    color: var(--black-color);
-    transform: scale(1.08);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-violet) 100%);
+    color: var(--text-dark);
+    border-color: var(--accent-purple);
+    transform: scale(1.12);
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
 }
 
 .numeros-criador ul li button.selected:active {
@@ -441,6 +475,166 @@
 
 .numeros-criador ul li button:disabled:hover {
     background-color: #cccccc;
+}
+
+/* Mês da Sorte (Dia de Sorte) */
+.mes-sorte-container {
+    background: linear-gradient(135deg, rgba(203, 133, 43, 0.15), rgba(203, 133, 43, 0.05));
+    border: 2px solid rgba(203, 133, 43, 0.3);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.mes-sorte-container label {
+    font-weight: 700;
+    color: var(--text-light);
+    font-size: 1.1rem;
+    white-space: nowrap;
+}
+
+.mes-sorte-select {
+    flex: 1;
+    padding: 0.8rem 1.2rem;
+    font-size: 1rem;
+    border: 2px solid rgba(203, 133, 43, 0.4);
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--secondary-color), rgba(30, 41, 59, 0.9));
+    color: var(--text-light);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.mes-sorte-select:hover {
+    border-color: #CB852B;
+    box-shadow: 0 0 10px rgba(203, 133, 43, 0.3);
+}
+
+.mes-sorte-select:focus {
+    border-color: #CB852B;
+    box-shadow: 0 0 15px rgba(203, 133, 43, 0.5);
+}
+
+.mes-sorte-select option {
+    background: var(--secondary-color);
+    color: var(--text-light);
+    padding: 0.5rem;
+}
+
+/* Time do Coração (Timemania) */
+.time-coracao-container {
+    background: linear-gradient(135deg, rgba(0, 255, 72, 0.15), rgba(0, 255, 72, 0.05));
+    border: 2px solid rgba(0, 255, 72, 0.3);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.time-coracao-container label {
+    font-weight: 700;
+    color: var(--text-light);
+    font-size: 1.1rem;
+    white-space: nowrap;
+}
+
+.time-coracao-select {
+    flex: 1;
+    padding: 0.8rem 1.2rem;
+    font-size: 1rem;
+    border: 2px solid rgba(0, 255, 72, 0.4);
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--secondary-color), rgba(30, 41, 59, 0.9));
+    color: var(--text-light);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.time-coracao-select:hover {
+    border-color: #00FF48;
+    box-shadow: 0 0 10px rgba(0, 255, 72, 0.3);
+}
+
+.time-coracao-select:focus {
+    border-color: #00FF48;
+    box-shadow: 0 0 15px rgba(0, 255, 72, 0.5);
+}
+
+.time-coracao-select option {
+    background: var(--secondary-color);
+    color: var(--text-light);
+    padding: 0.5rem;
+}
+
+/* Trevos (+Milionária) */
+.trevos-container {
+    background: linear-gradient(135deg, rgba(22, 57, 127, 0.15), rgba(22, 57, 127, 0.05));
+    border: 2px solid rgba(22, 57, 127, 0.3);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.trevos-container label {
+    font-weight: 700;
+    color: var(--text-light);
+    font-size: 1.1rem;
+    display: block;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.trevos-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+    justify-items: center;
+}
+
+.trevo-btn {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.9);
+    color: var(--text-dark);
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1);
+    justify-self: center;
+}
+
+.trevo-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.trevo-btn.selected {
+    background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-violet) 100%);
+    color: var(--text-dark);
+    border-color: var(--accent-purple);
+    transform: scale(1.12);
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.5);
+}
+
+.trevos-info {
+    color: rgba(248, 250, 252, 0.7);
+    font-size: 0.9rem;
+    text-align: center;
+    margin: 0;
 }
 
 /* History (Meus Envios) styles */
@@ -470,12 +664,12 @@ main.container .envios-container {
 .envios-container h1 {
     font-size: 2rem;
     margin-bottom: 2rem;
-    color: var(--black-color);
+    color: var(--text-dark);
 }
 
 .envios-container p {
     font-size: 1rem;
-    color: #666;
+    color: rgba(248, 250, 252, 0.7);
     text-align: center;
     padding: 2rem;
 }
@@ -517,10 +711,11 @@ main.container .envios-container {
 .notif-modal-box {
     position: relative;
     margin-top: 6rem;
-    background: #fff;
+    background: var(--primary-color);
     width: 360px;
     border-radius: 8px;
     box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    border: 1px solid rgba(139, 92, 246, 0.3);
     z-index: 6001;
     overflow: hidden;
 }
@@ -532,9 +727,10 @@ main.container .envios-container {
 .notif-dropdown { z-index: 7000; }
 .notif-dropdown-box {
     width: 320px;
-    background: #fff;
+    background: var(--primary-color);
     border-radius: 12px;
     box-shadow: 0 12px 32px rgba(15,15,15,0.12);
+    border: 1px solid rgba(139, 92, 246, 0.3);
     overflow: hidden;
     transform-origin: top right;
     transform: scale(0.98);
@@ -554,25 +750,27 @@ main.container .envios-container {
 
 .notif-dropdown-list { padding: 0.4rem 0.6rem; }
 .notif-dropdown-item { padding: 0.75rem 1rem; display:flex; align-items:center; justify-content:space-between; gap:0.75rem; cursor:pointer; transition: background 120ms ease, transform 120ms ease; border-bottom: 1px solid #fbfbfb }
-.notif-dropdown-item:hover { background: linear-gradient(90deg, rgba(255,157,19,0.06), rgba(0,0,0,0.02)); transform: translateY(-3px); }
-.notif-sender { font-weight:700; color:#111; }
-.notif-time { color:#777; font-size:0.85rem; white-space:nowrap }
-.notif-empty { padding: 0.9rem 1rem; color:#666 }
+.notif-dropdown-item:hover { background: linear-gradient(90deg, rgba(139, 92, 246, 0.08), rgba(16, 185, 129, 0.04)); transform: translateY(-3px); }
+.notif-sender { font-weight:700; color: var(--text-light); }
+.notif-time { color: rgba(248, 250, 252, 0.6); font-size:0.85rem; white-space:nowrap }
+.notif-empty { padding: 0.9rem 1rem; color: rgba(248, 250, 252, 0.7) }
 
 .notif-btn { transition: transform 160ms ease; }
 .notif-btn:hover { transform: translateY(-2px); }
 .notif-count { transition: all 140ms ease; }
 
 .envio-card {
-    background: #fff;
-    border-radius: 0.6rem;
+    background: var(--bg-card);
+    border-radius: 0.8rem;
     padding: 1rem;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
     transition: transform 0.18s ease, box-shadow 0.18s ease;
+    border: 1px solid var(--border-color);
 }
 .envio-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+    box-shadow: 0 12px 30px rgba(139, 92, 246, 0.15);
+    border-color: var(--accent-purple);
 }
 
 /* Visual layout for header (clickable) */
@@ -595,7 +793,7 @@ main.container .envios-container {
 }
 .envio-header .destino {
     font-weight: 700;
-    color: var(--black-color);
+    color: var(--text-dark);
 }
 
 .envio-meta {
@@ -613,15 +811,16 @@ main.container .envios-container {
     margin-top: 0.6rem;
 }
 .envio-body .numero {
-    background: var(--primary-color);
-    color: #000;
+    background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-violet) 100%);
+    color: var(--text-dark);
     padding: 0.45rem 0.7rem;
     border-radius: 0.4rem;
     font-weight: 700;
     list-style: none;
+    box-shadow: 0 2px 6px rgba(139, 92, 246, 0.2);
 }
 .envio-card .data {
-    color: #666;
+    color: rgba(248, 250, 252, 0.6);
     font-size: 0.85rem;
 }
 
@@ -641,7 +840,7 @@ main.container .envios-container {
 
 .envio-count {
     font-size: 0.9rem;
-    color: #666;
+    color: rgba(248, 250, 252, 0.7);
     font-weight: 500;
 }
 
@@ -658,12 +857,12 @@ main.container .envios-container {
     padding: 0.6rem;
     background: #f9f9f9;
     border-radius: 0.4rem;
-    border-left: 3px solid var(--primary-color);
+    border-left: 3px solid var(--accent-emerald);
 }
 
 .seq-num {
     font-weight: 700;
-    color: var(--black-color);
+    color: var(--text-dark);
     font-size: 0.85rem;
     min-width: 30px;
 }
@@ -692,25 +891,25 @@ main.container .envios-container {
 
 /* Estilo para números escolhidos na lista */
 .escolhido-numero {
-    width: 3rem;
-    height: 3rem;
+    width: 2rem;
+    height: 2rem;
     border-radius: 50%;
-    background-color: var(--black-color);
-    color: var(--primary-color);
-    font-size: 1.2rem;
+    background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-violet) 100%);
+    color: var(--text-dark);
+    font-size: 0.9rem;
     font-weight: bold;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    margin: 0.5rem;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+    margin: 0.3rem;
 }
 
 .escolhido-numero:hover {
     transform: scale(1.1);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
 }
 
 .escolhido-numero:active {
@@ -739,30 +938,96 @@ main.container .envios-container {
         gap: 0.5rem;
     }
 }
+
+.container-numeros-escolhidos-instrucoes {
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+}
+
 .numeros-escolhidos {
     font-size: 1.2rem;
     font-weight: bold;
-    color: var(--black-color);
-    width: 40%;
+    color: var(--text-dark);
+    width: 100%;
 }
 .escolhidos-lista {
     width: 100%;
     padding: 1.5rem;
-    background-color: #ff9d13;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(168, 85, 247, 0.15) 100%);
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: flex-start;
     margin-bottom: 1rem;
-    border-radius: 0.5rem;
+    border-radius: 0.8rem;
+    border: 2px solid rgba(139, 92, 246, 0.3);
+}
+
+/* Instruções das modalidades */
+.modalidade-instrucoes {
+    width: 100%;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.4s ease, opacity 0.3s ease;
+    margin-top: 1rem;
+}
+
+.modalidade-instrucoes.show {
+    max-height: 200px;
+    opacity: 1;
+}
+
+.instrucao {
+    display: none;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(168, 85, 247, 0.05) 100%);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+}
+
+.instrucao.active {
+    display: block;
+    animation: fadeInInstruction 0.3s ease;
+}
+
+@keyframes fadeInInstruction {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.instrucao h4 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--accent-purple);
+    margin-bottom: 0.5rem;
+}
+
+.instrucao p {
+    color: rgba(248, 250, 252, 0.85);
+    font-size: 0.8rem;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.instrucao strong {
+    color: var(--accent-emerald);
+    font-weight: 700;
 }
 
 /* Botão de confirmação */
 .btn-confirmar {
     width: 100%;
     padding: 1rem;
-    background: linear-gradient(135deg, var(--primary-color) 0%, #e68a00 100%);
-    color: var(--black-color);
+    background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-violet) 100%);
+    color: var(--text-dark);
     font-size: 1rem;
     font-weight: 600;
     border: none;
@@ -771,25 +1036,25 @@ main.container .envios-container {
     transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    box-shadow: 0 4px 15px rgba(255, 157, 19, 0.3);
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
     margin-top: 1rem;
 }
 
 .btn-confirmar:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 157, 19, 0.4);
+    box-shadow: 0 6px 25px rgba(139, 92, 246, 0.5);
 }
 
 .btn-confirmar:active {
     transform: translateY(0);
-    box-shadow: 0 2px 10px rgba(255, 157, 19, 0.3);
+    box-shadow: 0 2px 10px rgba(139, 92, 246, 0.3);
 }
 
 /* Botão de registrar sequências */
 .btn-registrar {
     width: 100%;
     padding: 1rem;
-    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    background: linear-gradient(135deg, var(--accent-emerald) 0%, #059669 100%);
     color: white;
     font-size: 1rem;
     font-weight: 600;
@@ -799,18 +1064,18 @@ main.container .envios-container {
     transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
     margin-top: 1rem;
 }
 
 .btn-registrar:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+    box-shadow: 0 6px 25px rgba(16, 185, 129, 0.5);
 }
 
 .btn-registrar:active {
     transform: translateY(0);
-    box-shadow: 0 2px 10px rgba(76, 175, 80, 0.3);
+    box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
 }
 
 .btn-registrar:disabled {
@@ -824,14 +1089,15 @@ main.container .envios-container {
     position: relative;
     width: 100%;
     padding: 2rem;
-    background-color: #e3e3e3;
-    border-radius: 0.5rem;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(168, 85, 247, 0.15) 100%);
+    border-radius: 0.8rem;
     display: flex;
     flex-wrap: wrap;
     gap: 1.5rem;
     align-content: flex-start;
     max-height: 250px;
     overflow-y: auto;
+    border: 2px solid rgba(139, 92, 246, 0.3);
 }
 
 /* Contagem de sequências */
@@ -839,7 +1105,7 @@ main.container .envios-container {
     position: absolute;
     top: 0.5rem;
     right: 3.5rem;
-    color: var(--black-color);
+    color: var(--text-light);
     font-size: 0.85rem;
     font-weight: bold;
     z-index: 10;
@@ -849,13 +1115,14 @@ main.container .envios-container {
     position: absolute;
     top: 0.5rem;
     right: 0.5rem;
-    background-color: var(--primary-color);
-    color: var(--black-color);
+    background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-violet) 100%);
+    color: var(--text-dark);
     padding: 0.25rem 0.75rem;
     border-radius: 50px;
     font-size: 0.85rem;
     font-weight: bold;
     z-index: 10;
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
 }
 
 /* Scroll customizado */
@@ -864,17 +1131,17 @@ main.container .envios-container {
 }
 
 .meus-numeros-preview::-webkit-scrollbar-track {
-    background: #e0e0e0;
+    background: rgba(139, 92, 246, 0.1);
     border-radius: 10px;
 }
 
 .meus-numeros-preview::-webkit-scrollbar-thumb {
-    background: var(--primary-color);
+    background: var(--accent-purple);
     border-radius: 10px;
 }
 
 .meus-numeros-preview::-webkit-scrollbar-thumb:hover {
-    background: #e68a00;
+    background: #059669;
 }
 
 /* Estilo de cada sequência salva */
@@ -883,10 +1150,11 @@ main.container .envios-container {
     align-items: center;
     gap: 1rem;
     padding: 1rem;
-    background-color: var(--primary-color);
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    border-left: 4px solid var(--primary-color);
+    background: var(--primary-color);
+    border-radius: 0.8rem;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+    border-left: 4px solid var(--accent-emerald);
+    border: 1px solid rgba(139, 92, 246, 0.3);
 }
 
 .sequencia-numeros {
@@ -898,14 +1166,14 @@ main.container .envios-container {
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 50%;
-    background-color: var(--black-color);
-    color: var(--primary-color);
+    background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-violet) 100%);
+    color: var(--text-dark);
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
     font-size: 0.9rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 6px rgba(139, 92, 246, 0.3);
 }
 
 /* Botão para remover sequência */
@@ -964,6 +1232,18 @@ main.container .envios-container {
     .numeros-criador ul {
         grid-template-columns: repeat(6, 1fr);
         gap: 0.8rem;
+    }
+
+    /* Mês da Sorte responsivo */
+    .mes-sorte-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.8rem;
+        padding: 1rem;
+    }
+
+    .mes-sorte-container label {
+        text-align: center;
     }
 
     /* Seção de seleção */
@@ -1199,8 +1479,8 @@ main.container .envios-container {
         width: 80%;
         max-width: 300px;
         height: calc(100vh - 64px);
-        background: linear-gradient(135deg, var(--primary-color) 0%, #e68a00 100%);
-        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        box-shadow: 2px 0 10px rgba(15, 23, 42, 0.3);
         transition: left 0.3s ease;
         overflow-y: auto;
         z-index: 999;
@@ -1232,7 +1512,7 @@ main.container .envios-container {
     }
 
     .nav-menu ul li a:hover {
-        background-color: rgba(0, 0, 0, 0.15);
+        background-color: rgba(255, 255, 255, 0.12);
         transform: none;
         padding-left: 2rem;
     }
@@ -1263,6 +1543,7 @@ main.container .envios-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem 1rem;
+    background: var(--primary-color);
 }
 
 .meus-jogos-header {
@@ -1296,22 +1577,24 @@ main.container .envios-container {
     border: 1px solid #e0e0e0;
     border-radius: 0.45rem;
     font-size: 0.95rem;
-    background: #fff;
+    background: var(--primary-color);
+    color: var(--text-light);
 }
 .verifica-numeos input:focus {
     outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 4px 12px rgba(230,138,0,0.12);
+    border-color: var(--accent-purple);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
 }
 .btn-verificar {
     padding: 0.5rem 0.9rem;
-    background: var(--black-color);
-    color: var(--primary-color);
+    background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-violet) 100%);
+    color: var(--text-dark);
     border: none;
     border-radius: 0.45rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.15s ease;
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
 }
 .btn-verificar:hover {
     transform: translateY(-2px);
@@ -1333,7 +1616,7 @@ main.container .envios-container {
 }
 
 .btn-enviar-jogos {
-    background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+    background: linear-gradient(135deg, var(--accent-emerald) 0%, #059669 100%);
     color: white;
     border: none;
     padding: 0.9rem 1.8rem;
@@ -1342,19 +1625,19 @@ main.container .envios-container {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
     white-space: nowrap;
     justify-self: end;
 }
 
 .btn-enviar-jogos:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+    box-shadow: 0 6px 25px rgba(16, 185, 129, 0.5);
 }
 
 .btn-enviar-jogos:active {
     transform: translateY(0);
-    box-shadow: 0 2px 10px rgba(33, 150, 243, 0.3);
+    box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
 }
 
 .btn-enviar-jogos:disabled {
@@ -1371,15 +1654,15 @@ main.container .envios-container {
 }
 
 .stat-card {
-    background: linear-gradient(135deg, var(--primary-color) 0%, #e68a00 100%);
+    background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-violet) 100%);
     padding: 1.5rem;
-    border-radius: 0.5rem;
+    border-radius: 0.8rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: var(--black-color);
-    box-shadow: 0 4px 15px rgba(255, 157, 19, 0.3);
+    color: var(--text-dark);
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
 }
 
 .stat-label {
@@ -1402,18 +1685,119 @@ main.container .envios-container {
 }
 
 .jogo-card {
-    background: white;
-    border: 2px solid var(--primary-color);
-    border-radius: 0.5rem;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    border: 2px solid rgba(139, 92, 246, 0.35);
+    border-radius: 1rem;
     padding: 3rem 1rem 1rem 1rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 25px rgba(139, 92, 246, 0.18), 0 2px 8px rgba(15, 23, 42, 0.08);
     transition: all 0.3s ease;
     position: relative;
+    overflow: hidden;
+}
+
+/* Cores específicas para cada modalidade nos jogo-cards */
+.jogo-card[data-modalidade="megasena"] {
+    background: linear-gradient(135deg, rgba(33, 136, 56, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(33, 136, 56, 0.6);
+}
+
+.jogo-card[data-modalidade="megasena"]:hover {
+    border-color: rgba(33, 136, 56, 0.85);
+    box-shadow: 0 15px 45px rgba(33, 136, 56, 0.4), 0 5px 15px rgba(15, 23, 42, 0.1);
+}
+
+.jogo-card[data-modalidade="lotofacil"] {
+    background: linear-gradient(135deg, rgba(148, 33, 147, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(148, 33, 147, 0.6);
+}
+
+.jogo-card[data-modalidade="lotofacil"]:hover {
+    border-color: rgba(148, 33, 147, 0.85);
+    box-shadow: 0 15px 45px rgba(148, 33, 147, 0.4), 0 5px 15px rgba(15, 23, 42, 0.1);
+}
+
+.jogo-card[data-modalidade="quina"] {
+    background: linear-gradient(135deg, rgba(38, 70, 193, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(38, 70, 193, 0.6);
+}
+
+.jogo-card[data-modalidade="quina"]:hover {
+    border-color: rgba(38, 70, 193, 0.85);
+    box-shadow: 0 15px 45px rgba(38, 70, 193, 0.4), 0 5px 15px rgba(15, 23, 42, 0.1);
+}
+
+.jogo-card[data-modalidade="lotomania"] {
+    background: linear-gradient(135deg, rgba(244, 121, 32, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(244, 121, 32, 0.6);
+}
+
+.jogo-card[data-modalidade="lotomania"]:hover {
+    border-color: rgba(244, 121, 32, 0.85);
+    box-shadow: 0 15px 45px rgba(244, 121, 32, 0.4), 0 5px 15px rgba(15, 23, 42, 0.1);
+}
+
+.jogo-card[data-modalidade="duplasena"] {
+    background: linear-gradient(135deg, rgba(163, 73, 164, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(163, 73, 164, 0.6);
+}
+
+.jogo-card[data-modalidade="duplasena"]:hover {
+    border-color: rgba(163, 73, 164, 0.85);
+    box-shadow: 0 15px 45px rgba(163, 73, 164, 0.4), 0 5px 15px rgba(15, 23, 42, 0.1);
+}
+
+.jogo-card[data-modalidade="diadesorte"] {
+    background: linear-gradient(135deg, rgba(203, 133, 43, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(203, 133, 43, 0.6);
+}
+
+.jogo-card[data-modalidade="diadesorte"]:hover {
+    border-color: rgba(203, 133, 43, 0.85);
+    box-shadow: 0 15px 45px rgba(203, 133, 43, 0.4), 0 5px 15px rgba(15, 23, 42, 0.1);
+}
+
+.jogo-card[data-modalidade="timemania"] {
+    background: linear-gradient(135deg, rgba(0, 255, 72, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(0, 255, 72, 0.6);
+}
+
+.jogo-card[data-modalidade="timemania"]:hover {
+    border-color: rgba(0, 255, 72, 0.85);
+    box-shadow: 0 15px 45px rgba(0, 255, 72, 0.4), 0 5px 15px rgba(15, 23, 42, 0.1);
+}
+
+.jogo-card[data-modalidade="maismilionaria"] {
+    background: linear-gradient(135deg, rgba(22, 57, 127, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(22, 57, 127, 0.6);
+}
+
+.jogo-card[data-modalidade="maismilionaria"]:hover {
+    border-color: rgba(22, 57, 127, 0.85);
+    box-shadow: 0 15px 45px rgba(22, 57, 127, 0.4), 0 5px 15px rgba(15, 23, 42, 0.1);
+}
+
+.jogo-card[data-modalidade="supersete"] {
+    background: linear-gradient(135deg, rgba(164, 210, 51, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(164, 210, 51, 0.6);
+}
+
+.jogo-card[data-modalidade="supersete"]:hover {
+    border-color: rgba(164, 210, 51, 0.85);
+    box-shadow: 0 15px 45px rgba(164, 210, 51, 0.4), 0 5px 15px rgba(15, 23, 42, 0.1);
+}
+
+.jogo-card[data-modalidade="loteca"] {
+    background: linear-gradient(135deg, rgba(237, 28, 36, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(237, 28, 36, 0.6);
+}
+
+.jogo-card[data-modalidade="loteca"]:hover {
+    border-color: rgba(237, 28, 36, 0.85);
+    box-shadow: 0 15px 45px rgba(237, 28, 36, 0.4), 0 5px 15px rgba(15, 23, 42, 0.1);
 }
 
 .jogo-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(255, 157, 19, 0.2);
+    transform: translateY(-8px);
 }
 
 .jogo-card.deleting {
@@ -1438,22 +1822,57 @@ main.container .envios-container {
     align-items: center;
     margin-bottom: 0.8rem;
     padding-bottom: 0.8rem;
-    border-bottom: 2px solid var(--light-bg);
+    border-bottom: 2px solid;
+    border-image: linear-gradient(90deg, rgba(139, 92, 246, 0.5), rgba(168, 85, 247, 0.3)) 1;
     gap: 1rem;
 }
 
+.jogo-numero-modalidade {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.jogo-modalidade-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(139, 92, 246, 0.1);
+    padding: 0.3rem 0.8rem;
+    border-radius: 50px;
+    border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.jogo-modalidade-logo {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 0.9;
+}
+
+.jogo-modalidade-nome {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(248, 250, 252, 0.9);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
 .jogo-numero {
-    background: var(--primary-color);
-    color: var(--black-color);
-    padding: 0.3rem 0.7rem;
+    background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-violet) 100%);
+    color: white;
+    padding: 0.4rem 0.9rem;
     border-radius: 50px;
     font-weight: 700;
     font-size: 0.9rem;
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.25);
 }
 
 .jogo-data {
     font-size: 0.75rem;
-    color: var(--text-color);
+    color: rgba(248, 250, 252, 0.7);
     font-style: italic;
     white-space: nowrap;
 }
@@ -1464,20 +1883,21 @@ main.container .envios-container {
     justify-content: center;
     gap: 0.4rem;
     margin-bottom: 0.8rem;
-    padding: 0.5rem;
-    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-    border-radius: 8px;
-    border: 2px solid #86efac;
+    padding: 0.7rem;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(168, 85, 247, 0.1) 100%);
+    border-radius: 10px;
+    border: 1px solid rgba(139, 92, 246, 0.3);
 }
 
 .preco-label {
     font-size: 1.1rem;
+    color: var(--text-light);
 }
 
 .preco-valor {
     font-size: 1rem;
     font-weight: 700;
-    color: #15803d;
+    color: var(--accent-violet);
 }
 
 .jogo-numeros {
@@ -1486,20 +1906,21 @@ main.container .envios-container {
     gap: 0.4rem;
     margin-bottom: 1.2rem;
     justify-content: center;
-    overflow-x: auto;
+    overflow-x: none;
 }
 
 .numero-badge {
-    background: linear-gradient(135deg, var(--primary-color) 0%, #e68a00 100%);
-    color: var(--black-color);
-    padding: 0.4rem 0.6rem;
+    background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-violet) 100%);
+    color: white;
+    padding: 0.5rem 0.7rem;
     border-radius: 50px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    min-width: 2.2rem;
+    font-weight: 700;
+    font-size: 0.95rem;
+    min-width: 2.3rem;
     text-align: center;
-    box-shadow: 0 2px 8px rgba(255, 157, 19, 0.2);
+    box-shadow: 0 3px 10px rgba(139, 92, 246, 0.3);
     flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 /* Destaque para números acertados */
@@ -1528,14 +1949,14 @@ main.container .envios-container {
 }
 
 .btn-copiar {
-    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    background: linear-gradient(135deg, var(--accent-emerald) 0%, #059669 100%);
     color: white;
-    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
 }
 
 .btn-copiar:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.5);
 }
 
 .btn-copiar:active {
@@ -1615,19 +2036,19 @@ main.container .envios-container {
 
 .btn-criar-novo {
     display: inline-block;
-    background: linear-gradient(135deg, var(--primary-color) 0%, #e68a00 100%);
-    color: var(--black-color);
+    background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-violet) 100%);
+    color: var(--text-dark);
     padding: 0.8rem 1.5rem;
-    border-radius: 0.3rem;
+    border-radius: 0.5rem;
     text-decoration: none;
     font-weight: 600;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(255, 157, 19, 0.3);
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
 }
 
 .btn-criar-novo:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 157, 19, 0.4);
+    box-shadow: 0 6px 25px rgba(139, 92, 246, 0.5);
 }
 
 .volta-home {
@@ -1639,10 +2060,10 @@ main.container .envios-container {
 
 .btn-voltar {
     display: inline-block;
-    background: var(--light-bg);
+    background: var(--bg-light);
     color: var(--primary-color);
     padding: 0.8rem 1.5rem;
-    border-radius: 0.3rem;
+    border-radius: 0.5rem;
     text-decoration: none;
     font-weight: 600;
     transition: all 0.3s ease;
@@ -1651,18 +2072,18 @@ main.container .envios-container {
 
 .btn-voltar:hover {
     background: var(--primary-color);
-    color: var(--black-color);
+    color: var(--text-light);
     transform: translateY(-2px);
 }
 
     /* Quando o jogo tem pelo menos 1 acerto */
     .jogo-card.has-acertos {
-        border-color: #34D399; /* verde suave */
+        border-color: rgba(139, 92, 246, 0.5);
     }
 
-/* Quando o jogo acertou os 6 números (ganhou) - borda verde e pulso */
+/* Quando o jogo acertou os 6 números (ganhou) - borda roxa e pulso */
 .jogo-card.ganhou {
-    border-color: #059669;
+    border-color: var(--accent-purple);
     border-width: 3px;
     animation: pulseWin 2s infinite ease-in-out;
     position: relative;
@@ -1974,9 +2395,10 @@ main.container .envios-container {
 }
 
 .modal-content {
-    background: white;
+    background: var(--primary-color);
     border-radius: 0.8rem;
     box-shadow: 0 10px 50px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(139, 92, 246, 0.3);
     max-width: 400px;
     width: 90%;
     animation: slideUp 0.3s ease-out;
@@ -1999,12 +2421,12 @@ main.container .envios-container {
     align-items: center;
     padding: 1.5rem;
     border-bottom: 1px solid #e0e0e0;
-    background: linear-gradient(135deg, var(--primary-color) 0%, #e68a00 100%);
+    background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-violet) 100%);
 }
 
 .modal-header h2 {
     font-size: 1.5rem;
-    color: var(--black-color);
+    color: var(--text-dark);
     margin: 0;
 }
 
@@ -2013,7 +2435,7 @@ main.container .envios-container {
     border: none;
     font-size: 2rem;
     cursor: pointer;
-    color: var(--black-color);
+    color: var(--text-dark);
     padding: 0;
     width: 2rem;
     height: 2rem;
@@ -2035,7 +2457,7 @@ main.container .envios-container {
 .modal-body p {
     margin-bottom: 1.2rem;
     font-size: 1rem;
-    color: #333;
+    color: var(--text-light);
 }
 
 .modal-input {
@@ -2050,8 +2472,8 @@ main.container .envios-container {
 
 .modal-input:focus {
     outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(255, 157, 19, 0.1);
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
     background-color: #fafafa;
 }
 
@@ -2075,8 +2497,9 @@ main.container .envios-container {
 }
 
 .btn-cancelar {
-    background: #e0e0e0;
-    color: #333;
+    background: rgba(248, 250, 252, 0.1);
+    color: var(--text-light);
+    border: 1px solid rgba(248, 250, 252, 0.2);
 }
 
 .btn-cancelar:hover {
@@ -2085,14 +2508,14 @@ main.container .envios-container {
 }
 
 .btn-confirmar {
-    background: linear-gradient(135deg, var(--primary-color) 0%, #e68a00 100%);
-    color: var(--black-color);
-    box-shadow: 0 4px 15px rgba(255, 157, 19, 0.3);
+    background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-violet) 100%);
+    color: var(--text-dark);
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
 }
 
 .btn-confirmar:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 157, 19, 0.4);
+    box-shadow: 0 6px 25px rgba(139, 92, 246, 0.5);
 }
 
 .btn-confirmar:disabled {
@@ -2104,7 +2527,7 @@ main.container .envios-container {
 /* ===== JOGO RECEBIDO ===== */
 
 .jogo-recebido {
-    border-color: #3b82f6;
+    border-color: var(--accent-purple);
 }
 
 .jogo-origem {
@@ -2113,18 +2536,18 @@ main.container .envios-container {
     gap: 0.5rem;
     margin-bottom: 1rem;
     padding: 0.6rem 0.8rem;
-    background: linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(59,130,246,0.05) 100%);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
     border-radius: 0.4rem;
     font-size: 0.9rem;
 }
 
 .origem-label {
     font-weight: 600;
-    color: #3b82f6;
+    color: var(--accent-emerald);
 }
 
 .origem-usuario {
-    color: #1e40af;
+    color: #059669;
     font-weight: 700;
 }
 
@@ -2143,13 +2566,13 @@ main.container .envios-container {
     width: 20px;
     height: 20px;
     cursor: pointer;
-    accent-color: var(--primary-color);
+    accent-color: var(--accent-purple);
 }
 
 .aposta-label {
     font-size: 0.85rem;
     font-weight: 600;
-    color: #333;
+    color: var(--text-light);
     white-space: nowrap;
 }
 
@@ -2436,7 +2859,7 @@ main.container .envios-container {
     text-align: center;
     font-size: 1.3rem;
     font-weight: bold;
-    color: #333;
+    color: var(--text-light);
     margin-bottom: 1rem;
 }
 
@@ -2447,12 +2870,12 @@ main.container .envios-container {
 }
 
 .estatistica-item {
-    background: #fff;
+    background: var(--primary-color);
     border-radius: 10px;
     padding: 1rem;
     text-align: center;
     transition: all 0.3s ease;
-    border: 2px solid transparent;
+    border: 2px solid rgba(139, 92, 246, 0.3);
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
@@ -2478,7 +2901,7 @@ main.container .envios-container {
 
 .estatistica-label {
     font-size: 0.8rem;
-    color: #666;
+    color: rgba(248, 250, 252, 0.7);
     text-transform: uppercase;
     font-weight: 600;
     letter-spacing: 0.5px;
@@ -2492,22 +2915,22 @@ main.container .envios-container {
 
 .estatistica-descricao {
     font-size: 0.75rem;
-    color: #999;
+    color: rgba(248, 250, 252, 0.6);
     font-weight: 500;
     text-transform: lowercase;
 }
 
 /* Cores por nível de acerto */
 .estatistica-item[data-acertos="0"] {
-    border-color: #e0e0e0;
+    border-color: rgba(248, 250, 252, 0.2);
 }
 
 .estatistica-item[data-acertos="0"] .estatistica-numero {
-    color: #999;
+    color: rgba(248, 250, 252, 0.5);
 }
 
 .estatistica-item[data-acertos="0"] .estatistica-count {
-    color: #999;
+    color: rgba(248, 250, 252, 0.5);
 }
 
 .estatistica-item[data-acertos="1"] {
@@ -2605,10 +3028,10 @@ main.container .envios-container {
 .estatisticas-usuarios {
     margin: 2rem auto;
     max-width: 1200px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--accent-emerald) 0%, #059669 100%);
     border-radius: 15px;
     padding: 2rem;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.25);
 }
 
 .estatisticas-usuarios .estatisticas-titulo {
@@ -2625,13 +3048,14 @@ main.container .envios-container {
 }
 
 .usuario-stat-card {
-    background: #fff;
+    background: var(--primary-color);
     border-radius: 12px;
     padding: 1.5rem;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+    border: 2px solid rgba(139, 92, 246, 0.3);
 }
 
 .usuario-stat-card:hover {
@@ -2646,14 +3070,14 @@ main.container .envios-container {
     left: 0;
     width: 100%;
     height: 4px;
-    background: linear-gradient(90deg, #667eea, #764ba2);
+    background: linear-gradient(90deg, var(--accent-emerald), #059669);
 }
 
 .usuario-posicao {
     position: absolute;
     top: 10px;
     right: 10px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: linear-gradient(135deg, var(--accent-emerald), #059669);
     color: #fff;
     width: 35px;
     height: 35px;
@@ -2663,13 +3087,13 @@ main.container .envios-container {
     justify-content: center;
     font-weight: bold;
     font-size: 0.9rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
 }
 
 .usuario-nome {
     font-size: 1.2rem;
     font-weight: bold;
-    color: #333;
+    color: var(--text-light);
     margin-bottom: 1rem;
     padding-right: 45px;
 }
@@ -2683,16 +3107,17 @@ main.container .envios-container {
 .usuario-quantidade,
 .usuario-valor {
     flex: 1;
-    background: linear-gradient(135deg, #f5f7fa, #e3e9f3);
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(168, 85, 247, 0.1) 100%);
     padding: 1rem;
     border-radius: 8px;
     text-align: center;
+    border: 1px solid rgba(139, 92, 246, 0.3);
 }
 
 .info-label {
     display: block;
     font-size: 0.75rem;
-    color: #666;
+    color: rgba(248, 250, 252, 0.7);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 0.5rem;
@@ -2703,7 +3128,7 @@ main.container .envios-container {
     display: block;
     font-size: 1.5rem;
     font-weight: bold;
-    color: #667eea;
+    color: var(--accent-emerald);
 }
 
 /* Destaque para top 3 */
@@ -2741,5 +3166,989 @@ main.container .envios-container {
         width: 50px;
         height: 50px;
         font-size: 1.5rem;
+    }
+}
+/* ===== MODALIDADES DE LOTERIA ===== */
+.container-modalidades {
+    max-width: 1400px;
+    margin: 0 auto 3rem;
+    padding: 0 2rem;
+}
+
+.container-modalidades h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-violet));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.modalidades-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+    max-width: 100%;
+    justify-items: center;
+}
+
+.modalidades-grid::after {
+    content: '';
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+}
+
+.modalidade-card {
+    background: linear-gradient(135deg, var(--secondary-color) 0%, rgba(30, 41, 59, 0.8) 100%);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: 8px;
+    padding: 0.6rem 1.3rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    max-width: 240px;
+}
+
+/* Centralizar os últimos 4 cards da segunda linha */
+.modalidade-card:nth-child(7) {
+    grid-column: 2;
+}
+
+.modalidade-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(168, 85, 247, 0.1));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Cores específicas para cada modalidade */
+.modalidade-card[data-modalidade="megasena"] {
+    background: linear-gradient(135deg, rgba(33, 136, 56, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(33, 136, 56, 0.85);
+}
+
+.modalidade-card[data-modalidade="megasena"]::before {
+    background: linear-gradient(135deg, rgba(33, 136, 56, 0.6), rgba(40, 167, 69, 0.5));
+}
+
+.modalidade-card[data-modalidade="megasena"]:hover {
+    border-color: rgb(33, 136, 56);
+    box-shadow: 0 4px 20px rgba(33, 136, 56, 0.8);
+}
+
+.modalidade-card[data-modalidade="lotofacil"] {
+    background: linear-gradient(135deg, rgba(148, 33, 147, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(148, 33, 147, 0.85);
+}
+
+.modalidade-card[data-modalidade="lotofacil"]::before {
+    background: linear-gradient(135deg, rgba(148, 33, 147, 0.6), rgba(186, 85, 211, 0.5));
+}
+
+.modalidade-card[data-modalidade="lotofacil"]:hover {
+    border-color: rgb(148, 33, 147);
+    box-shadow: 0 4px 20px rgba(148, 33, 147, 0.8);
+}
+
+.modalidade-card[data-modalidade="quina"] {
+    background: linear-gradient(135deg, rgba(38, 70, 193, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(38, 70, 193, 0.85);
+}
+
+.modalidade-card[data-modalidade="quina"]::before {
+    background: linear-gradient(135deg, rgba(38, 70, 193, 0.6), rgba(65, 105, 225, 0.5));
+}
+
+.modalidade-card[data-modalidade="quina"]:hover {
+    border-color: rgb(38, 70, 193);
+    box-shadow: 0 4px 20px rgba(38, 70, 193, 0.8);
+}
+
+.modalidade-card[data-modalidade="lotomania"] {
+    background: linear-gradient(135deg, rgba(244, 121, 32, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(244, 121, 32, 0.85);
+}
+
+.modalidade-card[data-modalidade="lotomania"]::before {
+    background: linear-gradient(135deg, rgba(244, 121, 32, 0.6), rgba(255, 140, 50, 0.5));
+}
+
+.modalidade-card[data-modalidade="lotomania"]:hover {
+    border-color: rgb(244, 121, 32);
+    box-shadow: 0 4px 20px rgba(244, 121, 32, 0.8);
+}
+
+.modalidade-card[data-modalidade="duplasena"] {
+    background: linear-gradient(135deg, rgba(163, 73, 164, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(163, 73, 164, 0.85);
+}
+
+.modalidade-card[data-modalidade="duplasena"]::before {
+    background: linear-gradient(135deg, rgba(163, 73, 164, 0.6), rgba(186, 85, 211, 0.5));
+}
+
+.modalidade-card[data-modalidade="duplasena"]:hover {
+    border-color: rgb(163, 73, 164);
+    box-shadow: 0 4px 20px rgba(163, 73, 164, 0.8);
+}
+
+.modalidade-card[data-modalidade="diadesorte"] {
+    background: linear-gradient(135deg, rgba(203, 133, 43, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(203, 133, 43, 0.85);
+}
+
+.modalidade-card[data-modalidade="diadesorte"]::before {
+    background: linear-gradient(135deg, rgba(203, 133, 43, 0.6), rgba(218, 165, 32, 0.5));
+}
+
+.modalidade-card[data-modalidade="diadesorte"]:hover {
+    border-color: rgb(203, 133, 43);
+    box-shadow: 0 4px 20px rgba(203, 133, 43, 0.8);
+}
+
+.modalidade-card[data-modalidade="timemania"] {
+    background: linear-gradient(135deg, rgba(0, 255, 72, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(0, 255, 72, 0.85);
+}
+
+.modalidade-card[data-modalidade="timemania"]::before {
+    background: linear-gradient(135deg, rgba(0, 255, 72, 0.6), rgba(50, 205, 50, 0.5));
+}
+
+.modalidade-card[data-modalidade="timemania"]:hover {
+    border-color: rgb(0, 255, 72);
+    box-shadow: 0 4px 20px rgba(0, 255, 72, 0.8);
+}
+
+.modalidade-card[data-modalidade="maismilionaria"] {
+    background: linear-gradient(135deg, rgba(22, 57, 127, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(22, 57, 127, 0.85);
+}
+
+.modalidade-card[data-modalidade="maismilionaria"]::before {
+    background: linear-gradient(135deg, rgba(22, 57, 127, 0.6), rgba(30, 144, 255, 0.5));
+}
+
+.modalidade-card[data-modalidade="maismilionaria"]:hover {
+    border-color: rgb(22, 57, 127);
+    box-shadow: 0 4px 20px rgba(22, 57, 127, 0.8);
+}
+
+.modalidade-card[data-modalidade="supersete"] {
+    background: linear-gradient(135deg, rgba(164, 210, 51, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(164, 210, 51, 0.85);
+}
+
+.modalidade-card[data-modalidade="supersete"]::before {
+    background: linear-gradient(135deg, rgba(164, 210, 51, 0.6), rgba(173, 255, 47, 0.5));
+}
+
+.modalidade-card[data-modalidade="supersete"]:hover {
+    border-color: rgb(164, 210, 51);
+    box-shadow: 0 4px 20px rgba(164, 210, 51, 0.8);
+}
+
+.modalidade-card[data-modalidade="loteca"] {
+    background: linear-gradient(135deg, rgba(237, 28, 36, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(237, 28, 36, 0.85);
+}
+
+.modalidade-card[data-modalidade="loteca"]::before {
+    background: linear-gradient(135deg, rgba(237, 28, 36, 0.6), rgba(255, 69, 0, 0.5));
+}
+
+.modalidade-card[data-modalidade="loteca"]:hover {
+    border-color: rgb(237, 28, 36);
+    box-shadow: 0 4px 20px rgba(237, 28, 36, 0.8);
+}
+
+.modalidade-card:hover {
+    transform: translateY(-2px);
+}
+
+.modalidade-card:hover::before {
+    opacity: 1;
+}
+
+.modalidade-card.active {
+    border-color: var(--accent-emerald);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, var(--secondary-color) 100%);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+}
+
+.modalidade-card.active::after {
+    content: '✓';
+    position: absolute;
+    top: 0.4rem;
+    right: 0.4rem;
+    background: var(--accent-emerald);
+    color: white;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.7rem;
+    box-shadow: 0 1px 5px rgba(16, 185, 129, 0.5);
+}
+
+.modalidade-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.15rem;
+    text-align: center;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modalidade-icon img {
+    max-width: 100%;
+    max-height: 40px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+/* Cores dinâmicas para numeros-criador, escolhidos-lista e meus-numeros-preview baseadas na modalidade ativa */
+body[data-modalidade-ativa="megasena"] .numeros-criador,
+body[data-modalidade-ativa="megasena"] .escolhidos-lista,
+body[data-modalidade-ativa="megasena"] .meus-numeros-preview {
+    background: linear-gradient(135deg, rgba(33, 136, 56, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%) !important;
+    border-color: rgba(33, 136, 56, 0.85) !important;
+}
+
+body[data-modalidade-ativa="lotofacil"] .numeros-criador,
+body[data-modalidade-ativa="lotofacil"] .escolhidos-lista,
+body[data-modalidade-ativa="lotofacil"] .meus-numeros-preview {
+    background: linear-gradient(135deg, rgba(148, 33, 147, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%) !important;
+    border-color: rgba(148, 33, 147, 0.85) !important;
+}
+
+body[data-modalidade-ativa="quina"] .numeros-criador,
+body[data-modalidade-ativa="quina"] .escolhidos-lista,
+body[data-modalidade-ativa="quina"] .meus-numeros-preview {
+    background: linear-gradient(135deg, rgba(38, 70, 193, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%) !important;
+    border-color: rgba(38, 70, 193, 0.85) !important;
+}
+
+body[data-modalidade-ativa="lotomania"] .numeros-criador,
+body[data-modalidade-ativa="lotomania"] .escolhidos-lista,
+body[data-modalidade-ativa="lotomania"] .meus-numeros-preview {
+    background: linear-gradient(135deg, rgba(244, 121, 32, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%) !important;
+    border-color: rgba(244, 121, 32, 0.85) !important;
+}
+
+body[data-modalidade-ativa="duplasena"] .numeros-criador,
+body[data-modalidade-ativa="duplasena"] .escolhidos-lista,
+body[data-modalidade-ativa="duplasena"] .meus-numeros-preview {
+    background: linear-gradient(135deg, rgba(163, 73, 164, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%) !important;
+    border-color: rgba(163, 73, 164, 0.85) !important;
+}
+
+body[data-modalidade-ativa="diadesorte"] .numeros-criador,
+body[data-modalidade-ativa="diadesorte"] .escolhidos-lista,
+body[data-modalidade-ativa="diadesorte"] .meus-numeros-preview {
+    background: linear-gradient(135deg, rgba(203, 133, 43, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%) !important;
+    border-color: rgba(203, 133, 43, 0.85) !important;
+}
+
+body[data-modalidade-ativa="timemania"] .numeros-criador,
+body[data-modalidade-ativa="timemania"] .escolhidos-lista,
+body[data-modalidade-ativa="timemania"] .meus-numeros-preview {
+    background: linear-gradient(135deg, rgba(0, 255, 72, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%) !important;
+    border-color: rgba(0, 255, 72, 0.85) !important;
+}
+
+body[data-modalidade-ativa="maismilionaria"] .numeros-criador,
+body[data-modalidade-ativa="maismilionaria"] .escolhidos-lista,
+body[data-modalidade-ativa="maismilionaria"] .meus-numeros-preview {
+    background: linear-gradient(135deg, rgba(22, 57, 127, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%) !important;
+    border-color: rgba(22, 57, 127, 0.85) !important;
+}
+
+body[data-modalidade-ativa="supersete"] .numeros-criador,
+body[data-modalidade-ativa="supersete"] .escolhidos-lista,
+body[data-modalidade-ativa="supersete"] .meus-numeros-preview {
+    background: linear-gradient(135deg, rgba(164, 210, 51, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%) !important;
+    border-color: rgba(164, 210, 51, 0.85) !important;
+}
+
+body[data-modalidade-ativa="loteca"] .numeros-criador,
+body[data-modalidade-ativa="loteca"] .escolhidos-lista,
+body[data-modalidade-ativa="loteca"] .meus-numeros-preview {
+    background: linear-gradient(135deg, rgba(237, 28, 36, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%) !important;
+    border-color: rgba(237, 28, 36, 0.85) !important;
+}
+
+.modalidade-card h3 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-light);
+    margin-bottom: 0.15rem;
+    position: relative;
+    z-index: 1;
+}
+
+.modalidade-card p {
+    color: rgba(248, 250, 252, 0.8);
+    font-size: 0.65rem;
+    margin-bottom: 0.25rem;
+    position: relative;
+    z-index: 1;
+    line-height: 1.2;
+}
+
+.modalidade-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.modalidade-info span {
+    background: rgba(139, 92, 246, 0.2);
+    padding: 0.2rem 0.4rem;
+    border-radius: 10px;
+    font-size: 0.55rem;
+    color: var(--text-light);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+/* Info dinâmica dos concursos */
+.modalidade-info-dinamica {
+    margin-top: 0.8rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 0.8rem;
+}
+
+.concurso-numero {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+}
+
+.premio-valor {
+    font-size: 0.85rem;
+    color: var(--accent-emerald);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.ultimo-resultado {
+    margin-top: 0.5rem;
+}
+
+.label-resultado {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.5);
+    display: block;
+    margin-bottom: 0.3rem;
+}
+
+.numeros-sorteados {
+    display: flex;
+    gap: 0.2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.numeros-completos {
+    display: flex;
+    gap: 0.2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.numero-mini {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    background: rgba(139, 92, 246, 0.2);
+    border: 1px solid rgba(139, 92, 246, 0.4);
+    border-radius: 50%;
+    font-size: 0.65rem;
+    font-weight: bold;
+    color: var(--text-light);
+}
+
+.numero-mini.mais {
+    background: rgba(255, 152, 0, 0.2);
+    border: 1px solid rgba(255, 152, 0, 0.5);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    position: relative;
+    z-index: 100;
+    pointer-events: auto;
+}
+
+.numero-mini.mais:hover {
+    transform: scale(1.15);
+    background: rgba(255, 152, 0, 0.3);
+    border-color: rgba(255, 152, 0, 0.7);
+}
+
+/* Popup de números */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.popup-overlay.active {
+    opacity: 1;
+}
+
+.popup-numeros {
+    background: var(--bg-dark);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: 1rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow: hidden;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.popup-overlay.active .popup-numeros {
+    transform: scale(1);
+}
+
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1));
+}
+
+.popup-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.popup-close {
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.popup-close:hover {
+    color: var(--text-light);
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(90deg);
+}
+
+.popup-body {
+    padding: 2rem;
+    overflow-y: auto;
+    max-height: calc(80vh - 100px);
+}
+
+.popup-concurso {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin: 0 0 1.5rem 0;
+}
+
+.popup-numeros-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    gap: 0.8rem;
+    justify-items: center;
+}
+
+.numero-popup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2));
+    border: 2px solid rgba(139, 92, 246, 0.4);
+    color: var(--text-light);
+    font-size: 1rem;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.numero-popup:hover {
+    transform: scale(1.1);
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(59, 130, 246, 0.3));
+    border-color: rgba(139, 92, 246, 0.6);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.modalidade-card.active .modalidade-info span {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: rgba(16, 185, 129, 0.4);
+    color: var(--accent-emerald);
+    font-weight: 600;
+}
+
+/* Instruções das modalidades */
+.modalidade-instrucoes {
+    position: relative;
+    min-height: 200px;
+}
+
+.instrucao {
+    display: none;
+    background: linear-gradient(135deg, var(--secondary-color) 0%, rgba(30, 41, 59, 0.9) 100%);
+    border: 2px solid rgba(139, 92, 246, 0.3);
+    border-radius: 16px;
+    padding: 2rem;
+    animation: fadeIn 0.3s ease;
+}
+
+.instrucao.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.instrucao h4 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(139, 92, 246, 0.3);
+}
+
+.instrucao ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+}
+
+.instrucao li {
+    color: rgba(248, 250, 252, 0.9);
+    font-size: 1rem;
+    padding: 0.8rem 1rem;
+    background: rgba(139, 92, 246, 0.1);
+    border-radius: 8px;
+    border-left: 4px solid var(--accent-purple);
+    transition: all 0.2s ease;
+}
+
+.instrucao li:hover {
+    background: rgba(139, 92, 246, 0.2);
+    transform: translateX(5px);
+}
+
+.instrucao strong {
+    color: var(--accent-emerald);
+    font-weight: 700;
+}
+
+/* Responsive para modalidades */
+@media (max-width: 768px) {
+    .modalidades-grid {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 0.6rem;
+        overflow-x: auto;
+    }
+
+    .modalidade-card {
+        padding: 0.4rem 0.8rem;
+    }
+
+    .modalidade-icon {
+        font-size: 1.3rem;
+    }
+
+    .modalidade-card h3 {
+        font-size: 0.75rem;
+    }
+
+    .instrucao {
+        padding: 1.5rem;
+    }
+
+    .instrucao h4 {
+        font-size: 1.1rem;
+    }
+
+    .instrucao li {
+        font-size: 0.9rem;
+        padding: 0.6rem 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .modalidades-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .container-modalidades h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* ===== LOTECA STYLES ===== */
+
+.loteca-container {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 1rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.loteca-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.loteca-info h3 {
+    color: var(--text-light);
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.loteca-rodada {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+}
+
+.loteca-data {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+}
+
+.loteca-legenda {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.loteca-legenda span {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+}
+
+.loteca-legenda strong {
+    color: var(--accent-purple);
+    font-size: 1.1rem;
+    margin-right: 0.3rem;
+}
+
+.loteca-progresso {
+    margin-bottom: 2rem;
+}
+
+.loteca-progresso-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.loteca-progresso-texto {
+    color: var(--text-light);
+    font-weight: bold;
+}
+
+.loteca-progresso-barra {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.loteca-progresso-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-purple), var(--accent-violet));
+    transition: width 0.3s ease;
+    border-radius: 1rem;
+}
+
+.loteca-jogos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.loteca-jogo-item {
+    display: grid;
+    grid-template-columns: 50px 1fr auto;
+    align-items: center;
+    gap: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1rem 1.5rem;
+    border-radius: 0.8rem;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.loteca-jogo-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+    border-color: rgba(139, 92, 246, 0.3);
+}
+
+.loteca-jogo-numero {
+    background: var(--accent-purple);
+    color: var(--text-dark);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.loteca-jogo-times {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
+.time-casa,
+.time-visitante {
+    color: var(--text-light);
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.vs {
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: bold;
+}
+
+.loteca-jogo-opcoes {
+    display: flex;
+    gap: 0.8rem;
+}
+
+.loteca-opcao {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: var(--text-light);
+    font-size: 1.3rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loteca-opcao:hover {
+    background: rgba(139, 92, 246, 0.3);
+    border-color: var(--accent-purple);
+    transform: scale(1.1);
+}
+
+.loteca-opcao.selected {
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-violet));
+    border-color: var(--accent-purple);
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.5);
+    transform: scale(1.15);
+}
+
+.loteca-acoes {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-loteca-aleatorio,
+.btn-loteca-limpar,
+.btn-loteca-confirmar {
+    padding: 1rem 2rem;
+    border-radius: 0.8rem;
+    border: none;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-loteca-aleatorio {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+.btn-loteca-aleatorio:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.btn-loteca-limpar {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-light);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-loteca-limpar:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.btn-loteca-confirmar {
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-violet));
+    color: white;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-loteca-confirmar.enabled {
+    opacity: 1;
+    cursor: pointer;
+}
+
+.btn-loteca-confirmar.enabled:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+}
+
+.loteca-erro {
+    text-align: center;
+    padding: 3rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.loteca-erro span {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.btn-recarregar {
+    margin-top: 1rem;
+    padding: 0.8rem 1.5rem;
+    background: var(--accent-purple);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-recarregar:hover {
+    background: var(--accent-violet);
+}
+
+@media (max-width: 768px) {
+    .loteca-jogo-item {
+        grid-template-columns: 40px 1fr;
+        gap: 1rem;
+    }
+
+    .loteca-jogo-opcoes {
+        grid-column: 2;
+        justify-content: flex-end;
+        margin-top: 1rem;
+    }
+
+    .loteca-jogo-times {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.3rem;
+    }
+
+    .vs {
+        display: none;
+    }
+
+    .loteca-opcao {
+        width: 50px;
+        height: 50px;
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .loteca-container {
+        padding: 1rem;
+    }
+
+    .loteca-legenda {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .loteca-acoes {
+        flex-direction: column;
+    }
+
+    .btn-loteca-aleatorio,
+    .btn-loteca-limpar,
+    .btn-loteca-confirmar {
+        width: 100%;
     }
 }

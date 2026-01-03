@@ -1,6 +1,7 @@
 
 
 const LoginModel = require('../models/LoginModel');
+const { getInfoModalidade } = require('../config/precos');
 
 exports.jogosRealizados = async (req, res) => {
     try {
@@ -59,7 +60,8 @@ exports.jogosRealizados = async (req, res) => {
             jogos: todosJogos,
             totalJogos: todosJogos.length,
             valorTotal: (todosJogos.length * 6).toFixed(2).replace('.', ','),
-            estatisticasUsuarios: estatisticasArray
+            estatisticasUsuarios: estatisticasArray,
+            getInfoModalidade: getInfoModalidade
         });
     } catch (e) {
         console.error('Erro ao carregar jogos realizados:', e);
@@ -68,7 +70,8 @@ exports.jogosRealizados = async (req, res) => {
             user: req.session.user,
             jogos: [],
             totalJogos: 0,
-            valorTotal: '0,00'
+            valorTotal: '0,00',
+            getInfoModalidade: getInfoModalidade
         });
     }
 }

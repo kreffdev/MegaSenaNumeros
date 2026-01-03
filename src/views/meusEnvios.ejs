@@ -26,9 +26,22 @@
                     <div class="sequencia-row">
                       <span class="seq-num">#<%= idx + 1 %></span>
                       <ul class="numeros">
-                        <% (seq.numeros || []).forEach(function(n) { %>
+                        <% 
+                        const ehMaisMilionaria = seq.modalidade === 'maismilionaria';
+                        const numeros = seq.numeros || [];
+                        const numerosPrincipais = ehMaisMilionaria && numeros.length >= 8 ? numeros.slice(0, -2) : numeros;
+                        const trevos = ehMaisMilionaria && numeros.length >= 8 ? numeros.slice(-2) : [];
+                        
+                        numerosPrincipais.forEach(function(n) { %>
                           <li class="numero"><%= n %></li>
-                        <% }); %>
+                        <% }); 
+                        
+                        if (trevos.length > 0) { %>
+                          <li class="separador" style="color: #16397F; font-weight: bold; font-size: 1.2rem;">|</li>
+                          <% trevos.forEach(function(t) { %>
+                            <li class="numero trevo" style="background: linear-gradient(135deg, rgba(22, 57, 127, 0.85), rgba(22, 57, 127, 0.95)); border-color: rgba(22, 57, 127, 1); box-shadow: 0 0 8px rgba(22, 57, 127, 0.3);"><%= t %></li>
+                          <% }); 
+                        } %>
                       </ul>
                     </div>
                   <% }); %>

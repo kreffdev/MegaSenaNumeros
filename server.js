@@ -20,6 +20,12 @@ mongoose.connect(process.env.CONNECTIONSTRING, {
   socketTimeoutMS: 45000,
 })
 .then(() => {
+  console.log('✓ Conectado ao MongoDB');
+  
+  // Iniciar serviço de sincronização unificado (todas as loterias + Loteca)
+  const SyncService = require('./src/services/SyncService');
+  SyncService.iniciar();
+  
   app.emit('pronto');
 })
 .catch(e => console.log(e));

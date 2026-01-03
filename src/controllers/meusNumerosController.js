@@ -1,4 +1,5 @@
 const LoginModel = require('../models/LoginModel');
+const { getInfoModalidade } = require('../config/precos');
 
 exports.index = async (req, res) => {
     try {
@@ -15,7 +16,8 @@ exports.index = async (req, res) => {
         res.render('meusNumeros', {
             titulo: 'Meus Números',
             jogos: jogos,
-            user: req.session.user
+            user: req.session.user,
+            getInfoModalidade: getInfoModalidade
         });
     } catch (erro) {
         console.error('Erro ao buscar meus números:', erro);

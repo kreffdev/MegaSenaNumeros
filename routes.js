@@ -9,6 +9,8 @@ const jogosController = require('./src/controllers/jogosController');
 const enviadosController = require('./src/controllers/enviadosController');
 const notificationsController = require('./src/controllers/notificationsController');
 const jogosRealizadosController = require('./src/controllers/jogosRealizados');
+const lotecaController = require('./src/controllers/lotecaController');
+const loteriasController = require('./src/controllers/loteriasController');
 // CSRF protection com cookie ao invés de session
 const csrfProtection = csurf({ 
   cookie: true
@@ -55,5 +57,15 @@ route.get('/api/jogos-recebidos', jogosController.obterJogosRecebidos);
 route.delete('/api/jogos-recebidos/deletar-todos', jogosController.deletarTodosRecebidos);
 route.post('/api/jogos-recebidos/:id/marcar-aposta', jogosController.marcarAposta);
 route.delete('/api/jogos-recebidos/:id', jogosController.deletarJogoRecebido);
+
+// API - Rotas da Loteca
+route.get('/api/loteca/jogos', lotecaController.obterJogosAtuais);
+route.post('/api/loteca/sincronizar', lotecaController.sincronizarManual);
+route.post('/api/loteca/salvar-palpites', lotecaController.salvarPalpites);
+
+// API - Rotas de Loterias (dados dos concursos)
+route.get('/api/loterias/concursos', loteriasController.obterTodosConcursos);
+route.get('/api/loterias/concurso/:modalidade', loteriasController.obterConcursoPorModalidade);
+route.post('/api/loterias/sincronizar', loteriasController.sincronizarManual);
 
 module.exports = route;

@@ -1,0 +1,314 @@
+/**
+ * Módulo: Jogos Realizados
+ * Gerencia funcionalidades da página de jogos realizados/apostas feitas
+ */
+
+// Event listeners quando DOM carregar
+document.addEventListener('DOMContentLoaded', function() {
+    // Event delegation para os botões "..."
+    document.body.addEventListener('click', (e) => {
+        if (e.target.classList.contains('numero-mini') && e.target.classList.contains('mais')) {
+            const jogoId = e.target.dataset.jogoId;
+            const numeros = JSON.parse(e.target.dataset.numeros || '[]');
+            const modalidade = e.target.dataset.modalidade;
+            const trevos = JSON.parse(e.target.dataset.trevos || '[]');
+            const mesDaSorte = e.target.dataset.mes || null;
+            const timeCoracao = e.target.dataset.time || null;
+            
+            const extras = {
+                trevos: trevos.length > 0 ? trevos : null,
+                mesDaSorte: mesDaSorte || null,
+                timeCoracao: timeCoracao || null
+            };
+            
+            mostrarTodosNumeros(jogoId, numeros, modalidade, extras);
+        }
+    });
+});
+
+function verificarNumeros() {
+    console.log('🔍 verificarNumeros() chamada');
+    const input = document.getElementById('verifica-numeros-input');
+    console.log('Input encontrado:', !!input);
+    
+    const raw = input ? input.value : '';
+    console.log('Valor raw:', raw);
+    
+    const parts = raw.split(',').map(s => s.trim()).filter(Boolean);
+    if (parts.length === 0) {
+        alert('Digite entre 1 e 6 números separados por vírgula.');
+        return;
+    }
+
+    if (parts.length > 6) {
+        alert('Máximo de 6 números.');
+        return;
+    }
+
+    const numeros = [];
+    for (let p of parts) {
+        const num = parseInt(p, 10);
+        if (Number.isNaN(num) || num < 1 || num > 60) {
+            alert(`Número inválido: ${p}. Use valores entre 1 e 60.`);
+            return;
+        }
+        if (!numeros.includes(num)) numeros.push(num);
+    }
+    
+    console.log('Números a verificar:', numeros);
+
+    // Limpa destaques anteriores
+    document.querySelectorAll('.numero-mini.acertou').forEach(el => el.classList.remove('acertou'));
+    document.querySelectorAll('.numero-badge.acertou').forEach(el => el.classList.remove('acertou'));
+    document.querySelectorAll('.jogo-card').forEach(card => { 
+        card.classList.remove('has-acertos'); 
+        card.classList.remove('ganhou'); 
+    });
+
+    let vencedorEncontrado = false;
+    let numerosVencedores = [];
+    let tipoVencedor = '';
+    
+    // Contador de acertos por quantidade (0 a 6)
+    const estatisticas = [0, 0, 0, 0, 0, 0, 0];
+
+    // Para cada jogo, verifica quais números batem e marca
+    document.querySelectorAll('.jogo-card').forEach(card => {
+        // Pegar TODOS os números do cartão (numero-mini E numero-badge, excluindo trevos)
+        const numerosElements = Array.from(card.querySelectorAll('.numero-mini:not(.mais), .numero-badge:not(.trevo-badge)'));
+        
+        console.log('Card:', card.querySelector('.jogo-numero')?.textContent);
+        console.log('Elementos de números encontrados:', numerosElements.length);
+        
+        let matches = 0;
+        const numerosDoCartao = [];
+        
+        numerosElements.forEach(el => {
+            const text = el.textContent.trim();
+            const val = parseInt(text, 10);
+            
+            if (!isNaN(val)) {
+                numerosDoCartao.push(val);
+                if (numeros.includes(val)) {
+                    el.classList.add('acertou');
+                    matches += 1;
+                }
+            }
+        });
+        
+        console.log('Números do cartão:', numerosDoCartao);
+        console.log('Acertos:', matches);
+        console.log('Total de números no cartão:', numerosDoCartao.length);
+        console.log('Números do cartão:', numerosDoCartao);
+        console.log('Acertos:', matches);
+        console.log('Total de números no cartão:', numerosDoCartao.length);
+        
+        // Incrementar estatística baseado no número de acertos
+        estatisticas[matches]++;
+
+        if (matches > 0) card.classList.add('has-acertos');
+
+        // Se acertou todos os números do cartão (ganhou)
+        // IMPORTANTE: Para ganhar, TODOS os números do cartão devem estar nos números sorteados
+        if (matches === numerosDoCartao.length && numerosDoCartao.length > 0) {
+            card.classList.add('ganhou');
+            console.log('🎉🎉🎉 VENCEDOR ENCONTRADO!');
+            if (!vencedorEncontrado) {
+                vencedorEncontrado = true;
+                numerosVencedores = numerosDoCartao.map(n => String(n).padStart(2, '0'));
+                // Identificar tipo da aposta
+                const origemBadge = card.querySelector('.origem-badge');
+                tipoVencedor = origemBadge ? origemBadge.textContent.trim() : 'Aposta Realizada';
+            }
+        }
+    });
+    
+    // Exibir estatísticas
+    exibirEstatisticas(estatisticas);
+
+    console.log('Vencedor encontrado:', vencedorEncontrado);
+    console.log('Números vencedores:', numerosVencedores);
+
+    // Se encontrou vencedor, mostra o popup
+    if (vencedorEncontrado) {
+        console.log('🎉 Chamando mostrarPopupVencedor()');
+        mostrarPopupVencedor(numerosVencedores, tipoVencedor);
+    } else {
+        console.log('❌ Nenhum vencedor encontrado');
+        // Rolagem suave para área de jogos para ver os resultados
+        const grid = document.querySelector('.jogos-grid');
+        if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+function exibirEstatisticas(estatisticas) {
+    const container = document.getElementById('estatisticas-acertos');
+    if (!container) return;
+    
+    // Atualizar contadores
+    for (let i = 0; i <= 6; i++) {
+        const countElement = container.querySelector(`[data-acertos="${i}"] .estatistica-count`);
+        if (countElement) {
+            countElement.textContent = estatisticas[i];
+        }
+    }
+    
+    // Mostrar container
+    container.classList.add('show');
+}
+
+function mostrarPopupVencedor(numeros, tipo) {
+    console.log('🎊 mostrarPopupVencedor() chamada');
+    console.log('Números:', numeros);
+    console.log('Tipo:', tipo);
+    
+    const modal = document.getElementById('modal-vencedor');
+    console.log('Modal encontrada:', !!modal);
+    
+    if (!modal) {
+        console.error('❌ Modal #modal-vencedor não encontrada no DOM!');
+        alert('VENCEDOR! Números: ' + numeros.join(', '));
+        return;
+    }
+    
+    const numerosContainer = modal.querySelector('.vencedor-numeros');
+    const usuarioElement = modal.querySelector('.modal-vencedor-usuario');
+    
+    console.log('numerosContainer:', !!numerosContainer);
+    console.log('usuarioElement:', !!usuarioElement);
+    
+    // Limpar números anteriores
+    numerosContainer.innerHTML = '';
+    
+    // Adicionar números vencedores
+    numeros.forEach(num => {
+        const span = document.createElement('span');
+        span.className = 'vencedor-numero';
+        span.textContent = num;
+        numerosContainer.appendChild(span);
+    });
+    
+    // Atualizar tipo da aposta
+    if (usuarioElement && tipo) {
+        usuarioElement.innerHTML = `<span>Aposta:</span> ${tipo}`;
+    }
+    
+    // Mostrar modal
+    console.log('Adicionando classe .show');
+    modal.classList.add('show');
+    
+    console.log('Classes da modal:', modal.className);
+    console.log('Style display:', modal.style.display);
+    
+    // Tocar música de vitória
+    try {
+        console.log('🎵 Tentando tocar música...');
+        const audio = new Audio('/assets/audios/weAreTheChamp.m4a');
+        audio.volume = 0.5;
+        audio.play().then(() => {
+            console.log('✅ Música tocando!');
+        }).catch(err => {
+            console.log('❌ Não foi possível reproduzir o áudio:', err);
+        });
+    } catch(e) {
+        console.log('❌ Erro ao carregar áudio:', e);
+    }
+}
+
+function fecharPopupVencedor() {
+    const modal = document.getElementById('modal-vencedor');
+    modal.classList.remove('show');
+    
+    // Rolagem suave para área de jogos após fechar
+    const grid = document.querySelector('.jogos-grid');
+    if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function copiarNumeros(numeros) {
+    navigator.clipboard.writeText(numeros).then(() => {
+        const btn = event.target;
+        const textoOriginal = btn.innerHTML;
+        btn.innerHTML = '✅ Copiado!';
+        btn.style.backgroundColor = '#22c55e';
+        
+        setTimeout(() => {
+            btn.innerHTML = textoOriginal;
+            btn.style.backgroundColor = '';
+        }, 2000);
+    }).catch(err => {
+        console.error('Erro ao copiar:', err);
+        alert('❌ Erro ao copiar números');
+    });
+}
+
+function mostrarTodosNumeros(jogoId, numeros, modalidade, extras = {}) {
+    const overlay = document.createElement('div');
+    overlay.className = 'popup-overlay';
+    
+    const popup = document.createElement('div');
+    popup.className = 'popup-numeros';
+    
+    let numerosHTML = numeros.map(n => `<span class="numero-popup">${String(n).padStart(2, '0')}</span>`).join('');
+    
+    let extrasHTML = '';
+    if (extras.trevos && extras.trevos.length > 0) {
+        extrasHTML += '<p style="color: var(--text-muted); margin: 1.5rem 0 0.8rem; text-align: center; font-weight: 600;">🍀 Trevos da Sorte</p>';
+        extrasHTML += '<div class="popup-numeros-grid">';
+        extras.trevos.forEach(trevo => {
+            extrasHTML += `<span class="numero-popup" style="background: linear-gradient(135deg, rgba(22, 57, 127, 0.2), rgba(22, 57, 127, 0.3)); border-color: rgba(22, 57, 127, 0.5);">${trevo}</span>`;
+        });
+        extrasHTML += '</div>';
+    }
+    
+    if (extras.mesDaSorte) {
+        extrasHTML += `<p style="background: linear-gradient(135deg, rgba(203, 133, 43, 0.2), rgba(203, 133, 43, 0.3)); border: 2px solid rgba(203, 133, 43, 0.5); color: rgba(203, 133, 43, 1); padding: 0.7rem 1.5rem; border-radius: 2rem; font-weight: bold; text-align: center; margin-top: 1.5rem;">📅 ${extras.mesDaSorte}</p>`;
+    }
+    
+    if (extras.timeCoracao) {
+        extrasHTML += `<p style="background: linear-gradient(135deg, rgba(0, 255, 72, 0.2), rgba(0, 255, 72, 0.3)); border: 2px solid rgba(0, 255, 72, 0.5); color: rgba(0, 255, 72, 1); padding: 0.7rem 1.5rem; border-radius: 2rem; font-weight: bold; text-align: center; margin-top: 1rem;">⚽ ${extras.timeCoracao}</p>`;
+    }
+    
+    popup.innerHTML = `
+        <div class="popup-header">
+            <h3>${modalidade} - Jogo #${jogoId}</h3>
+            <span class="popup-close">&times;</span>
+        </div>
+        <div class="popup-body">
+            <div class="popup-numeros-grid">
+                ${numerosHTML}
+            </div>
+            ${extrasHTML}
+        </div>
+    `;
+    
+    overlay.appendChild(popup);
+    document.body.appendChild(overlay);
+    
+    setTimeout(() => overlay.classList.add('active'), 10);
+    
+    const btnClose = popup.querySelector('.popup-close');
+    btnClose.addEventListener('click', () => fecharPopupNumeros(overlay));
+    
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) fecharPopupNumeros(overlay);
+    });
+    
+    const handleEsc = (e) => {
+        if (e.key === 'Escape') {
+            fecharPopupNumeros(overlay);
+            document.removeEventListener('keydown', handleEsc);
+        }
+    };
+    document.addEventListener('keydown', handleEsc);
+}
+
+function fecharPopupNumeros(overlay) {
+    overlay.classList.remove('active');
+    setTimeout(() => overlay.remove(), 300);
+}
+
+// Expor funções globalmente para serem acessadas pelo onclick
+window.verificarNumeros = verificarNumeros;
+window.fecharPopupVencedor = fecharPopupVencedor;
+window.copiarNumeros = copiarNumeros;
+window.mostrarTodosNumeros = mostrarTodosNumeros;

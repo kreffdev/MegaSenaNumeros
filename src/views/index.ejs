@@ -11,12 +11,228 @@
                 <p>Por favor, faça login para acessar seus jogos.</p>
             <% } %>
         </div>
+        <section class="container-modalidades">
+            <h2>Escolha a Modalidade</h2>
+            <div class="modalidades-grid">
+                <div class="modalidade-card active" data-modalidade="megasena">
+                    <div class="modalidade-icon">
+                        <img src="/assets/img/logos/logo-mega.png" alt="Mega-Sena">
+                    </div>
+                    <h3>Mega-Sena</h3>
+                    <p>Escolha 6 números de 1 a 60</p>
+                    <div class="modalidade-info">
+                        <span>Sorteios: Quarta e Sábado</span>
+                    </div>
+                </div>
+                <div class="modalidade-card" data-modalidade="lotofacil">
+                    <div class="modalidade-icon">
+                        <img src="/assets/img/logos/logo-lotofacil.png" alt="Lotofácil">
+                    </div>
+                    <h3>Lotofácil</h3>
+                    <p>Escolha 15 a 20 números de 1 a 25</p>
+                    <div class="modalidade-info">
+                        <span>Sorteios: Segunda a Sábado</span>
+                    </div>
+                </div>
+                <div class="modalidade-card" data-modalidade="quina">
+                    <div class="modalidade-icon">
+                        <img src="/assets/img/logos/logo-quina.png" alt="Quina">
+                    </div>
+                    <h3>Quina</h3>
+                    <p>Escolha 5 a 15 números de 1 a 80</p>
+                    <div class="modalidade-info">
+                        <span>Sorteios: Segunda a Sábado</span>
+                    </div>
+                </div>
+                <div class="modalidade-card" data-modalidade="lotomania">
+                    <div class="modalidade-icon">
+                        <img src="/assets/img/logos/logo-lotomania.png" alt="Lotomania">
+                    </div>
+                    <h3>Lotomania</h3>
+                    <p>Escolha 50 números de 0 a 99</p>
+                    <div class="modalidade-info">
+                        <span>Sorteios: Terça e Sexta</span>
+                    </div>
+                </div>
+                <div class="modalidade-card" data-modalidade="duplasena">
+                    <div class="modalidade-icon">
+                        <img src="/assets/img/logos/logo-duplasena.png" alt="Dupla Sena">
+                    </div>
+                    <h3>Dupla Sena</h3>
+                    <p>Escolha 6 a 15 números de 1 a 50</p>
+                    <div class="modalidade-info">
+                        <span>Dois sorteios por concurso</span>
+                    </div>
+                </div>
+                <div class="modalidade-card" data-modalidade="diadesorte">
+                    <div class="modalidade-icon">
+                        <img src="/assets/img/logos/logo-diadasorte.png" alt="Dia de Sorte">
+                    </div>
+                    <h3>Dia de Sorte</h3>
+                    <p>Escolha 7 a 15 números de 1 a 31</p>
+                    <div class="modalidade-info">
+                        <span>+ Mês da Sorte</span>
+                    </div>
+                </div>
+                <div class="modalidade-card" data-modalidade="timemania">
+                    <div class="modalidade-icon">
+                        <img src="/assets/img/logos/logo-timemania.png" alt="Timemania">
+                    </div>
+                    <h3>Timemania</h3>
+                    <p>Escolha 10 números de 1 a 80</p>
+                    <div class="modalidade-info">
+                        <span>+ Time do Coração</span>
+                    </div>
+                </div>
+                <div class="modalidade-card" data-modalidade="maismilionaria">
+                    <div class="modalidade-icon">
+                        <img src="/assets/img/logos/logo-maismilionaria.png" alt="+Milionária">
+                    </div>
+                    <h3>+Milionária</h3>
+                    <p>6 números de 1 a 50 + 2 trevos</p>
+                    <div class="modalidade-info">
+                        <span>Prêmios milionários</span>
+                    </div>
+                </div>
+                <div class="modalidade-card" data-modalidade="supersete">
+                    <div class="modalidade-icon">
+                        <img src="/assets/img/logos/logo-supersete.png" alt="Super Sete">
+                    </div>
+                    <h3>Super Sete</h3>
+                    <p>7 colunas de 0 a 9</p>
+                    <div class="modalidade-info">
+                        <span>Sorteios: Segunda, Quarta e Sexta</span>
+                    </div>
+                </div>
+                <div class="modalidade-card" data-modalidade="loteca">
+                    <div class="modalidade-icon">
+                        <img src="/assets/img/logos/logo-lototeca.png" alt="Loteca">
+                    </div>
+                    <h3>Loteca</h3>
+                    <p>14 jogos de futebol</p>
+                    <div class="modalidade-info">
+                        <span>Palpites: Coluna 1, Meio, Coluna 2</span>
+                    </div>
+                </div>
+            </div>
+        </section>
         <section class="main-container">
             <div class="numeros-criador">
                 <div class="header-criador">
                     <h2>Escolha seus números</h2>
                     <button id="btn-gerar-aleatorio" class="btn-gerar-aleatorio">🎲 Aleatório</button>
                 </div>
+                <!-- Seletor de Mês da Sorte (apenas para Dia de Sorte) -->
+                <div id="mes-sorte-container" class="mes-sorte-container" style="display: none;">
+                    <label for="mes-sorte">🌟 Mês da Sorte:</label>
+                    <select id="mes-sorte" class="mes-sorte-select">
+                        <option value="">Selecione o mês</option>
+                        <option value="1">Janeiro</option>
+                        <option value="2">Fevereiro</option>
+                        <option value="3">Março</option>
+                        <option value="4">Abril</option>
+                        <option value="5">Maio</option>
+                        <option value="6">Junho</option>
+                        <option value="7">Julho</option>
+                        <option value="8">Agosto</option>
+                        <option value="9">Setembro</option>
+                        <option value="10">Outubro</option>
+                        <option value="11">Novembro</option>
+                        <option value="12">Dezembro</option>
+                    </select>
+                </div>
+                <!-- Seletor de Time do Coração (apenas para Timemania) -->
+                <div id="time-coracao-container" class="time-coracao-container" style="display: none;">
+                    <label for="time-coracao">⚽ Time do Coração:</label>
+                    <select id="time-coracao" class="time-coracao-select">
+                        <option value="">Selecione o time</option>
+                        <option value="1">Flamengo</option>
+                        <option value="2">Palmeiras</option>
+                        <option value="3">Corinthians</option>
+                        <option value="4">São Paulo</option>
+                        <option value="5">Fluminense</option>
+                        <option value="6">Santos</option>
+                        <option value="7">Grêmio</option>
+                        <option value="8">Internacional</option>
+                        <option value="9">Atlético-MG</option>
+                        <option value="10">Cruzeiro</option>
+                        <option value="11">Botafogo</option>
+                        <option value="12">Vasco</option>
+                        <option value="13">Athletico-PR</option>
+                        <option value="14">Bahia</option>
+                        <option value="15">Fortaleza</option>
+                        <option value="16">Ceará</option>
+                        <option value="17">Sport</option>
+                        <option value="18">Vitória</option>
+                        <option value="19">Goiás</option>
+                        <option value="20">Coritiba</option>
+                        <option value="21">Avaí</option>
+                        <option value="22">Chapecoense</option>
+                        <option value="23">Ponte Preta</option>
+                        <option value="24">Guarani</option>
+                        <option value="25">América-MG</option>
+                        <option value="26">Cuiabá</option>
+                        <option value="27">Red Bull Bragantino</option>
+                        <option value="28">Juventude</option>
+                        <option value="29">Atlético-GO</option>
+                        <option value="30">CSA</option>
+                    </select>
+                </div>
+                <!-- Seletor de Trevos (apenas para +Milionária) -->
+                <div id="trevos-container" class="trevos-container" style="display: none;">
+                    <label>🍀 Trevos da Sorte:</label>
+                    <div class="trevos-grid">
+                        <button type="button" class="trevo-btn" data-trevo="1">1</button>
+                        <button type="button" class="trevo-btn" data-trevo="2">2</button>
+                        <button type="button" class="trevo-btn" data-trevo="3">3</button>
+                        <button type="button" class="trevo-btn" data-trevo="4">4</button>
+                        <button type="button" class="trevo-btn" data-trevo="5">5</button>
+                        <button type="button" class="trevo-btn" data-trevo="6">6</button>
+                    </div>
+                    <p class="trevos-info">Escolha <strong>2 trevos</strong> de 1 a 6</p>
+                </div>
+                
+                <!-- Interface da Loteca -->
+                <div id="loteca-container" class="loteca-container" style="display: none;">
+                    <div class="loteca-header">
+                        <div class="loteca-info">
+                            <h3>⚽ Concurso <span id="loteca-concurso-numero">-</span></h3>
+                            <p id="loteca-rodada" class="loteca-rodada">-</p>
+                            <p id="loteca-data-atualizacao" class="loteca-data">-</p>
+                        </div>
+                        <div class="loteca-legenda">
+                            <span><strong>1</strong> - Vitória Time Casa</span>
+                            <span><strong>X</strong> - Empate</span>
+                            <span><strong>2</strong> - Vitória Time Visitante</span>
+                        </div>
+                    </div>
+                    
+                    <div class="loteca-progresso">
+                        <div class="loteca-progresso-header">
+                            <span class="loteca-progresso-texto">0 de 14 jogos</span>
+                        </div>
+                        <div class="loteca-progresso-barra">
+                            <div class="loteca-progresso-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div id="loteca-jogos-lista" class="loteca-jogos-lista">
+                        <!-- Jogos serão carregados aqui via JavaScript -->
+                    </div>
+                    
+                    <div class="loteca-acoes">
+                        <button onclick="gerarPalpitesAleatorios()" class="btn-loteca-aleatorio">
+                            🎲 Palpites Aleatórios
+                        </button>
+                        <button onclick="limparPalpites()" class="btn-loteca-limpar">
+                            🔄 Limpar
+                        </button>
+                        <button id="btn-confirmar-loteca" onclick="confirmarPalpitesLoteca()" class="btn-loteca-confirmar" disabled>
+                            ✓ Confirmar Palpites
+                        </button>
+                    </div>
+                </div>
+                
                 <ul>
                     <li><button>1</button></li>
                     <li><button>2</button></li>
@@ -80,7 +296,8 @@
                     <li><button>60</button></li>
                 </ul>
             </div>
-            <div class="numeros-escolhidos">
+            <div class="container-numeros-escolhidos-instrucoes">
+                <div class="numeros-escolhidos">
                 <h2>Números escolhidos</h2>
                 <div class="escolhidos-lista">
                     <!-- Números escolhidos aparecerão aqui -->
@@ -92,6 +309,52 @@
                     💾 Registrar Sequências
                 </button>
             </div>
+            
+            <!-- Instruções das modalidades -->
+            <div class="modalidade-instrucoes">
+                <div class="instrucao active" data-instrucao="megasena">
+                    <h4>📋 Mega-Sena</h4>
+                    <p>Escolha de <strong>6 a 15 números</strong> entre 1 e 60. Ganha quem acertar 4, 5 ou 6 números.</p>
+                </div>
+                <div class="instrucao" data-instrucao="lotofacil">
+                    <h4>📋 Lotofácil</h4>
+                    <p>Escolha de <strong>15 a 20 números</strong> entre 1 e 25. Ganha quem acertar 11, 12, 13, 14 ou 15 números.</p>
+                </div>
+                <div class="instrucao" data-instrucao="quina">
+                    <h4>📋 Quina</h4>
+                    <p>Escolha de <strong>5 a 15 números</strong> entre 1 e 80. Ganha quem acertar 2, 3, 4 ou 5 números.</p>
+                </div>
+                <div class="instrucao" data-instrucao="lotomania">
+                    <h4>📋 Lotomania</h4>
+                    <p>Escolha <strong>50 números</strong> entre 0 e 99. Ganha quem acertar 20, 19, 18, 17, 16, 15 ou nenhum número.</p>
+                </div>
+                <div class="instrucao" data-instrucao="duplasena">
+                    <h4>📋 Dupla Sena</h4>
+                    <p>Escolha de <strong>6 a 15 números</strong> entre 1 e 50. São realizados <strong>2 sorteios</strong> com a mesma aposta (1º sorteio e 2º sorteio com 6 números cada).</p>
+                </div>
+                <div class="instrucao" data-instrucao="diadesorte">
+                    <h4>📋 Dia de Sorte</h4>
+                    <p>Escolha de <strong>7 a 15 números</strong> entre 1 e 31 + <strong>Mês da Sorte</strong>. Ganha quem acertar 4, 5, 6 ou 7 números, ou acertar o mês da sorte.</p>
+                </div>
+                <div class="instrucao" data-instrucao="timemania">
+                    <h4>📋 Timemania</h4>
+                    <p>Escolha <strong>10 números</strong> entre 1 e 80 + <strong>Time do Coração</strong>. Ganha quem acertar 3, 4, 5, 6, 7 números ou o Time do Coração.</p>
+                </div>
+                <div class="instrucao" data-instrucao="maismilionaria">
+                    <h4>📋 +Milionária</h4>
+                    <p>Escolha de <strong>6 a 12 números</strong> entre 1 e 50 + <strong>2 trevos da sorte</strong> entre 1 e 6. Prêmios para quem acertar números + trevos.</p>
+                </div>
+                <div class="instrucao" data-instrucao="supersete">
+                    <h4>📋 Super Sete</h4>
+                    <p>Escolha de <strong>7 a 21 números</strong> entre 0 e 9, distribuídos em 7 colunas. Ganha quem acertar 3, 4, 5, 6 ou 7 colunas.</p>
+                </div>
+                <div class="instrucao" data-instrucao="loteca">
+                    <h4>📋 Loteca</h4>
+                    <p>Palpite em <strong>14 jogos de futebol</strong>. Para cada jogo, escolha: Coluna 1 (vitória time 1), Meio (empate) ou Coluna 2 (vitória time 2).</p>
+                </div>
+            </div>
+            </div>
+            
 
         </section>
     </main>

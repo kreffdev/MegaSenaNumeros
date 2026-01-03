@@ -1,4 +1,5 @@
 const LoginModel = require('../models/LoginModel');
+const { validarNumerosPorModalidade } = require('../config/modalidades');
 
 // Salvar uma única sequência
 exports.salvarSequencia = async (req, res) => {
@@ -11,29 +12,14 @@ exports.salvarSequencia = async (req, res) => {
             });
         }
 
-        const { numeros } = req.body;
+        const { numeros, modalidade = 'megasena', mesDaSorte, timeCoracao } = req.body;
 
-        // Validar entrada
-        if (!Array.isArray(numeros) || numeros.length !== 6) {
+        // Validar com base na modalidade
+        const validacao = validarNumerosPorModalidade(numeros, modalidade);
+        if (!validacao.valido) {
             return res.status(400).json({ 
                 sucesso: false, 
-                mensagem: 'Deve conter exatamente 6 números' 
-            });
-        }
-
-        // Validar que todos são números entre 1-60
-        if (!numeros.every(n => Number.isInteger(n) && n >= 1 && n <= 60)) {
-            return res.status(400).json({ 
-                sucesso: false, 
-                mensagem: 'Todos os números devem estar entre 1 e 60' 
-            });
-        }
-
-        // Validar que são únicos
-        if (new Set(numeros).size !== 6) {
-            return res.status(400).json({ 
-                sucesso: false, 
-                mensagem: 'Todos os números devem ser únicos' 
+                mensagem: validacao.mensagem 
             });
         }
 
@@ -41,9 +27,18 @@ exports.salvarSequencia = async (req, res) => {
         const usuario = await LoginModel.findById(req.session.user.id);
         if (!usuario) return res.status(404).json({ sucesso: false, mensagem: 'Usuário não encontrado' });
 
-        const sorted = numeros.slice().sort((a,b)=>a-b);
         usuario.jogos = usuario.jogos || [];
-        usuario.jogos.push({ numeros: sorted, criadoEm: Date.now() });
+        const jogoData = { 
+            numeros: numeros, 
+            modalidade: modalidade,
+            criadoEm: Date.now() 
+        };
+        
+        // Adicionar campos extras se presentes
+        if (mesDaSorte) jogoData.mesDaSorte = mesDaSorte;
+        if (timeCoracao) jogoData.timeCoracao = timeCoracao;
+        
+        usuario.jogos.push(jogoData);
         await usuario.save();
 
         const saved = usuario.jogos[usuario.jogos.length - 1];
@@ -69,7 +64,7 @@ exports.salvarMultiplas = async (req, res) => {
             });
         }
 
-        const { sequencias } = req.body;
+        const { sequencias, modalidade = 'megasena' } = req.body;
 
         // Validar entrada
         if (!Array.isArray(sequencias) || sequencias.length === 0) {
@@ -83,30 +78,26 @@ exports.salvarMultiplas = async (req, res) => {
 
         // Validar todas as sequências
         for (let seq of sequencias) {
-            if (!Array.isArray(seq.numeros) || seq.numeros.length !== 6) {
+            const numerosSeq = seq.numeros || seq;
+            
+            const validacao = validarNumerosPorModalidade(numerosSeq, modalidade);
+            if (!validacao.valido) {
                 return res.status(400).json({ 
                     sucesso: false, 
-                    mensagem: 'Cada sequência deve conter exatamente 6 números' 
+                    mensagem: validacao.mensagem 
                 });
             }
 
-            if (!seq.numeros.every(n => Number.isInteger(n) && n >= 1 && n <= 60)) {
-                return res.status(400).json({ 
-                    sucesso: false, 
-                    mensagem: 'Todos os números devem estar entre 1 e 60' 
-                });
-            }
-
-            if (new Set(seq.numeros).size !== 6) {
-                return res.status(400).json({ 
-                    sucesso: false, 
-                    mensagem: 'Todos os números devem ser únicos em cada sequência' 
-                });
-            }
-
-            jogosParaSalvar.push({
-                numeros: seq.numeros.slice().sort((a, b) => a - b)
-            });
+            const jogoData = {
+                numeros: numerosSeq,
+                modalidade: modalidade
+            };
+            
+            // Adicionar campos extras se presentes
+            if (seq.mesDaSorte) jogoData.mesDaSorte = seq.mesDaSorte;
+            if (seq.timeCoracao) jogoData.timeCoracao = seq.timeCoracao;
+            
+            jogosParaSalvar.push(jogoData);
         }
 
         // Salvar como subdocumentos no usuário
@@ -115,7 +106,10 @@ exports.salvarMultiplas = async (req, res) => {
 
         usuario.jogos = usuario.jogos || [];
         for (const j of jogosParaSalvar) {
-            usuario.jogos.push({ numeros: j.numeros, criadoEm: Date.now() });
+            usuario.jogos.push({ 
+                ...j,
+                criadoEm: Date.now() 
+            });
         }
         await usuario.save();
 

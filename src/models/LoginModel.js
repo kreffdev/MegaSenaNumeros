@@ -1,29 +1,57 @@
 const mongoose = require('mongoose');
 
-// Sub-schema reused for validating a 6-number sequence
-const SequenciaSchema = new mongoose.Schema({
-    numeros: {
-        type: [Number],
-        required: true,
-        validate: {
-            validator: function(arr) {
-                return Array.isArray(arr) && arr.length === 6 && arr.every(n => Number.isInteger(n) && n >= 1 && n <= 60);
-            },
-            message: 'Deve conter exatamente 6 números entre 1 e 60'
-        }
-    }
-}, { _id: false });
+// Configurações de validação para cada modalidade
+const modalidadesConfig = {
+    megasena: { min: 6, max: 15, rangeInicio: 1, rangeFim: 60 },
+    lotofacil: { min: 15, max: 20, rangeInicio: 1, rangeFim: 25 },
+    quina: { min: 5, max: 15, rangeInicio: 1, rangeFim: 80 },
+    lotomania: { min: 50, max: 50, rangeInicio: 0, rangeFim: 99 },
+    duplasena: { min: 6, max: 15, rangeInicio: 1, rangeFim: 50 },
+    diadesorte: { min: 7, max: 15, rangeInicio: 1, rangeFim: 31 },
+    timemania: { min: 10, max: 10, rangeInicio: 1, rangeFim: 80 },
+    maismilionaria: { min: 6, max: 12, rangeInicio: 1, rangeFim: 50 },
+    supersete: { min: 7, max: 7, rangeInicio: 0, rangeFim: 9 },
+    loteca: { min: 14, max: 14, rangeInicio: 1, rangeFim: 3 }
+};
+
+// Validador dinâmico de números baseado na modalidade
+function validarNumerosPorModalidade(arr, modalidade = 'megasena') {
+    const config = modalidadesConfig[modalidade] || modalidadesConfig.megasena;
+    
+    if (!Array.isArray(arr)) return false;
+    if (arr.length < config.min || arr.length > config.max) return false;
+    if (!arr.every(n => Number.isInteger(n) && n >= config.rangeInicio && n <= config.rangeFim)) return false;
+    
+    return true;
+}
 
 const JogosSubSchema = new mongoose.Schema({
-    numeros: SequenciaSchema.path('numeros').options,
+    numeros: {
+        type: [Number],
+        required: true
+    },
+    modalidade: {
+        type: String,
+        default: 'megasena'
+    },
+    mesDaSorte: { type: String },
+    timeCoracao: { type: String },
     criadoEm: { type: Date, default: Date.now },
     apostaMarcada: { type: Boolean, default: false },
-    // opcional: manter referência original se veio de coleção antiga
     originalId: { type: mongoose.Schema.Types.ObjectId }
 }, { timestamps: false });
 
 const JogosRecebidosSubSchema = new mongoose.Schema({
-    numeros: SequenciaSchema.path('numeros').options,
+    numeros: {
+        type: [Number],
+        required: true
+    },
+    modalidade: {
+        type: String,
+        default: 'megasena'
+    },
+    mesDaSorte: { type: String },
+    timeCoracao: { type: String },
     enviadoPor: { type: mongoose.Schema.Types.ObjectId, ref: 'Login' },
     enviadoPorUsername: { type: String },
     dataEnvio: { type: Date, default: Date.now },
@@ -34,7 +62,14 @@ const JogosRecebidosSubSchema = new mongoose.Schema({
 const JogosEnviadosSubSchema = new mongoose.Schema({
     sequencias: [
         {
-            numeros: SequenciaSchema.path('numeros').options,
+            numeros: {
+                type: [Number],
+                required: true
+            },
+            modalidade: {
+                type: String,
+                default: 'megasena'
+            },
             jogoRecebidoRef: { type: mongoose.Schema.Types.ObjectId }
         }
     ],
