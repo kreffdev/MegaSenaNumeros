@@ -388,8 +388,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Função para mostrar popup com todos os números
 function mostrarTodosNumeros(jogoId, numeros, modalidade, extras = {}) {
+    console.log('🎨 [meusNumeros.js] mostrarTodosNumeros() chamada');
+    console.log('   - jogoId:', jogoId);
+    console.log('   - numeros:', numeros);
+    console.log('   - modalidade:', modalidade);
+    console.log('   - extras:', extras);
+    
     const overlay = document.createElement('div');
     overlay.className = 'popup-overlay';
+    overlay.dataset.source = 'meusNumeros';
+    console.log('✨ [meusNumeros.js] Criando overlay com data-source="meusNumeros"');
     
     const popup = document.createElement('div');
     popup.className = 'popup-numeros';

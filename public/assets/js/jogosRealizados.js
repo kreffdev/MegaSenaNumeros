@@ -5,15 +5,23 @@
 
 // Event listeners quando DOM carregar
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('🔄 [jogosRealizados.js] DOMContentLoaded disparado');
+    console.log('📍 URL atual:', window.location.pathname);
+    
     // Event delegation para os botões "..." APENAS na página de jogos realizados
-    // Verificar se estamos na página correta antes de adicionar listener
-    const isJogosRealizadosPage = document.querySelector('.meus-jogos-container') && 
-                                   document.querySelector('#modal-vencedor') &&
-                                   document.querySelector('#verifica-numeros-input');
+    // Verificar URL da página para garantir que estamos na página correta
+    const isJogosRealizadosPage = window.location.pathname === '/jogos-realizados' || 
+                                   window.location.pathname === '/jogosrealizados';
+    
+    console.log('🔍 [jogosRealizados.js] Verificação de página:');
+    console.log('   - Pathname:', window.location.pathname);
+    console.log('   ➜ isJogosRealizadosPage:', isJogosRealizadosPage);
     
     if (isJogosRealizadosPage) {
+        console.log('✅ [jogosRealizados.js] Event delegation ativado para esta página');
         document.body.addEventListener('click', (e) => {
             if (e.target.classList.contains('numero-mini') && e.target.classList.contains('mais')) {
+                console.log('🎯 [jogosRealizados.js] Event delegation disparado - clique em ...');
                 const jogoId = e.target.dataset.jogoId;
                 const numeros = JSON.parse(e.target.dataset.numeros || '[]');
                 const modalidade = e.target.dataset.modalidade;
@@ -27,9 +35,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     timeCoracao: timeCoracao || null
                 };
                 
+                console.log('📞 [jogosRealizados.js] Chamando mostrarTodosNumeros via event delegation');
                 mostrarTodosNumeros(jogoId, numeros, modalidade, extras);
             }
         });
+    } else {
+        console.log('⏭️ [jogosRealizados.js] Event delegation NÃO ativado - página incorreta');
     }
 });
 
@@ -249,8 +260,16 @@ function copiarNumeros(numeros) {
 }
 
 function mostrarTodosNumeros(jogoId, numeros, modalidade, extras = {}) {
+    console.log('🎨 [jogosRealizados.js] mostrarTodosNumeros() chamada');
+    console.log('   - jogoId:', jogoId);
+    console.log('   - numeros:', numeros);
+    console.log('   - modalidade:', modalidade);
+    console.log('   - extras:', extras);
+    
     const overlay = document.createElement('div');
     overlay.className = 'popup-overlay';
+    overlay.dataset.source = 'jogosRealizados';
+    console.log('✨ [jogosRealizados.js] Criando overlay com data-source="jogosRealizados"');
     
     const popup = document.createElement('div');
     popup.className = 'popup-numeros';
