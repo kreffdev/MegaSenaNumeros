@@ -5,25 +5,32 @@
 
 // Event listeners quando DOM carregar
 document.addEventListener('DOMContentLoaded', function() {
-    // Event delegation para os botões "..."
-    document.body.addEventListener('click', (e) => {
-        if (e.target.classList.contains('numero-mini') && e.target.classList.contains('mais')) {
-            const jogoId = e.target.dataset.jogoId;
-            const numeros = JSON.parse(e.target.dataset.numeros || '[]');
-            const modalidade = e.target.dataset.modalidade;
-            const trevos = JSON.parse(e.target.dataset.trevos || '[]');
-            const mesDaSorte = e.target.dataset.mes || null;
-            const timeCoracao = e.target.dataset.time || null;
-            
-            const extras = {
-                trevos: trevos.length > 0 ? trevos : null,
-                mesDaSorte: mesDaSorte || null,
-                timeCoracao: timeCoracao || null
-            };
-            
-            mostrarTodosNumeros(jogoId, numeros, modalidade, extras);
-        }
-    });
+    // Event delegation para os botões "..." APENAS na página de jogos realizados
+    // Verificar se estamos na página correta antes de adicionar listener
+    const isJogosRealizadosPage = document.querySelector('.meus-jogos-container') && 
+                                   document.querySelector('#modal-vencedor') &&
+                                   document.querySelector('#verifica-numeros-input');
+    
+    if (isJogosRealizadosPage) {
+        document.body.addEventListener('click', (e) => {
+            if (e.target.classList.contains('numero-mini') && e.target.classList.contains('mais')) {
+                const jogoId = e.target.dataset.jogoId;
+                const numeros = JSON.parse(e.target.dataset.numeros || '[]');
+                const modalidade = e.target.dataset.modalidade;
+                const trevos = JSON.parse(e.target.dataset.trevos || '[]');
+                const mesDaSorte = e.target.dataset.mes || null;
+                const timeCoracao = e.target.dataset.time || null;
+                
+                const extras = {
+                    trevos: trevos.length > 0 ? trevos : null,
+                    mesDaSorte: mesDaSorte || null,
+                    timeCoracao: timeCoracao || null
+                };
+                
+                mostrarTodosNumeros(jogoId, numeros, modalidade, extras);
+            }
+        });
+    }
 });
 
 function verificarNumeros() {
