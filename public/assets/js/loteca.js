@@ -21,8 +21,8 @@ async function carregarJogosLoteca() {
     
     if (data.sucesso) {
       // Verificar se há jogos disponíveis
-      if (data.dados.semJogosDisponiveis) {
-        console.log('⚠️ Jogos ainda não disponíveis para o próximo concurso');
+      if (data.dados.semJogosDisponiveis || !data.dados.jogos || data.dados.jogos.length === 0) {
+        console.log('⚠️ Jogos ainda não disponíveis');
         mostrarMensagemSemJogos(data.dados);
         return;
       }
@@ -31,13 +31,18 @@ async function carregarJogosLoteca() {
       concursoAtual = data.dados.concurso;
       palpitesSelecionados = {};
       
-      if (jogosLoteca.length === 0) {
-        console.log('⚠️ Nenhum jogo encontrado');
-        mostrarMensagemSemJogos(data.dados);
-        return;
-      }
-      
       console.log(`✓ ${jogosLoteca.length} jogos carregados do concurso ${concursoAtual}`);
+      
+      // Ocultar aviso e mostrar jogos
+      const avisoElement = document.getElementById('loteca-sem-jogos');
+      const jogosListaElement = document.getElementById('loteca-jogos-lista');
+      const progressoElement = document.querySelector('.loteca-progresso');
+      const acoesElement = document.querySelector('.loteca-acoes');
+      
+      if (avisoElement) avisoElement.style.display = 'none';
+      if (jogosListaElement) jogosListaElement.style.display = 'grid';
+      if (progressoElement) progressoElement.style.display = 'block';
+      if (acoesElement) acoesElement.style.display = 'flex';
       
       renderizarJogos();
       atualizarInfoConcurso(data.dados);
@@ -53,51 +58,62 @@ async function carregarJogosLoteca() {
 
 // Mostrar mensagem quando não há jogos disponíveis
 function mostrarMensagemSemJogos(dados) {
-  const container = document.getElementById('loteca-jogos-lista');
-  if (!container) return;
+  const avisoElement = document.getElementById('loteca-sem-jogos');
+  const jogosListaElement = document.getElementById('loteca-jogos-lista');
+  const progressoElement = document.querySelector('.loteca-progresso');
+  const acoesElement = document.querySelector('.loteca-acoes');
   
-  container.innerHTML = `
-    <div class="sem-jogos-loteca" style="
-      text-align: center;
-      padding: 3rem 2rem;
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1));
-      border-radius: 1rem;
-      border: 2px dashed rgba(139, 92, 246, 0.3);
-    ">
-      <div class="sem-jogos-icon" style="font-size: 4rem; margin-bottom: 1rem;">📅</div>
-      <h3 style="color: var(--text-light); margin-bottom: 1rem; font-size: 1.5rem;">Jogos Ainda Não Disponíveis</h3>
-      <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 1.1rem;">
-        ${dados.mensagem || 'Os jogos do próximo concurso ainda não foram definidos pela Caixa.'}
-      </p>
-      ${dados.dataProximoConcurso ? `
-        <p style="color: var(--accent-purple); margin-bottom: 1rem; font-size: 1.2rem;">
-          <strong>Próximo Concurso ${dados.concurso}</strong><br>
-          <span style="font-size: 0.9rem; color: var(--text-muted);">Previsão: ${dados.dataProximoConcurso}</span>
-        </p>
-      ` : ''}
-      ${dados.valorEstimado ? `
-        <p style="color: var(--accent-emerald); font-size: 1.3rem; margin-bottom: 2rem;">
-          💰 Prêmio Estimado: R$ ${dados.valorEstimado.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-        </p>
-      ` : ''}
-      <button class="btn-atualizar-loteca" onclick="carregarJogosLoteca()" style="
-        background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
-        color: white;
-        border: none;
-        padding: 0.8rem 2rem;
-        border-radius: 0.5rem;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: transform 0.2s;
-      " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-        🔄 Atualizar
-      </button>
-    </div>
-  `;
+  // Ocultar lista de jogos, progresso e ações
+  if (jogosListaElement) jogosListaElement.style.display = 'none';
+  if (progressoElement) progressoElement.style.display = 'none';
+  if (acoesElement) acoesElement.style.display = 'none';
   
-  // Ocultar barra de progresso e botões
-  const progressContainer = document.querySelector('.loteca-progress');
-  const botoesContainer = document.querySelector('.loteca-acoes');
+  // Mostrar aviso
+  if (avisoElement) {
+    avisoElement.style.display = 'block';
+    
+    // Atualizar textos do aviso
+    const tituloElement = document.getElementById('loteca-aviso-titulo');
+    const mensagemElement = document.getElementById('loteca-aviso-mensagem');
+    
+    if (tituloElement) {
+      tituloElement.textContent = dados.semJogosDisponiveis ? 
+        'Jogos Ainda Não Disponíveis' : 
+        'Nenhum Jogo Encontrado';
+    }
+    
+    if (mensagemElement) {
+      let mensagem = dados.mensagem || 'Os jogos do próximo concurso ainda não foram divulgados pela Caixa. Por favor, tente novamente mais tarde.';
+      
+      if (dados.dataProximoConcurso) {
+        mensagem += `<br><br><strong>📅 Próximo Concurso ${dados.concurso || ''}</strong><br>Previsão: ${dados.dataProximoConcurso}`;
+      }
+      
+      if (dados.valorEstimado) {
+        mensagem += `<br><br><strong>💰 Prêmio Estimado:</strong> R$ ${dados.valorEstimado.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+      }
+      
+      mensagemElement.innerHTML = mensagem;
+    }
+  }
+  
+  // Atualizar info do concurso
+  const concursoNumeroElement = document.getElementById('loteca-concurso-numero');
+  const rodadaElement = document.getElementById('loteca-rodada');
+  
+  if (concursoNumeroElement) {
+    concursoNumeroElement.textContent = dados.concurso || '-';
+  }
+  
+  if (rodadaElement) {
+    rodadaElement.textContent = dados.rodada || 'Aguardando Divulgação';
+  }
+}
+
+// Função para atualizar a Loteca manualmente
+function atualizarLoteca() {
+  carregarJogosLoteca();
+}
   
   if (progressContainer) progressContainer.style.display = 'none';
   if (botoesContainer) botoesContainer.style.display = 'none';

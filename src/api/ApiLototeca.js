@@ -118,15 +118,17 @@ class ApiLoteca {
         });
       }
 
-      // Fallback se não encontrou jogos
+      // Se não encontrou jogos, retornar indicando que não há jogos disponíveis
       if (jogos.length === 0) {
-        console.warn('⚠ Nenhum jogo encontrado, usando dados padrão');
+        console.warn('⚠ Nenhum jogo encontrado na API da Caixa');
         return {
           concurso: data.numero || 1,
           rodada: `Concurso ${data.numero || 1}`,
-          jogos: this.gerarJogosPadrao(),
-          dataApuracao: data.dataApuracao || '',
-          proximoConcurso: data.numeroConcursoProximo || 0
+          jogos: [],
+          semJogosDisponiveis: true,
+          mensagem: 'Jogos ainda não disponíveis para este concurso',
+          dataProximoConcurso: data.dataProximoConcurso || '',
+          valorEstimado: data.valorEstimadoProximoConcurso || 0
         };
       }
 
@@ -143,7 +145,9 @@ class ApiLoteca {
       return {
         concurso: 1,
         rodada: 'Concurso 1',
-        jogos: this.gerarJogosPadrao()
+        jogos: [],
+        semJogosDisponiveis: true,
+        mensagem: 'Erro ao buscar jogos. Tente novamente mais tarde.'
       };
     }
   }
@@ -194,11 +198,13 @@ class ApiLoteca {
       });
 
       if (jogos.length === 0) {
-        console.log('⚠️ Scraping não encontrou jogos, usando dados padrão');
+        console.log('⚠️ Scraping não encontrou jogos - aguardando disponibilização');
         return {
           concurso: 1,
-          rodada: 'Concurso 1',
-          jogos: this.gerarJogosPadrao()
+          rodada: 'Aguardando Divulgação',
+          jogos: [],
+          semJogosDisponiveis: true,
+          mensagem: 'Jogos ainda não foram divulgados pela Caixa. Tente novamente mais tarde.'
         };
       }
 
@@ -211,8 +217,10 @@ class ApiLoteca {
       console.error('❌ Erro no scraping:', error.message);
       return {
         concurso: 1,
-        rodada: 'Concurso 1',
-        jogos: this.gerarJogosPadrao()
+        rodada: 'Erro ao Carregar',
+        jogos: [],
+        semJogosDisponiveis: true,
+        mensagem: 'Não foi possível carregar os jogos. Verifique sua conexão e tente novamente.'
       };
     }
   }

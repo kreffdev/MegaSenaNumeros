@@ -199,6 +199,18 @@
                         </div>
                     </div>
                     
+                    <!-- Aviso quando não há jogos disponíveis -->
+                    <div id="loteca-sem-jogos" class="loteca-sem-jogos" style="display: none;">
+                        <div class="loteca-aviso-container">
+                            <div class="loteca-aviso-icon">⚠️</div>
+                            <h4 id="loteca-aviso-titulo">Jogos Ainda Não Disponíveis</h4>
+                            <p id="loteca-aviso-mensagem">Os jogos do próximo concurso ainda não foram divulgados pela Caixa. Por favor, tente novamente mais tarde.</p>
+                            <button onclick="atualizarLoteca()" class="btn-loteca-atualizar">
+                                🔄 Atualizar Agora
+                            </button>
+                        </div>
+                    </div>
+                    
                     <div class="loteca-progresso">
                         <div class="loteca-progresso-header">
                             <span class="loteca-progresso-texto">0 de 14 jogos</span>
