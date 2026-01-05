@@ -29,82 +29,53 @@ class ApiLoteca {
   async buscarConcursoAtual() {
     console.log('🔍 Buscando concurso atual da Loteca...');
     
-    // Tentar com retry (máximo 3 tentativas)
-    for (let tentativa = 1; tentativa <= 3; tentativa++) {
-      try {
-        // Delay progressivo entre tentativas
-        if (tentativa > 1) {
-          const delayTime = tentativa * 1500;
-          console.log(`⏳ Aguardando ${delayTime}ms antes da tentativa ${tentativa}...`);
-          await this.delay(delayTime);
-        }
+    // Tentar API da Caixa primeiro (apenas 1 tentativa)
+    try {
+      const response = await axios.get(this.urlBase, {
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'User-Agent': this.getRandomUserAgent(),
+          'Origin': 'https://loterias.caixa.gov.br',
+          'Referer': 'https://loterias.caixa.gov.br/'
+        },
+        timeout: 8000,
+        validateStatus: (status) => status < 500
+      });
 
-        const response = await axios.get(this.urlBase, {
-          headers: {
-            'Accept': 'application/json, text/plain, */*',
-            'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'User-Agent': this.getRandomUserAgent(),
-            'Origin': 'https://loterias.caixa.gov.br',
-            'Referer': 'https://loterias.caixa.gov.br/',
-            'Connection': 'keep-alive',
-            'sec-ch-ua': '"Not_A Brand";v="8", "Chromium";v="122"',
-            'sec-ch-ua-mobile': '?0',
-            'sec-ch-ua-platform': '"Windows"',
-            'Sec-Fetch-Dest': 'empty',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Site': 'same-site',
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache'
-          },
-          timeout: 15000,
-          maxRedirects: 5,
-          validateStatus: (status) => status < 500
-        });
-
-        if (response.status === 403) {
-          console.log(`⚠️ Tentativa ${tentativa}: Recebeu 403 (Forbidden)`);
-          if (tentativa < 3) continue;
-          throw new Error('API bloqueou após 3 tentativas (403)');
-        }
-
-        if (response.data && response.status === 200) {
-          console.log(`✅ Sucesso na tentativa ${tentativa}`);
+      if (response.status === 200 && response.data) {
+        console.log(`✅ API Caixa funcionou para Loteca`);
+        
+        // Verificar se o concurso já foi sorteado
+        const dataApuracao = response.data.dataApuracao;
+        const jaFoiSorteado = dataApuracao && this.verificarSeJaPassou(dataApuracao);
+        
+        if (jaFoiSorteado) {
+          console.log(`⚠️ Concurso ${response.data.numero} já foi sorteado em ${dataApuracao}`);
+          console.log(`📅 Próximo concurso: ${response.data.numeroConcursoProximo} (${response.data.dataProximoConcurso})`);
           
-          // Verificar se o concurso já foi sorteado
-          const dataApuracao = response.data.dataApuracao;
-          const jaFoiSorteado = dataApuracao && this.verificarSeJaPassou(dataApuracao);
-          
-          if (jaFoiSorteado) {
-            console.log(`⚠️ Concurso ${response.data.numero} já foi sorteado em ${dataApuracao}`);
-            console.log(`📅 Próximo concurso: ${response.data.numeroConcursoProximo} (${response.data.dataProximoConcurso})`);
-            
-            return {
-              concurso: response.data.numeroConcursoProximo || response.data.numero + 1,
-              rodada: `Concurso ${response.data.numeroConcursoProximo || response.data.numero + 1}`,
-              jogos: [],
-              semJogosDisponiveis: true,
-              mensagem: 'Jogos ainda não disponíveis para o próximo concurso',
-              dataProximoConcurso: response.data.dataProximoConcurso,
-              valorEstimado: response.data.valorEstimadoProximoConcurso || 0
-            };
-          }
-          
-          return this.processarDadosCaixa(response.data);
+          return {
+            concurso: response.data.numeroConcursoProximo || response.data.numero + 1,
+            rodada: `Concurso ${response.data.numeroConcursoProximo || response.data.numero + 1}`,
+            jogos: [],
+            semJogosDisponiveis: true,
+            mensagem: 'Jogos ainda não disponíveis para o próximo concurso',
+            dataProximoConcurso: response.data.dataProximoConcurso,
+            valorEstimado: response.data.valorEstimadoProximoConcurso || 0
+          };
         }
-
-        throw new Error(`Status inesperado: ${response.status}`);
-      } catch (error) {
-        if (tentativa === 3) {
-          console.error('❌ Erro ao buscar dados da Caixa:', error.message);
-          // Fallback: tentar scraping
-          return await this.buscarPorScraping();
-        }
-        console.log(`⚠️ Tentativa ${tentativa} falhou: ${error.message}`);
+        
+        return this.processarDadosCaixa(response.data);
       }
+      
+      if (response.status === 403) {
+        console.log(`⚠️ API Caixa bloqueou (403) - tentando scraping...`);
+      }
+    } catch (error) {
+      console.log(`⚠️ Erro na API Caixa: ${error.message}`);
     }
-    
-    // Fallback final
+
+    // Se API Caixa falhou, tentar scraping
+    console.log('🔍 Tentando scraping do site da Caixa...');
     return await this.buscarPorScraping();
   }
 

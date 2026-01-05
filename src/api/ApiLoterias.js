@@ -4,6 +4,8 @@ const ConcursoModel = require('../models/ConcursoModel');
 class ApiLoterias {
   constructor() {
     this.urlBase = 'https://servicebus2.caixa.gov.br/portaldeloterias/api';
+    // API alternativa que não bloqueia servidores
+    this.urlAlternativa = 'https://loteriascaixa-api.herokuapp.com/api';
     this.modalidades = {
       megasena: 'megasena',
       lotofacil: 'lotofacil',
@@ -14,6 +16,19 @@ class ApiLoterias {
       timemania: 'timemania',
       maismilionaria: 'maismilionaria',
       supersete: 'supersete'
+    };
+    
+    // Mapeamento para API alternativa (nomes diferentes)
+    this.modalidadesAlternativas = {
+      megasena: 'mega-sena',
+      lotofacil: 'lotofacil',
+      quina: 'quina',
+      lotomania: 'lotomania',
+      duplasena: 'dupla-sena',
+      diadesorte: 'dia-de-sorte',
+      timemania: 'timemania',
+      maismilionaria: 'mais-milionaria',
+      supersete: 'super-sete'
     };
     
     // Lista de User-Agents para rotacionar e evitar bloqueio
@@ -49,68 +64,96 @@ class ApiLoterias {
       throw new Error(`Modalidade ${modalidade} não encontrada`);
     }
 
+    // Tentar API principal da Caixa primeiro (apenas 1 tentativa para não perder tempo)
     const url = `${this.urlBase}/${endpoint}`;
     console.log(`🔍 Buscando ${modalidade}:`, url);
 
-    // Tentar com retry (máximo 3 tentativas)
-    for (let tentativa = 1; tentativa <= 3; tentativa++) {
-      try {
-        // Delay progressivo entre tentativas (exceto na primeira)
-        if (tentativa > 1) {
-          const delayTime = tentativa * 1000; // 1s, 2s, 3s
-          console.log(`⏳ Aguardando ${delayTime}ms antes da tentativa ${tentativa}...`);
-          await this.delay(delayTime);
-        }
+    try {
+      const response = await axios.get(url, {
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Accept-Language': 'pt-BR,pt;q=0.9',
+          'User-Agent': this.getRandomUserAgent(),
+          'Origin': 'https://loterias.caixa.gov.br',
+          'Referer': 'https://loterias.caixa.gov.br/'
+        },
+        timeout: 8000,
+        validateStatus: (status) => status < 500
+      });
 
-        const response = await axios.get(url, {
-          headers: {
-            'Accept': 'application/json, text/plain, */*',
-            'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'User-Agent': this.getRandomUserAgent(),
-            'Origin': 'https://loterias.caixa.gov.br',
-            'Referer': 'https://loterias.caixa.gov.br/',
-            'Connection': 'keep-alive',
-            'sec-ch-ua': '"Not_A Brand";v="8", "Chromium";v="122"',
-            'sec-ch-ua-mobile': '?0',
-            'sec-ch-ua-platform': '"Windows"',
-            'Sec-Fetch-Dest': 'empty',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Site': 'same-site',
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache'
-          },
-          timeout: 20000,
-          maxRedirects: 5,
-          validateStatus: (status) => status < 500 // Aceita qualquer status code < 500
-        });
-
-        // Verificar se recebeu 403
-        if (response.status === 403) {
-          console.log(`⚠️ Tentativa ${tentativa}: Recebeu 403 (Forbidden)`);
-          if (tentativa < 3) {
-            continue; // Tentar novamente
-          }
-          throw new Error('API bloqueou após 3 tentativas (403)');
-        }
-
-        if (response.data && response.status === 200) {
-          console.log(`✅ Sucesso na tentativa ${tentativa}`);
-          return this.processarDados(modalidade, response.data);
-        }
-
-        throw new Error(`Status inesperado: ${response.status}`);
-      } catch (error) {
-        if (tentativa === 3) {
-          // Última tentativa falhou
-          console.error(`❌ Erro ao buscar ${modalidade} após ${tentativa} tentativas:`, error.message);
-          return this.gerarDadosPadrao(modalidade);
-        }
-        console.log(`⚠️ Tentativa ${tentativa} falhou: ${error.message}`);
+      if (response.status === 200 && response.data) {
+        console.log(`✅ API Caixa funcionou para ${modalidade}`);
+        return this.processarDados(modalidade, response.data);
       }
+      
+      if (response.status === 403) {
+        console.log(`⚠️ API Caixa bloqueou (403) - usando API alternativa...`);
+      }
+    } catch (error) {
+      console.log(`⚠️ Erro na API Caixa: ${error.message} - tentando alternativa...`);
     }
 
+    // Se falhou, tentar API alternativa
+    return await this.buscarModalidadeAlternativa(modalidade);
+  }
+
+  /**
+   * Busca dados usando API alternativa (loteriascaixa-api)
+   */
+  async buscarModalidadeAlternativa(modalidade) {
+    try {
+      const endpointAlt = this.modalidadesAlternativas[modalidade];
+      if (!endpointAlt) {
+        console.error(`❌ Modalidade ${modalidade} não tem alternativa`);
+        return this.gerarDadosPadrao(modalidade);
+      }
+
+      const urlAlt = `${this.urlAlternativa}/${endpointAlt}/latest`;
+      console.log(`🔄 Tentando API alternativa:`, urlAlt);
+
+      const response = await axios.get(urlAlt, {
+        timeout: 10000,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+
+      if (response.data) {
+        console.log(`✅ API alternativa funcionou para ${modalidade}`);
+        return this.processarDadosAlternativos(modalidade, response.data);
+      }
+    } catch (error) {
+      console.error(`❌ Erro na API alternativa para ${modalidade}:`, error.message);
+    }
+
+    // Se tudo falhou, usar dados padrão
+    console.log(`⚠️ Usando dados padrão para ${modalidade}`);
     return this.gerarDadosPadrao(modalidade);
+  }
+
+  /**
+   * Processa dados da API alternativa
+   */
+  processarDadosAlternativos(modalidade, data) {
+    try {
+      return {
+        modalidade: modalidade,
+        numeroConcurso: data.concurso || data.numero || 0,
+        dataApuracao: data.data || data.dataApuracao || '',
+        dataSorteio: data.dataProximoConcurso || '',
+        valorEstimadoProximoConcurso: data.valorEstimadoProximoConcurso || data.proximoConcurso?.valorEstimado || 0,
+        numerossorteados: data.dezenas || data.listaDezenas || [],
+        valorArrecadado: data.valorArrecadado || 0,
+        acumulou: data.acumulou || false,
+        valorAcumuladoConcurso: data.valorAcumuladoConcursoEspecial || data.valorAcumuladoProximoConcurso || 0,
+        ...(modalidade === 'diadesorte' && data.mesSorte && { mesSorte: data.mesSorte }),
+        ...(modalidade === 'timemania' && data.nomeTimeCoracao && { nomeTimeCoracao: data.nomeTimeCoracao }),
+        ...(modalidade === 'maismilionaria' && data.trevos && { trevos: data.trevos })
+      };
+    } catch (error) {
+      console.error(`Erro ao processar dados alternativos de ${modalidade}:`, error);
+      return this.gerarDadosPadrao(modalidade);
+    }
   }
 
   /**
@@ -226,10 +269,8 @@ class ApiLoterias {
         if (resultado) {
           resultados.push(resultado);
         }
-        // Delay entre requisições para evitar bloqueio (2-4 segundos aleatório)
-        const delayTime = 2000 + Math.random() * 2000;
-        console.log(`⏳ Aguardando ${Math.round(delayTime)}ms antes da próxima requisição...`);
-        await this.delay(delayTime);
+        // Delay pequeno entre requisições (1 segundo fixo)
+        await this.delay(1000);
       } catch (error) {
         console.error(`Erro em ${modalidade}:`, error);
       }
