@@ -4,8 +4,11 @@ const ConcursoModel = require('../models/ConcursoModel');
 class ApiLoterias {
   constructor() {
     this.urlBase = 'https://servicebus2.caixa.gov.br/portaldeloterias/api';
-    // API alternativa que não bloqueia servidores
+    // APIs alternativas que não bloqueiam servidores
     this.urlAlternativa = 'https://loteriascaixa-api.herokuapp.com/api';
+    // API pública confiável (outra alternativa)
+    this.urlLoteAPI = 'https://loteriascaixa-api.herokuapp.com/api';
+    
     this.modalidades = {
       megasena: 'megasena',
       lotofacil: 'lotofacil',
@@ -18,8 +21,21 @@ class ApiLoterias {
       supersete: 'supersete'
     };
     
-    // Mapeamento para API alternativa (nomes diferentes)
+    // Mapeamento para API alternativa 1 (com /latest)
     this.modalidadesAlternativas = {
+      megasena: 'megasena',
+      lotofacil: 'lotofacil',
+      quina: 'quina',
+      lotomania: 'lotomania',
+      duplasena: 'duplasena',
+      diadesorte: 'diadesorte',
+      timemania: 'timemania',
+      maismilionaria: 'maismilionaria',
+      supersete: 'supersete'
+    };
+    
+    // Mapeamento para outra API (formato com hífen)
+    this.modalidadesHifen = {
       megasena: 'mega-sena',
       lotofacil: 'lotofacil',
       quina: 'quina',
@@ -27,7 +43,7 @@ class ApiLoterias {
       duplasena: 'dupla-sena',
       diadesorte: 'dia-de-sorte',
       timemania: 'timemania',
-      maismilionaria: 'mais-milionaria',
+      maismilionaria: '+milionaria',
       supersete: 'super-sete'
     };
     
@@ -101,17 +117,43 @@ class ApiLoterias {
    * Busca dados usando API alternativa (loteriascaixa-api)
    */
   async buscarModalidadeAlternativa(modalidade) {
-    try {
-      const endpointAlt = this.modalidadesAlternativas[modalidade];
-      if (!endpointAlt) {
-        console.error(`❌ Modalidade ${modalidade} não tem alternativa`);
-        return this.gerarDadosPadrao(modalidade);
-      }
+    const endpointAlt = this.modalidadesAlternativas[modalidade];
+    const endpointHifen = this.modalidadesHifen[modalidade];
+    
+    if (!endpointAlt) {
+      console.error(`❌ Modalidade ${modalidade} não tem alternativa`);
+      return this.gerarDadosPadrao(modalidade);
+    }
 
+    // Tentativa 1: API alternativa com /latest
+    try {
       const urlAlt = `${this.urlAlternativa}/${endpointAlt}/latest`;
-      console.log(`🔄 Tentando API alternativa:`, urlAlt);
+      console.log(`🔄 Tentando API alternativa (1):`, urlAlt);
 
       const response = await axios.get(urlAlt, {
+        timeout: 10000,
+        headers: {
+          'Accept': 'application/json',
+          'User-Agent': this.getRandomUserAgent()
+        },
+        validateStatus: (status) => status < 500
+      });
+
+      if (response.status === 200 && response.data) {
+        console.log(`✅ API alternativa (1) funcionou para ${modalidade}`);
+        console.log(`📊 Dados: Concurso ${response.data.concurso || response.data.numero || 'N/A'}`);
+        return this.processarDadosAlternativos(modalidade, response.data);
+      }
+    } catch (error) {
+      console.log(`⚠️ Tentativa 1 falhou: ${error.message}`);
+    }
+
+    // Tentativa 2: API alternativa sem /latest
+    try {
+      const urlAlt2 = `${this.urlAlternativa}/${endpointAlt}`;
+      console.log(`🔄 Tentando API alternativa (2):`, urlAlt2);
+
+      const response = await axios.get(urlAlt2, {
         timeout: 10000,
         headers: {
           'Accept': 'application/json'
@@ -119,15 +161,37 @@ class ApiLoterias {
       });
 
       if (response.data) {
-        console.log(`✅ API alternativa funcionou para ${modalidade}`);
+        console.log(`✅ API alternativa (2) funcionou para ${modalidade}`);
         return this.processarDadosAlternativos(modalidade, response.data);
       }
     } catch (error) {
-      console.error(`❌ Erro na API alternativa para ${modalidade}:`, error.message);
+      console.log(`⚠️ Tentativa 2 falhou: ${error.message}`);
+    }
+
+    // Tentativa 3: Usando formato com hífen
+    if (endpointHifen) {
+      try {
+        const urlHifen = `${this.urlLoteAPI}/${endpointHifen}/latest`;
+        console.log(`🔄 Tentando com hífen (3):`, urlHifen);
+
+        const response = await axios.get(urlHifen, {
+          timeout: 10000,
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+
+        if (response.data) {
+          console.log(`✅ Formato hífen funcionou para ${modalidade}`);
+          return this.processarDadosAlternativos(modalidade, response.data);
+        }
+      } catch (error) {
+        console.log(`⚠️ Tentativa 3 falhou: ${error.message}`);
+      }
     }
 
     // Se tudo falhou, usar dados padrão
-    console.log(`⚠️ Usando dados padrão para ${modalidade}`);
+    console.error(`❌ Todas as tentativas falharam para ${modalidade}`);
     return this.gerarDadosPadrao(modalidade);
   }
 
@@ -136,20 +200,33 @@ class ApiLoterias {
    */
   processarDadosAlternativos(modalidade, data) {
     try {
-      return {
+      const dadosProcessados = {
         modalidade: modalidade,
-        numeroConcurso: data.concurso || data.numero || 0,
-        dataApuracao: data.data || data.dataApuracao || '',
-        dataSorteio: data.dataProximoConcurso || '',
-        valorEstimadoProximoConcurso: data.valorEstimadoProximoConcurso || data.proximoConcurso?.valorEstimado || 0,
-        numerossorteados: data.dezenas || data.listaDezenas || [],
-        valorArrecadado: data.valorArrecadado || 0,
-        acumulou: data.acumulou || false,
-        valorAcumuladoConcurso: data.valorAcumuladoConcursoEspecial || data.valorAcumuladoProximoConcurso || 0,
-        ...(modalidade === 'diadesorte' && data.mesSorte && { mesSorte: data.mesSorte }),
-        ...(modalidade === 'timemania' && data.nomeTimeCoracao && { nomeTimeCoracao: data.nomeTimeCoracao }),
-        ...(modalidade === 'maismilionaria' && data.trevos && { trevos: data.trevos })
+        numeroConcurso: data.concurso || data.numero || data.numeroConcurso || 0,
+        dataApuracao: data.data || data.dataApuracao || data.dataSorteio || '',
+        dataSorteio: data.dataProximoConcurso || data.proximoConcurso?.data || '',
+        valorEstimadoProximoConcurso: data.valorEstimadoProximoConcurso || data.proximoConcurso?.valorEstimado || data.premiacaoEstimada || 0,
+        numerossorteados: data.dezenas || data.listaDezenas || data.numerosSorteados || data.numeros || [],
+        valorArrecadado: data.valorArrecadado || data.arrecadacaoTotal || 0,
+        acumulou: data.acumulou || data.acumulada || false,
+        valorAcumuladoConcurso: data.valorAcumuladoConcursoEspecial || data.valorAcumuladoProximoConcurso || data.valorAcumulado || 0
       };
+
+      // Campos específicos por modalidade
+      if (modalidade === 'diadesorte' && (data.mesSorte || data.mes)) {
+        dadosProcessados.mesSorte = data.mesSorte || data.mes;
+      }
+
+      if (modalidade === 'timemania' && (data.nomeTimeCoracao || data.timeCoracao)) {
+        dadosProcessados.nomeTimeCoracao = data.nomeTimeCoracao || data.timeCoracao;
+      }
+
+      if (modalidade === 'maismilionaria' && (data.trevos || data.listaTrevos)) {
+        dadosProcessados.trevos = data.trevos || data.listaTrevos;
+      }
+
+      console.log(`📦 Processados ${dadosProcessados.numerossorteados.length} números do concurso ${dadosProcessados.numeroConcurso}`);
+      return dadosProcessados;
     } catch (error) {
       console.error(`Erro ao processar dados alternativos de ${modalidade}:`, error);
       return this.gerarDadosPadrao(modalidade);
