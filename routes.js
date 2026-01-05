@@ -11,6 +11,8 @@ const notificationsController = require('./src/controllers/notificationsControll
 const jogosRealizadosController = require('./src/controllers/jogosRealizados');
 const lotecaController = require('./src/controllers/lotecaController');
 const loteriasController = require('./src/controllers/loteriasController');
+const perfilController = require('./src/controllers/perfilController');
+const estatisticasController = require('./src/controllers/estatisticasController');
 // CSRF protection com cookie ao invés de session
 const csrfProtection = csurf({ 
   cookie: true
@@ -67,5 +69,15 @@ route.post('/api/loteca/salvar-palpites', lotecaController.salvarPalpites);
 route.get('/api/loterias/concursos', loteriasController.obterTodosConcursos);
 route.get('/api/loterias/concurso/:modalidade', loteriasController.obterConcursoPorModalidade);
 route.post('/api/loterias/sincronizar', loteriasController.sincronizarManual);
+
+
+// rotas de perfil
+route.get('/perfil', csrfProtection, perfilController.exibirPerfil);
+route.get('/perfil/:slug', csrfProtection, perfilController.exibirPerfil);
+
+
+//rotas de estaticas - futuramente
+route.get('/estatisticas', csrfProtection, estatisticasController.estatisticasPage);
+
 
 module.exports = route;

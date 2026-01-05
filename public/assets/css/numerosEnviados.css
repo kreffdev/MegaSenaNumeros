@@ -1,0 +1,151 @@
+:root {
+    --primary-color: #0f172a;        /* Azul marinho profundo - cor principal elegante */
+    --secondary-color: #1e293b;      /* Azul escuro secundário */
+    --accent-purple: #8b5cf6;        /* Roxo vibrante elegante */
+    --accent-violet: #a855f7;        /* Violeta luminoso */
+    --accent-emerald: #10b981;       /* Verde esmeralda */
+    --text-dark: #0f172a;            /* Texto escuro */
+    --text-light: #f8fafc;           /* Texto claro */
+    --bg-light: #f8fafc;             /* Fundo claro */
+    --bg-card: #ffffff;              /* Fundo de cards */
+    --border-color: #e2e8f0;         /* Borda suave */
+    --hover-overlay: rgba(15, 23, 42, 0.05);  /* Overlay suave para hover */
+    --bg-gradient: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 45%, #6366f1 100%);
+}
+
+/* ================= estilos para meusEnvios ================= */
+.envios-container {
+    box-sizing: border-box;
+    max-width: 1100px;
+    margin: 2rem auto;
+    padding: 1rem 1.25rem;
+}
+
+.envios-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.envio-card {
+    background: linear-gradient(180deg, rgba(15,23,42,0.5), rgba(2,6,23,0.42));
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 0.8rem;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(2,6,23,0.35);
+}
+
+.envio-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    cursor: pointer;
+    user-select: none;
+    padding: 0 0.2rem;
+}
+
+.envio-meta {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    font-weight: 700;
+    color: var(--text-light);
+}
+
+.envio-meta .destino {
+    font-weight: 800;
+    color: var(--accent-violet);
+}
+
+.envio-meta .data {
+    font-weight: 600;
+    color: rgba(248,250,252,0.7);
+    font-size: 0.9rem;
+}
+
+.toggle-indicator {
+    font-size: 1.05rem;
+    color: rgba(248,250,252,0.7);
+    transition: transform 180ms ease;
+}
+
+.envio-card.expanded .toggle-indicator {
+    transform: rotate(90deg);
+}
+
+.envio-body {
+    overflow: hidden;
+    transition: height 240ms ease;
+    height: 0px; /* JS will animate to scrollHeight when opening */
+}
+
+.envio-message {
+    padding: 0.8rem 0.2rem 0.6rem 0.2rem;
+    color: rgba(248,250,252,0.9);
+}
+
+.envio-count {
+    font-weight: 800;
+    margin-bottom: 0.45rem;
+}
+
+.sequencias-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.sequencia-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.seq-num {
+    font-weight: 900;
+    color: var(--accent-emerald);
+    min-width: 26px;
+}
+
+.numeros {
+    display: flex;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.numeros .numero {
+    background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    padding: 0.35rem 0.6rem;
+    border-radius: 999px;
+    font-weight: 900;
+    color: var(--text-light);
+    border: 1px solid rgba(255,255,255,0.04);
+}
+
+.numeros .numero.trevo {
+    background: linear-gradient(135deg, rgba(22,57,127,0.9), rgba(22,57,127,0.95));
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(22,57,127,0.22);
+}
+
+.numeros .separador {
+    font-weight: 900;
+    color: rgba(255,255,255,0.85);
+    padding: 0 0.35rem;
+}
+
+@media (max-width: 700px) {
+    .envio-meta { flex-direction: column; align-items: flex-start; gap: 0.25rem; }
+    .envio-header { padding: 0.2rem 0; }
+}
+
+/* small visual polish */
+.envio-card + .envio-card { margin-top: 0.4rem; }
+
+/* end meusEnvios styles */
+

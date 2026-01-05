@@ -17,7 +17,7 @@
             </div>
         </div>
         <div class="modal-vencedor-footer">
-            <button class="btn-fechar-vencedor" onclick="fecharPopupVencedor()">Fechar</button>
+            <button class="btn-fechar-vencedor" onclick="__fecharPopupVencedorSafe()">Fechar</button>
         </div>
     </div>
 </div>
@@ -42,7 +42,7 @@
 
 <main class="meus-jogos-container">
     <div class="meus-jogos-header">
-        <div class="verifica-numeos">
+        <div class="verifica-numeros">
             <input type="text" id="verifica-numeros-input" placeholder="Ex: 05,12,23,34,45,56" aria-label="Verificar números">
             <button class="btn-verificar" title="Verificar Números">
                 🔍 Verificar
@@ -83,39 +83,39 @@
         <div class="jogos-grid">
             <% jogos.forEach((jogo, index) => { %>
                 <div class="jogo-card<%= jogo.apostaMarcada ? ' aposta-feita' : '' %>" data-jogo-id="<%= jogo._id %>" data-modalidade="<%= jogo.modalidade || 'megasena' %>">
-                    <div class="jogo-checkbox-container">
-                        <input type="checkbox" class="checkbox-aposta" onchange="marcarAposta(this)" <%= jogo.apostaMarcada ? 'checked disabled' : '' %>>
-                        <span class="aposta-label">aposta feita</span>
-                    </div>
+                        <% 
+                        const modalidadeInfo = getInfoModalidade(jogo.modalidade || 'megasena');
+                        const data = new Date(jogo.criadoEm);
+                        const dia = String(data.getDate()).padStart(2, '0');
+                        const mes = String(data.getMonth() + 1).padStart(2, '0');
+                        const ano = data.getFullYear();
+                        const horas = String(data.getHours()).padStart(2, '0');
+                        const minutos = String(data.getMinutes()).padStart(2, '0');
+                        %>
 
-                    <div class="jogo-header">
-                        <div class="jogo-numero-modalidade">
-                            <span class="jogo-numero">#<%= index + 1 %></span>
-                            <% 
-                            const modalidadeInfo = getInfoModalidade(jogo.modalidade || 'megasena');
-                            %>
-                            <div class="jogo-modalidade-info">
-                                <img src="<%= modalidadeInfo.logo %>" alt="<%= modalidadeInfo.nome %>" class="jogo-modalidade-logo">
-                                <span class="jogo-modalidade-nome"><%= modalidadeInfo.nome %></span>
+                        <div class="jogo-header">
+                            <div class="jogo-row1">
+                                <div class="jogo-numero">#<%= index + 1 %></div>
+                                <div class="jogo-data"><%= dia %>/<%= mes %>/<%= ano %> às <%= horas %>:<%= minutos %></div>
+                                <div class="jogo-aposta">
+                                    <label class="jogo-checkbox-inline">
+                                        <input type="checkbox" class="checkbox-aposta" onchange="marcarAposta(this)" <%= jogo.apostaMarcada ? 'checked disabled' : '' %>>
+                                        <span class="aposta-label">aposta feita</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="jogo-row2">
+                                <div class="jogo-modalidade-info">
+                                    <img src="<%= modalidadeInfo.logo %>" alt="<%= modalidadeInfo.nome %>" class="jogo-modalidade-logo">
+                                    <span class="jogo-modalidade-nome"><%= modalidadeInfo.nome %></span>
+                                </div>
+                                <div class="jogo-preco">
+                                    <span class="preco-label">💰</span>
+                                    <span class="preco-valor">R$ <%= modalidadeInfo.precoMinimo.toFixed(2).replace('.', ',') %></span>
+                                </div>
                             </div>
                         </div>
-                        <span class="jogo-data">
-                            <% 
-                            const data = new Date(jogo.criadoEm);
-                            const dia = String(data.getDate()).padStart(2, '0');
-                            const mes = String(data.getMonth() + 1).padStart(2, '0');
-                            const ano = data.getFullYear();
-                            const horas = String(data.getHours()).padStart(2, '0');
-                            const minutos = String(data.getMinutes()).padStart(2, '0');
-                            %>
-                            <%= dia %>/<%= mes %>/<%= ano %> às <%= horas %>:<%= minutos %>
-                        </span>
-                    </div>
-                    
-                    <div class="jogo-preco">
-                        <span class="preco-label">💰</span>
-                        <span class="preco-valor">R$ <%= modalidadeInfo.precoMinimo.toFixed(2).replace('.', ',') %></span>
-                    </div>
                     
                     <div class="jogo-numeros">
                         <% 
@@ -129,6 +129,9 @@
                         // Mostrar até 6 números
                         const numerosVisiveis = numerosPrincipais.slice(0, 6);
                         const temMais = numerosPrincipais.length > 6;
+
+                        // Texto para o botão 'copiar' (preparado aqui para evitar expressões complexas inline)
+                        const copiarTexto = ehMaisMilionaria && trevos.length > 0 ? numerosPrincipais.join(', ') + ' | Trevos: ' + trevos.join(', ') : (jogo.numeros || []).join(', ');
                         
                         numerosVisiveis.forEach(numero => { %>
                             <span class="numero-mini"><%= String(numero).padStart(2, '0') %></span>
@@ -142,13 +145,13 @@
                                 timeCoracao: ehTimemania && jogo.timeCoracao ? jogo.timeCoracao : null
                             }).replace(/"/g, '&quot;');
                         %>
-                            <span class="numero-mini mais" 
-                                  onclick="mostrarTodosNumeros('<%= index + 1 %>', <%= JSON.stringify(numerosPrincipais) %>, '<%= modalidadeInfo.nome %>', <%= extrasJson.replace(/&quot;/g, '"') %>)">
+                                <span class="numero-mini mais" 
+                                    onclick="mostrarTodosNumeros('<%= index + 1 %>', JSON.parse(decodeURIComponent('<%= encodeURIComponent(JSON.stringify(numerosPrincipais)) %>')), decodeURIComponent('<%= encodeURIComponent(modalidadeInfo.nome) %>'), JSON.parse(decodeURIComponent('<%= encodeURIComponent(JSON.stringify({ trevos: trevos, mesDaSorte: ehDiaDeSorte && jogo.mesDaSorte ? jogo.mesDaSorte : null, timeCoracao: ehTimemania && jogo.timeCoracao ? jogo.timeCoracao : null })) %>')) )">
                                 ...
                             </span>
-                        <% } 
-                        
-                        if (trevos.length > 0) { %>
+                        <% } %>
+
+                        <% if (trevos.length > 0) { %>
                             <span class="separador-trevos" style="color: #16397F; font-size: 1.5rem; font-weight: bold; margin: 0 0.5rem;">|</span>
                             <% trevos.forEach(trevo => { %>
                                 <span class="numero-badge trevo-badge" style="background: linear-gradient(135deg, rgba(22, 57, 127, 0.85), rgba(22, 57, 127, 0.95)); border-color: rgba(22, 57, 127, 1); box-shadow: 0 0 10px rgba(22, 57, 127, 0.3);"><%= trevo %></span>
@@ -167,7 +170,7 @@
                     </div>
                     
                     <div class="jogo-actions">
-                        <button class="btn-copiar" onclick="copiarNumeros('<%= ehMaisMilionaria && trevos.length > 0 ? numerosPrincipais.join(', ') + ' | Trevos: ' + trevos.join(', ') : jogo.numeros.join(', ') %>')" title="Copiar números">
+                        <button class="btn-copiar" onclick="copiarNumeros(decodeURIComponent('<%= encodeURIComponent(copiarTexto) %>'))" title="Copiar números">
                             📋 Copiar
                         </button>
                         <button class="btn-deletar" onclick="deletarJogo('<%= jogo._id %>')" title="Deletar sequência">

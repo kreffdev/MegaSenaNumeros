@@ -3,14 +3,6 @@
    
       
     <main class="home-container">
-        <div>
-            <h1>Bem-vindo ao Mega Sena</h1>
-            <% if (user) { %>
-                <p class="user-name">Olá, <%= user.username %>!</p>
-            <% } else { %>
-                <p>Por favor, faça login para acessar seus jogos.</p>
-            <% } %>
-        </div>
         <section class="container-modalidades">
             <h2>Escolha a Modalidade</h2>
             <div class="modalidades-grid">
@@ -29,7 +21,7 @@
                         <img src="/assets/img/logos/logo-lotofacil.png" alt="Lotofácil">
                     </div>
                     <h3>Lotofácil</h3>
-                    <p>Escolha 15 a 20 números de 1 a 25</p>
+                    <p>Escolha 15 a 20 números de 1-25</p>
                     <div class="modalidade-info">
                         <span>Sorteios: Segunda a Sábado</span>
                     </div>
@@ -120,7 +112,7 @@
             <div class="numeros-criador">
                 <div class="header-criador">
                     <h2>Escolha seus números</h2>
-                    <button id="btn-gerar-aleatorio" class="btn-gerar-aleatorio">🎲 Aleatório</button>
+                    <button id="btn-gerar-aleatorio" class="secondary-button">🎲 Aleatório</button>
                 </div>
                 <!-- Seletor de Mês da Sorte (apenas para Dia de Sorte) -->
                 <div id="mes-sorte-container" class="mes-sorte-container" style="display: none;">
@@ -227,7 +219,7 @@
                         <button onclick="limparPalpites()" class="btn-loteca-limpar">
                             🔄 Limpar
                         </button>
-                        <button id="btn-confirmar-loteca" onclick="confirmarPalpitesLoteca()" class="btn-loteca-confirmar" disabled>
+                        <button id="btn-confirmar-loteca" onclick="confirmarPalpitesLoteca()" class="btn-loteca-confirmar primary-button" disabled>
                             ✓ Confirmar Palpites
                         </button>
                     </div>

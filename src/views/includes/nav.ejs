@@ -1,6 +1,11 @@
 <nav class="main-nav">
   <!-- Botão Hamburger (mobile) -->
-  <button class="hamburger-btn" id="hamburger-btn" aria-label="Menu" aria-expanded="false">
+  <button
+    class="hamburger-btn"
+    id="hamburger-btn"
+    aria-label="Menu"
+    aria-expanded="false"
+  >
     <span class="hamburger-line"></span>
     <span class="hamburger-line"></span>
     <span class="hamburger-line"></span>
@@ -8,17 +13,44 @@
 
   <!-- Logo Central -->
   <div class="nav-logo">
-    <a href="/" class="nav-trevo"><img src="/assets/img/logo-rmv.png" alt="Home"></a>
+    <a href="/" class="nav-trevo"
+      ><img src="/assets/img/logo-rmv.png" alt="Home"
+    /></a>
   </div>
 
   <!-- Menu Desktop / Mobile -->
   <div class="nav-menu" id="nav-menu">
     <ul>
       <% if (typeof user !== 'undefined' && user) { %>
-        <li><a href="/jogosrealizados">Jogos Realizados</a></li>
-        <li><a href="/meusjogos">Meus Números</a></li>
-        <li><a href="/jogosrecebidos">Recebidos</a></li>
-        <li><a href="/meusenvios">Meus Envios</a></li>
+      <li class="nav-dropdown">
+        <button id="games-toggle" class="nav-dropdown-btn" aria-expanded="false">Jogos
+          <svg
+            class="caret-svg"
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            width="14"
+            height="14"
+            xmlns="http://www.w3.org/2000/svg"
+            focusable="false"
+          >
+            <path
+              d="M6 9l6 6 6-6"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              fill="none"
+            />
+          </svg>
+        </button>
+        <ul class="nav-submenu" id="games-menu" hidden>
+          <li><a href="/meusjogos">Meus Jogos</a></li>
+          <li><a href="/meusenvios">Meus Envios</a></li>
+          <li><a href="/jogosrealizados">Jogos Realizados</a></li>
+          <li><a href="/jogosrecebidos">Jogos Recebidos</a></li>
+        </ul>
+      </li>
+      <li><a href="/estatisticas">Estatísticas</a></li>
       <% } %>
     </ul>
   </div>
@@ -26,48 +58,69 @@
   <!-- Notificações e Login -->
   <div class="nav-actions">
     <% if (typeof user !== 'undefined' && user) { %>
-      <button id="notif-btn" class="notif-btn" aria-label="Notificações" aria-expanded="false">
-        <span class="notif-icon">🔔</span>
-        <span id="notif-count" class="notif-count" aria-hidden="true">0</span>
+    <button
+      id="notif-btn"
+      class="notif-btn"
+      aria-label="Notificações"
+      aria-expanded="false"
+    >
+      <span class="notif-icon">🔔</span>
+      <span id="notif-count" class="notif-count" aria-hidden="true">0</span>
+    </button>
+      <button class="seja-premium">
+      Seja Premium
+      <svg fill="#ffae00" height="200px" width="200px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve" stroke="#ffae00"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <path d="M355.86,219.684L256,63.436l-99.86,156.248L0,145.724l79.068,302.84h353.863L512,145.724L355.86,219.684z M256,390.746 l-54.184-84.648L256,221.449l54.184,84.649L256,390.746z"></path> </g> </g> </g></svg>
       </button>
-    <% } %>
-    
-    <% if (messages.user || (typeof user !== 'undefined' && user)) { %>
-      <a href="/logout" id="btn-login">Logout</a>
+    <% } %> <% if (messages.user || (typeof user !== 'undefined' && user)) { %>
+    <div class="nav-user">
+      <button
+        id="nav-user-btn"
+        class="nav-user-btn"
+        aria-expanded="false"
+        aria-label="Perfil do usuário"
+      >
+        <span class="nav-user-avatar" aria-hidden="true">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path
+              d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5z"
+              fill="currentColor"
+              opacity="0.95"
+            />
+            <path
+              d="M3 21c0-3.866 3.582-7 9-7s9 3.134 9 7v1H3v-1z"
+              fill="currentColor"
+              opacity="0.95"
+            />
+          </svg>
+        </span>
+        <span class="nav-username-short"><%= user.username %></span>
+      </button>
+
+      <div class="user-box" id="user-box" hidden>
+        <div class="user-box-content">
+          <div class="user-box-name config-itens">
+            Olá, <%= user.username %>
+          </div>
+          <div class="user-box-email config-itens">
+            <%= typeof user.email !== 'undefined' ? user.email : 'Ainda sem email' %>
+          </div>
+          <a href="/perfil/<%= encodeURIComponent(user.username) %>" class="ancora-perfil config-itens"
+            >Meu Perfil</a
+          >
+          <a href="/logout" class="secondary-button">Logout</a>
+        </div>
+      </div>
+    </div>
+
     <% } else { %>
-      <a href="/login" id="btn-login">Login</a>
+    <a href="/login" id="btn-login" class="secondary-button">Login</a>
     <% } %>
   </div>
 </nav>
-
-<script>
-// Menu Hamburger Toggle
-const hamburgerBtn = document.getElementById('hamburger-btn');
-const navMenu = document.getElementById('nav-menu');
-
-if (hamburgerBtn && navMenu) {
-  hamburgerBtn.addEventListener('click', () => {
-    const isOpen = navMenu.classList.toggle('active');
-    hamburgerBtn.classList.toggle('active');
-    hamburgerBtn.setAttribute('aria-expanded', isOpen);
-  });
-
-  // Fechar menu ao clicar em um link
-  navMenu.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-      navMenu.classList.remove('active');
-      hamburgerBtn.classList.remove('active');
-      hamburgerBtn.setAttribute('aria-expanded', 'false');
-    });
-  });
-
-  // Fechar menu ao clicar fora
-  document.addEventListener('click', (e) => {
-    if (!navMenu.contains(e.target) && !hamburgerBtn.contains(e.target)) {
-      navMenu.classList.remove('active');
-      hamburgerBtn.classList.remove('active');
-      hamburgerBtn.setAttribute('aria-expanded', 'false');
-    }
-  });
-}
-</script>

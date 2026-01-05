@@ -1,79 +1,18 @@
 
 
-
-/* ===== JOGO RECEBIDO ===== */
-
-.jogo-recebido {
-    border-color: var(--accent-purple);
+:root {
+    --primary-color: #0f172a;        /* Azul marinho profundo - cor principal elegante */
+    --secondary-color: #1e293b;      /* Azul escuro secundário */
+    --accent-purple: #8b5cf6;        /* Roxo vibrante elegante */
+    --accent-violet: #a855f7;        /* Violeta luminoso */
+    --accent-emerald: #10b981;       /* Verde esmeralda */
+    --text-dark: #0f172a;            /* Texto escuro */
+    --text-light: #f8fafc;           /* Texto claro */
+    --bg-light: #f8fafc;             /* Fundo claro */
+    --bg-card: #ffffff;              /* Fundo de cards */
+    --border-color: #e2e8f0;         /* Borda suave */
+    --hover-overlay: rgba(15, 23, 42, 0.05);  /* Overlay suave para hover */
+    --bg-gradient: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 45%, #6366f1 100%);
 }
 
-.jogo-origem {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-    padding: 0.6rem 0.8rem;
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
-    border-radius: 0.4rem;
-    font-size: 0.9rem;
-}
 
-.origem-label {
-    font-weight: 600;
-    color: var(--accent-emerald);
-}
-
-.origem-usuario {
-    color: #059669;
-    font-weight: 700;
-}
-
-/* Checkbox de aposta feita */
-.jogo-checkbox-container {
-    position: absolute;
-    top: 0.8rem;
-    right: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    z-index: 10;
-}
-
-.checkbox-aposta {
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-    accent-color: var(--accent-purple);
-}
-
-.aposta-label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--text-light);
-    white-space: nowrap;
-}
-
-/* Card com aposta marcada - visual mais discreto mas funcional */
-.jogo-card.aposta-feita {
-    opacity: 0.75;
-}
-
-.jogo-card.aposta-feita .jogo-header,
-.jogo-card.aposta-feita .jogo-origem,
-.jogo-card.aposta-feita .jogo-numeros {
-    opacity: 0.7;
-}
-
-/* Desabilitar apenas o botão de copiar quando aposta marcada */
-.jogo-card.aposta-feita .btn-copiar {
-    opacity: 0.5;
-    pointer-events: none;
-    cursor: not-allowed;
-}
-
-/* Manter botão deletar totalmente funcional */
-.jogo-card.aposta-feita .btn-deletar {
-    opacity: 1;
-    pointer-events: auto;
-    cursor: pointer;
-}

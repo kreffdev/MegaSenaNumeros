@@ -17,14 +17,14 @@
             </div>
         </div>
         <div class="modal-vencedor-footer">
-            <button class="btn-fechar-vencedor" onclick="fecharPopupVencedor()">Fechar</button>
+            <button class="btn-fechar-vencedor" onclick="__fecharPopupVencedorSafe()">Fechar</button>
         </div>
     </div>
 </div>
 
 <main class="meus-jogos-container">
     <div class="meus-jogos-header">
-        <div class="verifica-numeos">
+        <div class="verifica-numeros">
             <input type="text" id="verifica-numeros-input" placeholder="Ex: 05,12,23,34,45,56" aria-label="Verificar números">
             <button class="btn-verificar" title="Verificar Números">
                 🔍 Verificar
@@ -60,105 +60,163 @@
 
         <div class="jogos-grid">
             <% jogos.forEach((jogo, index) => { %>
-                <div class="jogo-card jogo-recebido<%= jogo.apostaMarcada ? ' aposta-feita' : '' %>" data-jogo-id="<%= jogo._id %>" data-modalidade="<%= jogo.modalidade || 'megasena' %>">
-                    <div class="jogo-checkbox-container">
-                        <input type="checkbox" class="checkbox-aposta" onchange="marcarAposta(this)" <%= jogo.apostaMarcada ? 'checked disabled' : '' %>>
-                        <span class="aposta-label">aposta feita</span>
-                    </div>
+                                <% const modalidadeInfo = getInfoModalidade(jogo.modalidade || 'megasena'); const dataJogo = jogo.criadoEm || jogo.dataEnvio; const data = new Date(dataJogo); const dia = String(data.getDate()).padStart(2, '0'); const mes = String(data.getMonth() + 1).padStart(2, '0'); const ano = data.getFullYear(); const horas = String(data.getHours()).padStart(2, '0'); const minutos = String(data.getMinutes()).padStart(2, '0'); const ehMaisMilionaria = jogo.modalidade === 'maismilionaria'; const ehDiaDeSorte = jogo.modalidade === 'diadesorte'; const ehTimemania = jogo.modalidade === 'timemania'; const numeros = jogo.numeros || []; const numerosPrincipais = ehMaisMilionaria && numeros.length >= 8 ? numeros.slice(0, -2) : numeros; const trevos = ehMaisMilionaria && numeros.length >= 8 ? numeros.slice(-2) : []; const numerosVisiveis = numerosPrincipais.slice(0, 6); const temMais = numerosPrincipais.length > 6; %>
+                                <div
+            class="jogo-card aposta-feita"
+            data-jogo-id="<%= jogo._id %>"
+            data-modalidade="<%= jogo.modalidade || 'megasena' %>"
+        >
+            <div class="jogo-row1">
+                <div class="jogo-numero">#<%= index + 1 %></div>
+                <div class="jogo-data">
+                    <%= dia %>/<%= mes %>/<%= ano %> às <%= horas %>:<%= minutos %>
+                </div>
+                <div class="jogo-checkbox-container">
+                    <input type="checkbox" class="checkbox-aposta" checked disabled />
+                    <span class="aposta-label">aposta feita</span>
+                </div>
+            </div>
 
-                    <div class="jogo-header">
-                        <div class="jogo-numero-modalidade">
-                            <span class="jogo-numero">#<%= index + 1 %></span>
-                            <% 
-                            const modalidadeInfo = getInfoModalidade(jogo.modalidade || 'megasena');
-                            %>
-                            <div class="jogo-modalidade-info">
-                                <img src="<%= modalidadeInfo.logo %>" alt="<%= modalidadeInfo.nome %>" class="jogo-modalidade-logo">
-                                <span class="jogo-modalidade-nome"><%= modalidadeInfo.nome %></span>
-                            </div>
-                        </div>
-                        <span class="jogo-data">
-                            <% 
-                            const data = new Date(jogo.dataEnvio);
-                            const dia = String(data.getDate()).padStart(2, '0');
-                            const mes = String(data.getMonth() + 1).padStart(2, '0');
-                            const ano = data.getFullYear();
-                            const horas = String(data.getHours()).padStart(2, '0');
-                            const minutos = String(data.getMinutes()).padStart(2, '0');
-                            %>
-                            <%= dia %>/<%= mes %>/<%= ano %> às <%= horas %>:<%= minutos %>
-                        </span>
-                    </div>
+            <div class="jogo-row2">
+                <div class="jogo-origem">
+                    <span class="origem-badge">📨 Recebido de: <strong><%= (jogo.enviadoPor && jogo.enviadoPor.username) ? jogo.enviadoPor.username : (jogo.enviadoPorUsername || 'Usuário') %></strong></span>
+                </div>
+            </div>
 
-                    <div class="jogo-preco">
-                        <span class="preco-label">💰</span>
-                        <span class="preco-valor">R$ <%= modalidadeInfo.precoMinimo.toFixed(2).replace('.', ',') %></span>
-                    </div>
-
-                    <div class="jogo-origem">
-                        <span class="origem-label">📬 Enviado por:</span>
-                        <span class="origem-usuario"><%= jogo.enviadoPor.username %></span>
-                    </div>
-                    
-                    <div class="jogo-numeros">
-                        <% 
-                        const ehMaisMilionaria = jogo.modalidade === 'maismilionaria';
-                        const ehDiaDeSorte = jogo.modalidade === 'diadesorte';
-                        const ehTimemania = jogo.modalidade === 'timemania';
-                        const numeros = jogo.numeros || [];
-                        const numerosPrincipais = ehMaisMilionaria && numeros.length >= 8 ? numeros.slice(0, -2) : numeros;
-                        const trevos = ehMaisMilionaria && numeros.length >= 8 ? numeros.slice(-2) : [];
-                        
-                        // Mostrar até 6 números
-                        const numerosVisiveis = numerosPrincipais.slice(0, 6);
-                        const temMais = numerosPrincipais.length > 6;
-                        
-                        numerosVisiveis.forEach(numero => { %>
-                            <span class="numero-mini"><%= String(numero).padStart(2, '0') %></span>
-                        <% }); 
-                        
-                        if (temMais) { 
-                            // Preparar dados para o popup
-                            const modalidadeInfo = getInfoModalidade(jogo.modalidade || 'megasena');
-                            const extrasJson = JSON.stringify({
-                                trevos: trevos,
-                                mesDaSorte: ehDiaDeSorte && jogo.mesDaSorte ? jogo.mesDaSorte : null,
-                                timeCoracao: ehTimemania && jogo.timeCoracao ? jogo.timeCoracao : null
-                            }).replace(/"/g, '&quot;');
-                        %>
-                            <span class="numero-mini mais" 
-                                  onclick="mostrarTodosNumeros('<%= index + 1 %>', <%= JSON.stringify(numerosPrincipais) %>, '<%= modalidadeInfo.nome %>', <%= extrasJson.replace(/&quot;/g, '"') %>)">
-                                ...
-                            </span>
-                        <% } 
-                        
-                        if (trevos.length > 0) { %>
-                            <span class="separador-trevos" style="color: #16397F; font-size: 1.5rem; font-weight: bold; margin: 0 0.5rem;">|</span>
-                            <% trevos.forEach(trevo => { %>
-                                <span class="numero-badge trevo-badge" style="background: linear-gradient(135deg, rgba(22, 57, 127, 0.85), rgba(22, 57, 127, 0.95)); border-color: rgba(22, 57, 127, 1); box-shadow: 0 0 10px rgba(22, 57, 127, 0.3);"><%= trevo %></span>
-                            <% }); 
-                        }
-                        
-                        if (ehDiaDeSorte && jogo.mesDaSorte) { %>
-                            <span class="separador-mes" style="color: #CB852B; font-size: 1.5rem; font-weight: bold; margin: 0 0.5rem;">|</span>
-                            <span class="mes-sorte-badge" style="background: linear-gradient(135deg, rgba(203, 133, 43, 0.85), rgba(203, 133, 43, 0.95)); border-color: rgba(203, 133, 43, 1); color: #fff; padding: 0.5rem 1rem; border-radius: 2rem; font-size: 0.9rem; font-weight: bold;">📅 <%= jogo.mesDaSorte %></span>
-                        <% }
-                        
-                        if (ehTimemania && jogo.timeCoracao) { %>
-                            <span class="separador-time" style="color: #00FF48; font-size: 1.5rem; font-weight: bold; margin: 0 0.5rem;">|</span>
-                            <span class="time-coracao-badge" style="background: linear-gradient(135deg, rgba(0, 255, 72, 0.85), rgba(0, 255, 72, 0.95)); border-color: rgba(0, 255, 72, 1); color: #000; padding: 0.5rem 1rem; border-radius: 2rem; font-size: 0.9rem; font-weight: bold;">⚽ <%= jogo.timeCoracao %></span>
-                        <% } %>
-                    </div>
-                    
-                    <div class="jogo-actions">
-                        <button class="btn-copiar" onclick="copiarNumeros('<%= ehMaisMilionaria && trevos.length > 0 ? numerosPrincipais.join(', ') + ' | Trevos: ' + trevos.join(', ') : jogo.numeros.join(', ') %>')" title="Copiar números">
-                            📋 Copiar
-                        </button>
-                        <button class="btn-deletar" onclick="deletarJogoRecebido('<%= jogo._id %>')" title="Deletar jogo">
-                            🗑️ Deletar
-                        </button>
+            <div class="jogo-row3">
+                <div class="jogo-numero-modalidade">
+                    <div class="jogo-modalidade-info">
+                        <img
+                            src="<%= modalidadeInfo.logo %>"
+                            alt="<%= modalidadeInfo.nome %>"
+                            class="jogo-modalidade-logo"
+                        />
+                        <span class="jogo-modalidade-nome"><%= modalidadeInfo.nome %></span>
                     </div>
                 </div>
+                <div class="jogo-preco">
+                    <span class="preco-label">💰</span>
+                    <span class="preco-valor"
+                        >R$ <%= modalidadeInfo.precoMinimo.toFixed(2).replace('.', ',')
+                        %></span
+                    >
+                </div>
+            </div>
+
+            <div class="jogo-row4">
+                <div class="jogo-numeros">
+                    <% numerosVisiveis.forEach(numero => { %>
+                    <span class="numero-mini"
+                        ><%= String(numero).padStart(2, '0') %></span
+                    >
+                    <% }); %> <% if (temMais) { %>
+                    <span
+                        class="numero-mini mais"
+                        data-jogo-id="<%= index + 1 %>"
+                        data-numeros="<%= JSON.stringify(numerosPrincipais) %>"
+                        data-modalidade="<%= modalidadeInfo.nome %>"
+                        data-trevos="<%= JSON.stringify(trevos) %>"
+                        data-mes="<%= ehDiaDeSorte && jogo.mesDaSorte ? jogo.mesDaSorte : '' %>"
+                        data-time="<%= ehTimemania && jogo.timeCoracao ? jogo.timeCoracao : '' %>"
+                    >
+                        ...
+                    </span>
+                    <% } %> <% if (trevos.length > 0) { %>
+                    <span
+                        class="separador-trevos"
+                        style="
+                            color: #16397f;
+                            font-size: 1.5rem;
+                            font-weight: bold;
+                            margin: 0 0.5rem;
+                        "
+                        >|</span
+                    >
+                    <% trevos.forEach(trevo => { %>
+                    <span
+                        class="numero-badge trevo-badge"
+                        style="
+                            background: linear-gradient(
+                                135deg,
+                                rgba(22, 57, 127, 0.85),
+                                rgba(22, 57, 127, 0.95)
+                            );
+                            border-color: rgba(22, 57, 127, 1);
+                            box-shadow: 0 0 10px rgba(22, 57, 127, 0.3);
+                        "
+                        ><%= trevo %></span
+                    >
+                    <% }); %> <% } %> <% if (ehDiaDeSorte && jogo.mesDaSorte) { %>
+                    <span
+                        class="separador-mes"
+                        style="
+                            color: #cb852b;
+                            font-size: 1.5rem;
+                            font-weight: bold;
+                            margin: 0 0.5rem;
+                        "
+                        >|</span
+                    >
+                    <span
+                        class="mes-sorte-badge"
+                        style="
+                            background: linear-gradient(
+                                135deg,
+                                rgba(203, 133, 43, 0.85),
+                                rgba(203, 133, 43, 0.95)
+                            );
+                            border-color: rgba(203, 133, 43, 1);
+                            color: #fff;
+                            padding: 0.5rem 1rem;
+                            border-radius: 2rem;
+                            font-size: 0.9rem;
+                            font-weight: bold;
+                        "
+                        >📅 <%= jogo.mesDaSorte %></span
+                    >
+                    <% } %> <% if (ehTimemania && jogo.timeCoracao) { %>
+                    <span
+                        class="separador-time"
+                        style="
+                            color: #00ff48;
+                            font-size: 1.5rem;
+                            font-weight: bold;
+                            margin: 0 0.5rem;
+                        "
+                        >|</span
+                    >
+                    <span
+                        class="time-coracao-badge"
+                        style="
+                            background: linear-gradient(
+                                135deg,
+                                rgba(0, 255, 72, 0.85),
+                                rgba(0, 255, 72, 0.95)
+                            );
+                            border-color: rgba(0, 255, 72, 1);
+                            color: #000;
+                            padding: 0.5rem 1rem;
+                            border-radius: 2rem;
+                            font-size: 0.9rem;
+                            font-weight: bold;
+                        "
+                        >⚽ <%= jogo.timeCoracao %></span
+                    >
+                    <% } %>
+                </div>
+            </div>
+
+            <div class="jogo-actions">
+                <button
+                    class="btn-copiar"
+                    onclick="copiarNumeros('<%= jogo.numeros.join(', ') %>')"
+                    title="Copiar números"
+                >
+                    📋 Copiar
+                </button>
+                <button class="btn-deletar" onclick="deletarJogoRecebido('<%= jogo._id %>')" title="Deletar">🗑️ Deletar</button>
+            </div>
+                                </div>
             <% }); %>
         </div>
 

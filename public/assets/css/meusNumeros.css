@@ -1,0 +1,807 @@
+:root {
+    --primary-color: #0f172a;
+    /* Azul marinho profundo - cor principal elegante */
+    --secondary-color: #1e293b;
+    /* Azul escuro secundário */
+    --accent-purple: #8b5cf6;
+    /* Roxo vibrante elegante */
+    --accent-violet: #a855f7;
+    /* Violeta luminoso */
+    --accent-emerald: #10b981;
+    /* Verde esmeralda */
+    --text-dark: #0f172a;
+    /* Texto escuro */
+    --text-light: #f8fafc;
+    /* Texto claro */
+    --bg-light: #f8fafc;
+    /* Fundo claro */
+    --bg-card: #ffffff;
+    /* Fundo de cards */
+    --border-color: #e2e8f0;
+    /* Borda suave */
+    --hover-overlay: rgba(15, 23, 42, 0.05);
+    /* Overlay suave para hover */
+}
+
+.meus-jogos-container {
+    box-sizing: border-box;
+    padding: 2rem 1.5rem;
+    min-height: 100vh;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.meus-jogos-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+/* Header: verificação rápida e ações */
+.verifica-numeros {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.verifica-numeros input[type="text"] {
+    padding: 0.65rem 0.95rem;
+    min-width: 280px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+    color: var(--text-light);
+    outline: none;
+    font-weight: 600;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+    transition: box-shadow 160ms ease, border-color 160ms ease, transform 120ms ease;
+}
+
+.verifica-numeros input[type="text"]::placeholder {
+    color: rgba(255, 255, 255, 0.45);
+    font-weight: 500;
+}
+
+.btn-verificar {
+    padding: 0.55rem 0.85rem;
+    border-radius: 9999px;
+    border: 2px solid var(--accent-purple);
+    background: transparent;
+    color: var(--text-light);
+    font-weight: 800;
+    cursor: pointer;
+    transition: background-size 200ms ease, transform 120ms ease, color 120ms ease;
+    background-image: linear-gradient(90deg, var(--accent-violet), var(--accent-purple));
+    background-repeat: no-repeat;
+    background-size: 0% 100%;
+}
+
+.btn-verificar:hover {
+    background-size: 100% 100%;
+    color: var(--text-dark);
+    transform: translateY(-2px);
+}
+
+/* Center the delete-all button on the page inside the main container */
+.meus-jogos-container .btn-deletar-todos {
+    display: block; /* allow margin auto centering */
+    width: fit-content; /* shrink to content while being a block */
+    margin: 1.25rem auto; /* center horizontally */
+}
+
+/* ========== ESTATÍSTICAS DE ACERTOS ========== */
+.estatisticas-acertos {
+    margin-top: 2rem;
+    background: linear-gradient(180deg, rgba(15,23,42,0.6), rgba(2,6,23,0.5));
+    border: 1px solid rgba(255,255,255,0.04);
+    padding: 1.25rem;
+    border-radius: 12px;
+}
+
+.estatisticas-titulo {
+    margin: 0 0 0.75rem 0;
+    font-size: 1.05rem;
+    font-weight: 900;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.estatisticas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.75rem;
+    align-items: stretch;
+}
+
+.estatistica-item {
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    padding: 0.9rem 0.8rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    justify-content: center;
+    border: 1px solid rgba(255,255,255,0.04);
+}
+
+.estatistica-numero {
+    font-size: 1.6rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-violet));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.estatistica-label {
+    font-size: 0.75rem;
+    color: rgba(248,250,252,0.75);
+    text-transform: lowercase;
+    font-weight: 700;
+}
+
+.estatistica-count {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--accent-emerald);
+}
+
+.estatistica-descricao {
+    font-size: 0.75rem;
+    color: rgba(248,250,252,0.6);
+}
+
+/* destaque para vencedoras */
+.estatistica-item[data-acertos="6"] {
+    background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(16,185,129,0.06));
+    border-color: rgba(16,185,129,0.18);
+    box-shadow: 0 8px 24px rgba(16,185,129,0.06);
+}
+
+/* ========== BOTÃO VOLTAR ========== */
+.volta-home {
+    text-align: center;
+    margin-top: 1.25rem;
+}
+
+.btn-voltar {
+    display: inline-block;
+    padding: 0.55rem 0.9rem;
+    border-radius: 999px;
+    background-image: linear-gradient(90deg, var(--accent-violet), var(--accent-purple));
+    color: var(--text-dark);
+    font-weight: 800;
+    text-decoration: none;
+    transition: transform 120ms ease, box-shadow 140ms ease, opacity 120ms ease;
+}
+
+.btn-voltar:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(139,92,246,0.12);
+}
+
+@media (max-width: 600px) {
+    .estatisticas-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.header-content {
+    text-align: center;
+}
+
+.header-content h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-violet));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: var(--text-light);
+}
+
+.user-info {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.95rem;
+    margin-top: 0.2rem;
+}
+
+.btn-enviar-jogos {
+    padding: 0.6rem 1rem;
+    border-radius: 9999px;
+    border: none;
+    background: linear-gradient(135deg, var(--accent-violet), var(--accent-purple));
+    color: var(--text-dark);
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.12);
+    transition: transform 140ms ease, box-shadow 160ms ease;
+}
+
+.btn-enviar-jogos:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 40px rgba(139, 92, 246, 0.18);
+}
+
+
+
+/* Responsividade do header */
+@media (max-width: 900px) {
+    .meus-jogos-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+
+    .header-content {
+        order: 2;
+        text-align: left;
+    }
+
+    .verifica-numeros {
+        order: 1;
+    }
+
+    .btn-enviar-jogos {
+        order: 3;
+        justify-self: end;
+    }
+
+    .verifica-numeros input[type="text"] {
+        min-width: 100%;
+    }
+}
+
+/* Empty state / Estatísticas */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 2.25rem;
+    margin: 1.25rem 0 2rem 0;
+    background: linear-gradient(180deg, rgba(2, 6, 23, 0.62), rgba(2, 6, 23, 0.50));
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 12px;
+    color: var(--text-light);
+}
+
+.empty-state .empty-icon {
+    width: 72px;
+    height: 72px;
+    display: grid;
+    place-items: center;
+    font-size: 2.25rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(138, 92, 246, 0.12), rgba(168, 85, 247, 0.10));
+    box-shadow: 0 8px 20px rgba(2, 6, 23, 0.5);
+}
+
+.empty-state h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text-light);
+}
+
+.empty-state p {
+    margin: 0;
+    color: rgba(248, 250, 252, 0.68);
+}
+
+.btn-criar-novo {
+    display: inline-block;
+    margin-top: 0.5rem;
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent-violet), var(--accent-purple));
+    color: var(--text-light);
+    font-weight: 800;
+    text-decoration: none;
+    box-shadow: 0 10px 26px rgba(138, 92, 246, 0.08);
+    transition: transform 140ms ease, box-shadow 140ms ease, opacity 120ms ease;
+}
+
+.btn-criar-novo:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 40px rgba(138, 92, 246, 0.14);
+    opacity: 0.98;
+}
+
+
+.jogos-stats {
+    display: flex;
+    gap: 1rem;
+    align-items: stretch;
+    margin-bottom: 1.25rem;
+}
+
+.stat-card {
+    flex: 1 1 200px;
+    padding: 3rem 2rem;
+    background: linear-gradient(180deg, rgba(30, 41, 59, 0.62), rgba(15, 23, 42, 0.55));
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    box-shadow: 0 8px 24px rgba(2, 6, 23, 0.50);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.stat-label {
+    color: rgba(248, 250, 252, 0.72);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.stat-value {
+    font-size: 1.45rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-violet));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+@media (max-width: 700px) {
+    .jogos-stats {
+        flex-direction: column;
+    }
+}
+
+/* Grid de jogos e cards */
+.jogos-grid {
+    display: grid;
+    /* garante largura mínima de card compatível com 7 números */
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1rem;
+    align-items: start;
+    margin-bottom: 1.25rem;
+}
+
+.jogo-card {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.56), rgba(2, 6, 23, 0.48));
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 14px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    transition: transform 160ms ease, box-shadow 180ms ease;
+    box-shadow: 0 10px 30px rgba(2, 6, 23, 0.50);
+    min-height: 170px;
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.jogo-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 46px rgba(2, 6, 23, 0.6);
+}
+
+/* Estado quando aposta já foi marcada: diminar visual e desabilitar ação de deletar */
+.jogo-card.aposta-feita {
+    opacity: 0.62;
+    filter: grayscale(20%);
+    box-shadow: none;
+}
+.jogo-card.aposta-feita .jogo-actions .btn-deletar {
+    opacity: 0.4;
+    pointer-events: none;
+    cursor: not-allowed;
+    filter: grayscale(60%);
+    transform: none;
+}
+.jogo-card.aposta-feita .jogo-actions .btn-copiar {
+    opacity: 0.95;
+}
+/* Preserve modalidade info visual mesmo quando o card está 'desativado' */
+.jogo-card.aposta-feita .jogo-modalidade-info {
+    opacity: 1;
+    filter: none;
+}
+
+.jogo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.jogo-numero {
+    font-weight: 900;
+    color: var(--accent-purple);
+    font-size: 0.95rem;
+}
+
+.jogo-modalidade-info {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.jogo-modalidade-logo {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.jogo-modalidade-nome {
+    font-weight: 800;
+    color: rgba(248, 250, 252, 0.95);
+    font-size: 1rem;
+}
+
+.jogo-data {
+    font-size: 0.82rem;
+    color: rgba(248, 250, 252, 0.62);
+}
+
+.jogo-preco {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(248, 250, 252, 0.92);
+    font-weight: 800;
+}
+
+.jogo-numeros {
+    display: flex;
+    flex-wrap: nowrap;
+    /* don't wrap numbers */
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    /* hide overflow when more than fit */
+    padding: 0.25rem 0.25rem;
+    /* espaço interno para evitar que os números sejam cortados */
+    box-sizing: border-box;
+    min-height: 44px;
+    /* garante espaço vertical para os badges de 36px */
+}
+
+.numero-mini {
+    background: rgba(255, 255, 255, 0.03);
+    width: 36px;
+    height: 36px;
+    display: inline-grid;
+    place-items: center;
+    border-radius: 999px;
+    font-weight: 900;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    flex: 0 0 36px;
+}
+
+.numero-mini.mais {
+    cursor: pointer;
+    opacity: 0.95;
+    padding: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.02);
+    color: rgba(248, 250, 252, 0.85);
+    font-weight: 800;
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 36px;
+}
+
+/* Ensure actions stay at card bottom */
+.jogo-actions {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 1rem;
+
+}
+
+.jogo-actions {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.295);
+    padding-top: 0.75rem;
+}
+
+.btn-copiar {
+    padding: 0.6rem 0.9rem;
+    min-width: 150px;
+    border-radius: 999px;
+    border: 1px solid rgba(16,185,129,0.15);
+    background: linear-gradient(135deg, rgba(16,185,129,0.95), rgba(6,95,70,0.95));
+    color: #042b1f;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 120ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+.btn-copiar:hover {
+    color: #fff;
+    box-shadow: 0 12px 30px rgba(16,185,129,0.12);
+}
+
+.btn-deletar {
+    padding: 0.6rem 0.9rem;
+    min-width: 150px;
+    border-radius: 999px;
+    border: 1px solid rgba(239,68,68,0.12);
+    background: linear-gradient(135deg, rgba(248, 4, 4, 0.95), rgba(215, 81, 81, 0.95));
+    color: #2b0606;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 120ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+.btn-deletar:hover {
+    color: #fff;
+    box-shadow: 0 12px 30px rgba(239,68,68,0.12);
+}
+
+/* Position checkbox container in corner */
+.jogo-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.jogo-row1 {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.6rem;
+    width: 100%;
+    margin-bottom: 1rem;
+    justify-content: space-around;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.308);
+    padding-bottom: 0.6rem;
+}
+
+.jogo-numero {
+    justify-self: start;
+    text-align: left;
+}
+
+.jogo-data {
+    justify-self: center;
+    text-align: center;
+}
+
+.jogo-aposta {
+    justify-self: end;
+    text-align: right;
+}
+
+.jogo-row2 {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+}
+
+.jogo-modalidade-info {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.jogo-modalidade-info .jogo-modalidade-nome {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.jogo-preco {
+    flex: 0 0 auto;
+    margin-left: 0.6rem;
+    white-space: nowrap;
+}
+
+.jogo-checkbox-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(255, 255, 255, 0.02);
+    padding: 0.25rem 0.45rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.jogo-checkbox-inline .checkbox-aposta {
+    transform: scale(1.05);
+}
+
+/* Modalidade-specific gradients for numero badges */
+.jogo-card[data-modalidade="megasena"] .numero-mini {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 1), rgba(6, 95, 70, 0.95));
+    color: #fff;
+}
+
+.jogo-card[data-modalidade="lotofacil"] .numero-mini {
+    background: linear-gradient(135deg, #f472b6, #fb7185);
+    color: #fff;
+}
+
+.jogo-card[data-modalidade="quina"] .numero-mini {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff;
+}
+
+.jogo-card[data-modalidade="timemania"] .numero-mini {
+    background: linear-gradient(135deg, #06b6d4, #0ea5a3);
+    color: #012;
+}
+
+.jogo-card[data-modalidade="maismilionaria"] .numero-mini {
+    background: linear-gradient(135deg, #f59e0b, #8b5cf6);
+    color: #111;
+}
+
+.jogo-card[data-modalidade="diadesorte"] .numero-mini {
+    background: linear-gradient(135deg, #f97316, #f59e0b);
+    color: #111;
+}
+
+.jogo-card[data-modalidade="lotomania"] .numero-mini {
+    background: linear-gradient(135deg, #64748b, #475569);
+    color: #fff;
+}
+
+.jogo-card[data-modalidade="duplasena"] .numero-mini {
+    background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+    color: #fff;
+}
+
+.jogo-card[data-modalidade="supersete"] .numero-mini {
+    background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    color: #fff;
+}
+
+.jogo-card[data-modalidade="loteca"] .numero-mini {
+    background: linear-gradient(135deg, #ef4444, #f97316);
+    color: #fff;
+}
+
+/* Card backgrounds matching modalidade theme (dark, subtle) */
+.jogo-card[data-modalidade="megasena"] {
+    background: linear-gradient(135deg, rgba(33, 136, 56, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(33, 136, 56, 0.85);
+}
+
+.jogo-card[data-modalidade="lotofacil"] {
+    background: linear-gradient(135deg, rgba(148, 33, 147, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(148, 33, 147, 0.85);
+}
+
+.jogo-card[data-modalidade="quina"] {
+    background: linear-gradient(135deg, rgba(38, 70, 193, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(38, 70, 193, 0.85);
+}
+
+.jogo-card[data-modalidade="timemania"] {
+    background: linear-gradient(135deg, rgba(0, 255, 72, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(0, 255, 72, 0.85);
+}
+
+.jogo-card[data-modalidade="maismilionaria"] {
+    background: linear-gradient(135deg, rgba(22, 57, 127, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(22, 57, 127, 0.85);
+}
+
+.jogo-card[data-modalidade="diadesorte"] {
+    background: linear-gradient(135deg, rgba(203, 133, 43, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(203, 133, 43, 0.85);
+}
+
+.jogo-card[data-modalidade="lotomania"] {
+    background: linear-gradient(135deg, rgba(244, 121, 32, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(244, 121, 32, 0.85);
+}
+
+.jogo-card[data-modalidade="duplasena"] {
+    background: linear-gradient(135deg, rgba(163, 73, 164, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(163, 73, 164, 0.85);
+}
+
+.jogo-card[data-modalidade="supersete"] {
+    background: linear-gradient(135deg, rgba(164, 210, 51, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(164, 210, 51, 0.85);
+}
+
+.jogo-card[data-modalidade="loteca"] {
+    background: linear-gradient(135deg, rgba(237, 28, 36, 0.55) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-color: rgba(237, 28, 36, 0.85);
+}
+
+/* trevos badge (smaller) */
+.numero-badge.trevo-badge {
+    width: 36px;
+    height: 36px;
+    display: inline-grid;
+    place-items: center;
+    border-radius: 999px;
+    font-weight: 800;
+    color: #fff;
+}
+
+@media (max-width: 1100px) {
+    .jogos-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .jogos-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .jogo-card {
+        padding: 0.9rem;
+    }
+
+    .verifica-numeros input[type="text"] {
+        min-width: 160px;
+    }
+}
+
+/* Destaque temporário para card vencedor */
+.jogo-card.vencedor-destaque {
+    position: relative;
+    z-index: 1600;
+    animation: vencedor-pulse 1.6s ease-in-out infinite;
+    box-shadow: 0 30px 90px rgba(16,185,129,0.28), 0 0 0 6px rgba(16,185,129,0.14) inset;
+    transform: translateY(-8px) scale(1.02);
+    border-radius: 12px;
+}
+
+@keyframes vencedor-pulse {
+    0% {
+        box-shadow: 0 10px 30px rgba(16,185,129,0.06);
+        transform: translateY(-4px) scale(1.01);
+    }
+    50% {
+        box-shadow: 0 36px 110px rgba(16,185,129,0.32), 0 0 0 10px rgba(16,185,129,0.12) inset;
+        transform: translateY(-10px) scale(1.04);
+    }
+    100% {
+        box-shadow: 0 10px 30px rgba(16,185,129,0.06);
+        transform: translateY(-4px) scale(1.01);
+    }
+}
+
+.btn-deletar-todos {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: solid 2px var(--accent-purple);
+    border-radius: 9999px;
+    padding: 0.9rem 1.5rem;
+    background: transparent;
+    color: var(--text-light);
+    cursor: pointer;
+    font-weight: 800;
+    transition: background-size 300ms ease, transform 220ms ease, color 220ms ease;
+    background-image: linear-gradient(90deg, var(--accent-violet), var(--accent-purple));
+    background-repeat: no-repeat;
+    background-size: 0% 100%;
+}
+.btn-deletar-todos:hover {
+    background-size: 100% 100%;
+    color: var(--text-dark);
+}

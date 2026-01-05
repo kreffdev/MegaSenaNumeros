@@ -321,7 +321,7 @@ function initSelectNumbers() {
         // Criar botão de confirmação
         confirmBtn = document.createElement('button');
         confirmBtn.id = 'btn-confirmar-numeros';
-        confirmBtn.className = 'btn-confirmar';
+        confirmBtn.className = 'btn-confirmar primary-button confirm-btn-fixed';
         confirmBtn.textContent = 'Confirmar Sequência (2 Sorteios)';
         confirmBtn.addEventListener('click', confirmarSequencia);
         escolhidosLista.parentElement.appendChild(confirmBtn);
@@ -344,7 +344,7 @@ function initSelectNumbers() {
         // Criar botão de confirmação
         confirmBtn = document.createElement('button');
         confirmBtn.id = 'btn-confirmar-numeros';
-        confirmBtn.className = 'btn-confirmar';
+        confirmBtn.className = 'btn-confirmar primary-button confirm-btn-fixed';
         confirmBtn.textContent = 'Confirmar Sequência';
         confirmBtn.addEventListener('click', confirmarSequencia);
         escolhidosLista.parentElement.appendChild(confirmBtn);
@@ -363,7 +363,7 @@ function initSelectNumbers() {
         // Criar botão de confirmação
         confirmBtn = document.createElement('button');
         confirmBtn.id = 'btn-confirmar-numeros';
-        confirmBtn.className = 'btn-confirmar';
+        confirmBtn.className = 'btn-confirmar primary-button confirm-btn-fixed';
         confirmBtn.textContent = 'Confirmar Sequência';
         confirmBtn.addEventListener('click', confirmarSequencia);
         escolhidosLista.parentElement.appendChild(confirmBtn);

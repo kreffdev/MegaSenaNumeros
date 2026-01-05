@@ -1,258 +1,357 @@
-
-<%- include('includes/head'); %>
-<%- include('includes/nav'); %>
+<%- include('includes/head'); %> <%- include('includes/nav'); %>
 
 <!-- Modal de vencedor -->
 <div id="modal-vencedor" class="modal-vencedor">
-    <div class="modal-vencedor-content">
-        <div class="modal-vencedor-header">
-            <span class="modal-vencedor-icon">🎉</span>
-            <h2 class="modal-vencedor-titulo">PARABÉNS!</h2>
-            <p class="modal-vencedor-subtitulo">Você tem uma sequência vencedora!</p>
-            <p class="modal-vencedor-usuario"><span>Aposta:</span> Realizada</p>
-        </div>
-        <div class="modal-vencedor-body">
-            <p class="vencedor-label">Números sorteados:</p>
-            <div class="vencedor-numeros">
-                <!-- Números serão inseridos aqui dinamicamente -->
-            </div>
-        </div>
-        <div class="modal-vencedor-footer">
-            <button class="btn-fechar-vencedor" onclick="fecharPopupVencedor()">Fechar</button>
-        </div>
+  <div class="modal-vencedor-content">
+    <div class="modal-vencedor-header">
+      <span class="modal-vencedor-icon">🎉</span>
+      <h2 class="modal-vencedor-titulo">PARABÉNS!</h2>
+      <p class="modal-vencedor-subtitulo">Você tem uma sequência vencedora!</p>
+      <p class="modal-vencedor-usuario"><span>Aposta:</span> Realizada</p>
     </div>
+    <div class="modal-vencedor-body">
+      <p class="vencedor-label">Números sorteados:</p>
+      <div class="vencedor-numeros">
+        <!-- Números serão inseridos aqui dinamicamente -->
+      </div>
+    </div>
+    <div class="modal-vencedor-footer">
+      <button class="btn-fechar-vencedor" onclick="__fecharPopupVencedorSafe()">
+        Fechar
+      </button>
+    </div>
+  </div>
 </div>
 
 <main class="meus-jogos-container">
-    <div class="meus-jogos-header">
-        <div class="verifica-numeos">
-            <input type="text" id="verifica-numeros-input" placeholder="Ex: 05,12,23,34,45,56" aria-label="Verificar números">
-            <button class="btn-verificar" title="Verificar Números" onclick="verificarNumeros()">
-                🔍 Verificar
-            </button>
-        </div>
-
-        <div class="header-content">
-            <h1>🎯 Apostas Realizadas</h1>
-            <% if (user) { %>
-                <p class="user-info">Bem-vindo, <strong><%= user.username %></strong></p>
-            <% } %>
-        </div>
+  <div class="meus-jogos-header">
+    <div class="verifica-numeros">
+      <input
+        type="text"
+        id="verifica-numeros-input"
+        placeholder="Ex: 05,12,23,34,45,56"
+        aria-label="Verificar números"
+      />
+      <button
+        class="btn-verificar"
+        title="Verificar Números"
+        onclick="verificarNumeros()"
+      >
+        🔍 Verificar
+      </button>
     </div>
 
-    <% if (jogos.length === 0) { %>
-        <div class="empty-state">
-            <div class="empty-icon">📋</div>
-            <h2>Nenhuma aposta realizada ainda</h2>
-            <p>Você ainda não marcou nenhuma sequência como "aposta feita".</p>
-            <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem;">
-                <a href="/meusjogos" class="btn-criar-novo">Meus Jogos</a>
-                <a href="/jogosrecebidos" class="btn-criar-novo">Jogos Recebidos</a>
-            </div>
-        </div>
-    <% } else { %>
-        <div class="jogos-stats">
-            <div class="stat-card">
-                <span class="stat-label">Total de Apostas Realizadas</span>
-                <span class="stat-value"><%= totalJogos %></span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-label">Valor Total Investido</span>
-                <span class="stat-value">R$ <%= valorTotal %></span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-label">Jogos Próprios</span>
-                <span class="stat-value"><%= jogos.filter(j => j.tipo === 'proprio').length %></span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-label">Jogos Recebidos</span>
-                <span class="stat-value"><%= jogos.filter(j => j.tipo === 'recebido').length %></span>
-            </div>
-        </div>
+    <div class="header-content">
+      <h1>🎯 Apostas Realizadas</h1>
+      <% if (user) { %>
+      <p class="user-info">Bem-vindo, <strong><%= user.username %></strong></p>
+      <% } %>
+    </div>
+  </div>
 
-        <% if (estatisticasUsuarios && estatisticasUsuarios.length > 0) { %>
-        <div class="estatisticas-usuarios">
-            <h3 class="estatisticas-titulo">👥 Apostas por Remetente</h3>
-            <div class="usuarios-grid">
-                <% estatisticasUsuarios.forEach((usuario, index) => { %>
-                    <div class="usuario-stat-card">
-                        <div class="usuario-posicao">#<%= index + 1 %></div>
-                        <div class="usuario-nome">👤 <%= usuario.nome %></div>
-                        <div class="usuario-info">
-                            <div class="usuario-quantidade">
-                                <span class="info-label">Sequências</span>
-                                <span class="info-valor"><%= usuario.quantidade %></span>
-                            </div>
-                            <div class="usuario-valor">
-                                <span class="info-label">Valor</span>
-                                <span class="info-valor">R$ <%= usuario.valor.toFixed(2).replace('.', ',') %></span>
-                            </div>
-                        </div>
-                    </div>
-                <% }); %>
-            </div>
+  <% if (jogos.length === 0) { %>
+  <div class="empty-state">
+    <div class="empty-icon">📋</div>
+    <h2>Nenhuma aposta realizada ainda</h2>
+    <p>Você ainda não marcou nenhuma sequência como "aposta feita".</p>
+    <div
+      style="
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 1.5rem;
+      "
+    >
+      <a href="/meusjogos" class="btn-criar-novo">Meus Jogos</a>
+      <a href="/jogosrecebidos" class="btn-criar-novo">Jogos Recebidos</a>
+    </div>
+  </div>
+  <% } else { %>
+  <div class="jogos-stats">
+    <div class="stat-card">
+      <span class="stat-label">Total de Apostas Realizadas</span>
+      <span class="stat-value"><%= totalJogos %></span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Jogos Próprios</span>
+      <span class="stat-value"
+        ><%= jogos.filter(j => j.tipo === 'proprio').length %></span
+      >
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Jogos Recebidos</span>
+      <span class="stat-value"
+        ><%= jogos.filter(j => j.tipo === 'recebido').length %></span
+      >
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Valor Total Investido</span>
+      <span class="stat-value">R$ <%= valorTotal %></span>
+    </div>
+  </div>
+
+  <% if (estatisticasUsuarios && estatisticasUsuarios.length > 0) { %>
+  <div class="estatisticas-usuarios">
+    <h3 class="estatisticas-titulo">👥 Apostas por Remetente</h3>
+    <div class="usuarios-grid">
+      <% estatisticasUsuarios.forEach((usuario, index) => { %>
+      <div class="usuario-stat-card">
+        <div class="usuario-posicao">#<%= index + 1 %></div>
+        <div class="usuario-nome">👤 <%= usuario.nome %></div>
+        <div class="usuario-meta-row">
+          <div class="usuario-quantidade">
+            <span class="info-label">Sequências</span>
+            <span class="info-valor"><%= usuario.quantidade %></span>
+          </div>
+          <div class="usuario-valor">
+            <span class="info-label">Valor</span>
+            <span class="info-valor"
+              >R$ <%= usuario.valor.toFixed(2).replace('.', ',') %></span
+            >
+          </div>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+  </div>
+  <% } %>
+
+  <div class="jogos-grid">
+    <% jogos.forEach((jogo, index) => { %> <% const modalidadeInfo =
+    getInfoModalidade(jogo.modalidade || 'megasena'); const dataJogo =
+    jogo.criadoEm || jogo.dataEnvio; const data = new Date(dataJogo); const dia
+    = String(data.getDate()).padStart(2, '0'); const mes =
+    String(data.getMonth() + 1).padStart(2, '0'); const ano =
+    data.getFullYear(); const horas = String(data.getHours()).padStart(2, '0');
+    const minutos = String(data.getMinutes()).padStart(2, '0'); const
+    ehMaisMilionaria = jogo.modalidade === 'maismilionaria'; const ehDiaDeSorte
+    = jogo.modalidade === 'diadesorte'; const ehTimemania = jogo.modalidade ===
+    'timemania'; const numeros = jogo.numeros || []; const numerosPrincipais =
+    ehMaisMilionaria && numeros.length >= 8 ? numeros.slice(0, -2) : numeros;
+    const trevos = ehMaisMilionaria && numeros.length >= 8 ? numeros.slice(-2) :
+    []; const numerosVisiveis = numerosPrincipais.slice(0, 6); const temMais =
+    numerosPrincipais.length > 6; %>
+
+    <div
+      class="jogo-card aposta-feita"
+      data-jogo-id="<%= jogo._id %>"
+      data-modalidade="<%= jogo.modalidade || 'megasena' %>"
+    >
+      <div class="jogo-row1">
+        <div class="jogo-numero">#<%= index + 1 %></div>
+        <div class="jogo-data">
+          <%= dia %>/<%= mes %>/<%= ano %> às <%= horas %>:<%= minutos %>
+        </div>
+        <div class="jogo-checkbox-container">
+          <input type="checkbox" class="checkbox-aposta" checked disabled />
+          <span class="aposta-label">aposta feita</span>
+        </div>
+      </div>
+
+      <div class="jogo-row2">
+        <% if (jogo.tipo === 'recebido') { %>
+        <div class="jogo-origem">
+          <span class="origem-badge"
+            >📨 Recebido de:
+            <strong><%= jogo.enviadoPorUsername %></strong></span
+          >
+        </div>
+        <% } else { %>
+        <div class="jogo-origem">
+          <span class="origem-badge">✨ Jogo Próprio</span>
         </div>
         <% } %>
+      </div>
 
-        <div class="jogos-grid">
-            <% jogos.forEach((jogo, index) => { %>
-                <div class="jogo-card aposta-feita" data-jogo-id="<%= jogo._id %>" data-modalidade="<%= jogo.modalidade || 'megasena' %>">
-                    <div class="jogo-checkbox-container">
-                        <input type="checkbox" class="checkbox-aposta" checked disabled>
-                        <span class="aposta-label">aposta feita</span>
-                    </div>
-
-                    <% if (jogo.tipo === 'recebido') { %>
-                        <div class="jogo-origem">
-                            <span class="origem-badge">📨 Recebido de: <strong><%= jogo.enviadoPorUsername %></strong></span>
-                        </div>
-                    <% } else { %>
-                        <div class="jogo-origem">
-                            <span class="origem-badge">✨ Jogo Próprio</span>
-                        </div>
-                    <% } %>
-
-                    <div class="jogo-header">
-                        <div class="jogo-numero-modalidade">
-                            <span class="jogo-numero">#<%= index + 1 %></span>
-                            <% 
-                            const modalidadeInfo = getInfoModalidade(jogo.modalidade || 'megasena');
-                            %>
-                            <div class="jogo-modalidade-info">
-                                <img src="<%= modalidadeInfo.logo %>" alt="<%= modalidadeInfo.nome %>" class="jogo-modalidade-logo">
-                                <span class="jogo-modalidade-nome"><%= modalidadeInfo.nome %></span>
-                            </div>
-                        </div>
-                        <span class="jogo-data">
-                            <% 
-                            const dataJogo = jogo.criadoEm || jogo.dataEnvio;
-                            const data = new Date(dataJogo);
-                            const dia = String(data.getDate()).padStart(2, '0');
-                            const mes = String(data.getMonth() + 1).padStart(2, '0');
-                            const ano = data.getFullYear();
-                            const horas = String(data.getHours()).padStart(2, '0');
-                            const minutos = String(data.getMinutes()).padStart(2, '0');
-                            %>
-                            <%= dia %>/<%= mes %>/<%= ano %> às <%= horas %>:<%= minutos %>
-                        </span>
-                    </div>
-                    
-                    <div class="jogo-preco">
-                        <span class="preco-label">💰</span>
-                        <span class="preco-valor">R$ <%= modalidadeInfo.precoMinimo.toFixed(2).replace('.', ',') %></span>
-                    </div>
-                    
-                    <div class="jogo-numeros">
-                        <% 
-                        const ehMaisMilionaria = jogo.modalidade === 'maismilionaria';
-                        const ehDiaDeSorte = jogo.modalidade === 'diadesorte';
-                        const ehTimemania = jogo.modalidade === 'timemania';
-                        const numeros = jogo.numeros || [];
-                        const numerosPrincipais = ehMaisMilionaria && numeros.length >= 8 ? numeros.slice(0, -2) : numeros;
-                        const trevos = ehMaisMilionaria && numeros.length >= 8 ? numeros.slice(-2) : [];
-                        
-                        // Mostrar até 6 números
-                        const numerosVisiveis = numerosPrincipais.slice(0, 6);
-                        const temMais = numerosPrincipais.length > 6;
-                        
-                        numerosVisiveis.forEach(numero => { %>
-                            <span class="numero-mini"><%= String(numero).padStart(2, '0') %></span>
-                        <% }); 
-                        
-                        if (temMais) { %>
-                            <span class="numero-mini mais" 
-                                  data-jogo-id="<%= index + 1 %>"
-                                  data-numeros="<%= JSON.stringify(numerosPrincipais) %>"
-                                  data-modalidade="<%= modalidadeInfo.nome %>"
-                                  data-trevos="<%= JSON.stringify(trevos) %>"
-                                  data-mes="<%= ehDiaDeSorte && jogo.mesDaSorte ? jogo.mesDaSorte : '' %>"
-                                  data-time="<%= ehTimemania && jogo.timeCoracao ? jogo.timeCoracao : '' %>">
-                                ...
-                            </span>
-                        <% } 
-                        
-                        if (trevos.length > 0) { %>
-                            <span class="separador-trevos" style="color: #16397F; font-size: 1.5rem; font-weight: bold; margin: 0 0.5rem;">|</span>
-                            <% trevos.forEach(trevo => { %>
-                                <span class="numero-badge trevo-badge" style="background: linear-gradient(135deg, rgba(22, 57, 127, 0.85), rgba(22, 57, 127, 0.95)); border-color: rgba(22, 57, 127, 1); box-shadow: 0 0 10px rgba(22, 57, 127, 0.3);"><%= trevo %></span>
-                            <% }); 
-                        }
-                        
-                        if (ehDiaDeSorte && jogo.mesDaSorte) { %>
-                            <span class="separador-mes" style="color: #CB852B; font-size: 1.5rem; font-weight: bold; margin: 0 0.5rem;">|</span>
-                            <span class="mes-sorte-badge" style="background: linear-gradient(135deg, rgba(203, 133, 43, 0.85), rgba(203, 133, 43, 0.95)); border-color: rgba(203, 133, 43, 1); color: #fff; padding: 0.5rem 1rem; border-radius: 2rem; font-size: 0.9rem; font-weight: bold;">📅 <%= jogo.mesDaSorte %></span>
-                        <% }
-                        
-                        if (ehTimemania && jogo.timeCoracao) { %>
-                            <span class="separador-time" style="color: #00FF48; font-size: 1.5rem; font-weight: bold; margin: 0 0.5rem;">|</span>
-                            <span class="time-coracao-badge" style="background: linear-gradient(135deg, rgba(0, 255, 72, 0.85), rgba(0, 255, 72, 0.95)); border-color: rgba(0, 255, 72, 1); color: #000; padding: 0.5rem 1rem; border-radius: 2rem; font-size: 0.9rem; font-weight: bold;">⚽ <%= jogo.timeCoracao %></span>
-                        <% } %>
-                    </div>
-                    
-                    <div class="jogo-actions">
-                        <button class="btn-copiar" onclick="copiarNumeros('<%= jogo.numeros.join(', ') %>')" title="Copiar números">
-                            📋 Copiar
-                        </button>
-                    </div>
-                </div>
-            <% }); %>
+      <div class="jogo-row3">
+        <div class="jogo-numero-modalidade">
+          <div class="jogo-modalidade-info">
+            <img
+              src="<%= modalidadeInfo.logo %>"
+              alt="<%= modalidadeInfo.nome %>"
+              class="jogo-modalidade-logo"
+            />
+            <span class="jogo-modalidade-nome"><%= modalidadeInfo.nome %></span>
+          </div>
         </div>
-    <% } %>
-    
-    <!-- Estatísticas de Acertos -->
-    <div id="estatisticas-acertos" class="estatisticas-acertos">
-        <h3 class="estatisticas-titulo">📊 Estatísticas de Acertos</h3>
-        <div class="estatisticas-grid">
-            <div class="estatistica-item" data-acertos="0">
-                <div class="estatistica-numero">0</div>
-                <div class="estatistica-label">acertos</div>
-                <div class="estatistica-count">0</div>
-                <div class="estatistica-descricao">sequências</div>
-            </div>
-            <div class="estatistica-item" data-acertos="1">
-                <div class="estatistica-numero">1</div>
-                <div class="estatistica-label">acerto</div>
-                <div class="estatistica-count">0</div>
-                <div class="estatistica-descricao">sequências</div>
-            </div>
-            <div class="estatistica-item" data-acertos="2">
-                <div class="estatistica-numero">2</div>
-                <div class="estatistica-label">acertos</div>
-                <div class="estatistica-count">0</div>
-                <div class="estatistica-descricao">sequências</div>
-            </div>
-            <div class="estatistica-item" data-acertos="3">
-                <div class="estatistica-numero">3</div>
-                <div class="estatistica-label">acertos</div>
-                <div class="estatistica-count">0</div>
-                <div class="estatistica-descricao">sequências</div>
-            </div>
-            <div class="estatistica-item" data-acertos="4">
-                <div class="estatistica-numero">4</div>
-                <div class="estatistica-label">acertos</div>
-                <div class="estatistica-count">0</div>
-                <div class="estatistica-descricao">sequências</div>
-            </div>
-            <div class="estatistica-item" data-acertos="5">
-                <div class="estatistica-numero">5</div>
-                <div class="estatistica-label">acertos</div>
-                <div class="estatistica-count">0</div>
-                <div class="estatistica-descricao">sequências</div>
-            </div>
-            <div class="estatistica-item" data-acertos="6">
-                <div class="estatistica-numero">6</div>
-                <div class="estatistica-label">acertos</div>
-                <div class="estatistica-count">0</div>
-                <div class="estatistica-descricao">sequências</div>
-            </div>
+        <div class="jogo-preco">
+          <span class="preco-label">💰</span>
+          <span class="preco-valor"
+            >R$ <%= modalidadeInfo.precoMinimo.toFixed(2).replace('.', ',')
+            %></span
+          >
         </div>
+      </div>
+
+      <div class="jogo-row4">
+        <div class="jogo-numeros">
+          <% numerosVisiveis.forEach(numero => { %>
+          <span class="numero-mini"
+            ><%= String(numero).padStart(2, '0') %></span
+          >
+          <% }); %> <% if (temMais) { %>
+          <span
+            class="numero-mini mais"
+            data-jogo-id="<%= index + 1 %>"
+            data-numeros="<%= JSON.stringify(numerosPrincipais) %>"
+            data-modalidade="<%= modalidadeInfo.nome %>"
+            data-trevos="<%= JSON.stringify(trevos) %>"
+            data-mes="<%= ehDiaDeSorte && jogo.mesDaSorte ? jogo.mesDaSorte : '' %>"
+            data-time="<%= ehTimemania && jogo.timeCoracao ? jogo.timeCoracao : '' %>"
+          >
+            ...
+          </span>
+          <% } %> <% if (trevos.length > 0) { %>
+          <span
+            class="separador-trevos"
+            style="
+              color: #16397f;
+              font-size: 1.5rem;
+              font-weight: bold;
+              margin: 0 0.5rem;
+            "
+            >|</span
+          >
+          <% trevos.forEach(trevo => { %>
+          <span
+            class="numero-badge trevo-badge"
+            style="
+              background: linear-gradient(
+                135deg,
+                rgba(22, 57, 127, 0.85),
+                rgba(22, 57, 127, 0.95)
+              );
+              border-color: rgba(22, 57, 127, 1);
+              box-shadow: 0 0 10px rgba(22, 57, 127, 0.3);
+            "
+            ><%= trevo %></span
+          >
+          <% }); %> <% } %> <% if (ehDiaDeSorte && jogo.mesDaSorte) { %>
+          <span
+            class="separador-mes"
+            style="
+              color: #cb852b;
+              font-size: 1.5rem;
+              font-weight: bold;
+              margin: 0 0.5rem;
+            "
+            >|</span
+          >
+          <span
+            class="mes-sorte-badge"
+            style="
+              background: linear-gradient(
+                135deg,
+                rgba(203, 133, 43, 0.85),
+                rgba(203, 133, 43, 0.95)
+              );
+              border-color: rgba(203, 133, 43, 1);
+              color: #fff;
+              padding: 0.5rem 1rem;
+              border-radius: 2rem;
+              font-size: 0.9rem;
+              font-weight: bold;
+            "
+            >📅 <%= jogo.mesDaSorte %></span
+          >
+          <% } %> <% if (ehTimemania && jogo.timeCoracao) { %>
+          <span
+            class="separador-time"
+            style="
+              color: #00ff48;
+              font-size: 1.5rem;
+              font-weight: bold;
+              margin: 0 0.5rem;
+            "
+            >|</span
+          >
+          <span
+            class="time-coracao-badge"
+            style="
+              background: linear-gradient(
+                135deg,
+                rgba(0, 255, 72, 0.85),
+                rgba(0, 255, 72, 0.95)
+              );
+              border-color: rgba(0, 255, 72, 1);
+              color: #000;
+              padding: 0.5rem 1rem;
+              border-radius: 2rem;
+              font-size: 0.9rem;
+              font-weight: bold;
+            "
+            >⚽ <%= jogo.timeCoracao %></span
+          >
+          <% } %>
+        </div>
+      </div>
+
+      <div class="jogo-actions">
+        <button
+          class="btn-copiar"
+          onclick="copiarNumeros('<%= jogo.numeros.join(', ') %>')"
+          title="Copiar números"
+        >
+          📋 Copiar
+        </button>
+      </div>
     </div>
-    
-    <div class="volta-home-container">
-        <a href="/" class="volta-home">🏠 Voltar para Home</a>
+    <% }); %>
+  </div>
+  <% } %>
+
+  <!-- Estatísticas de Acertos -->
+  <div id="estatisticas-acertos" class="estatisticas-acertos">
+    <h3 class="estatisticas-titulo">📊 Estatísticas de Acertos</h3>
+    <div class="estatisticas-grid">
+      <div class="estatistica-item" data-acertos="0">
+        <div class="estatistica-numero">0</div>
+        <div class="estatistica-label">acertos</div>
+        <div class="estatistica-count">0</div>
+        <div class="estatistica-descricao">sequências</div>
+      </div>
+      <div class="estatistica-item" data-acertos="1">
+        <div class="estatistica-numero">1</div>
+        <div class="estatistica-label">acerto</div>
+        <div class="estatistica-count">0</div>
+        <div class="estatistica-descricao">sequências</div>
+      </div>
+      <div class="estatistica-item" data-acertos="2">
+        <div class="estatistica-numero">2</div>
+        <div class="estatistica-label">acertos</div>
+        <div class="estatistica-count">0</div>
+        <div class="estatistica-descricao">sequências</div>
+      </div>
+      <div class="estatistica-item" data-acertos="3">
+        <div class="estatistica-numero">3</div>
+        <div class="estatistica-label">acertos</div>
+        <div class="estatistica-count">0</div>
+        <div class="estatistica-descricao">sequências</div>
+      </div>
+      <div class="estatistica-item" data-acertos="4">
+        <div class="estatistica-numero">4</div>
+        <div class="estatistica-label">acertos</div>
+        <div class="estatistica-count">0</div>
+        <div class="estatistica-descricao">sequências</div>
+      </div>
+      <div class="estatistica-item" data-acertos="5">
+        <div class="estatistica-numero">5</div>
+        <div class="estatistica-label">acertos</div>
+        <div class="estatistica-count">0</div>
+        <div class="estatistica-descricao">sequências</div>
+      </div>
+      <div class="estatistica-item" data-acertos="6">
+        <div class="estatistica-numero">6</div>
+        <div class="estatistica-label">acertos</div>
+        <div class="estatistica-count">0</div>
+        <div class="estatistica-descricao">sequências</div>
+      </div>
     </div>
+  </div>
+
+  <div class="volta-home-container">
+    <a href="/" class="volta-home-realizados">🏠 Voltar para Home</a>
+  </div>
 </main>
-
-
 
 <%- include('includes/footer'); %>

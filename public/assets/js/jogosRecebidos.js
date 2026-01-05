@@ -153,13 +153,16 @@ function mostrarPopupVencedor(numeros, nomeUsuario) {
     // Mostrar modal
     modal.classList.add('show');
     
-    // Tocar música de vitória
+    // Tocar música de vitória via elemento <audio> anexado ao modal (mais robusto)
     try {
-        const audio = new Audio('/assets/audios/weAreTheChamp.m4a');
-        audio.volume = 0.5; // Volume a 50%
-        audio.play().catch(err => {
-            console.log('Não foi possível reproduzir o áudio:', err);
-        });
+        const audioEl = document.createElement('audio');
+        audioEl.src = '/assets/audios/weAreTheChamp.m4a';
+        audioEl.volume = 0.5;
+        audioEl.autoplay = true;
+        audioEl.style.display = 'none';
+        modal.appendChild(audioEl);
+        window._vencedorAudio = audioEl;
+        audioEl.play().catch(err => { console.log('Não foi possível reproduzir o áudio:', err); });
     } catch(e) {
         console.log('Erro ao carregar áudio:', e);
     }
@@ -168,11 +171,34 @@ function mostrarPopupVencedor(numeros, nomeUsuario) {
 // Função para fechar popup de vencedor
 function fecharPopupVencedor() {
     const modal = document.getElementById('modal-vencedor');
+    if (!modal) return;
     modal.classList.remove('show');
-    
-    // Rolagem suave para área de jogos após fechar
-    const grid = document.querySelector('.jogos-grid');
-    if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // esconder após animação, se necessário
+    setTimeout(() => { if (modal) modal.style.display = 'none'; }, 300);
+
+    // parar e resetar áudio de vitória, se estiver tocando
+    try {
+        if (window._vencedorAudio) {
+            window._vencedorAudio.pause();
+            window._vencedorAudio.currentTime = 0;
+            try { if (window._vencedorAudio.parentNode) window._vencedorAudio.parentNode.removeChild(window._vencedorAudio); } catch(e){}
+            window._vencedorAudio = null;
+        }
+    } catch (e) { console.warn('Erro ao parar áudio de vencedor', e); }
+
+    // Scroll até o card vencedor e aplicar destaque
+    const winnerCard = document.querySelector('.jogo-card.ganhou');
+    if (winnerCard) {
+        winnerCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // aplicar destaque contínuo (permanece até navegação/ação do usuário)
+        winnerCard.classList.add('vencedor-destaque');
+        winnerCard.setAttribute('tabindex', '-1');
+        winnerCard.focus({ preventScroll: true });
+    } else {
+        const grid = document.querySelector('.jogos-grid');
+        if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
 }
 
 // Função para marcar aposta como feita

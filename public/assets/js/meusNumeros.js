@@ -180,7 +180,9 @@ function exibirEstatisticas(estatisticas) {
 
 // Função para mostrar popup de vencedor
 function mostrarPopupVencedor(numeros, nomeUsuario) {
+    console.log('🔔 mostrarPopupVencedor chamado', { numeros, nomeUsuario });
     const modal = document.getElementById('modal-vencedor');
+    if (!modal) { console.warn('modal-vencedor não encontrado no DOM'); return; }
     const numerosContainer = modal.querySelector('.vencedor-numeros');
     const usuarioElement = modal.querySelector('.modal-vencedor-usuario');
     
@@ -200,16 +202,26 @@ function mostrarPopupVencedor(numeros, nomeUsuario) {
         usuarioElement.innerHTML = `<span>Sequência de:</span> ${nomeUsuario}`;
     }
     
-    // Mostrar modal
-    modal.classList.add('show');
+    // Mostrar modal (forçar display e adicionar classe de animação)
+    // ensure it's visible above other overlays
+    modal.style.zIndex = '20000';
+    modal.style.display = 'flex';
+    // pequena espera para garantir que o display seja aplicado antes da animação
+    setTimeout(() => {
+        modal.classList.add('show');
+        console.log('🔔 modal-vencedor exibido (classe .show aplicada)');
+    }, 10);
     
-    // Tocar música de vitória
+    // Tocar música de vitória via elemento <audio> anexado ao modal (mais robusto)
     try {
-        const audio = new Audio('/assets/audios/weAreTheChamp.m4a');
-        audio.volume = 0.5; // Volume a 50%
-        audio.play().catch(err => {
-            console.log('Não foi possível reproduzir o áudio:', err);
-        });
+        const audioEl = document.createElement('audio');
+        audioEl.src = '/assets/audios/weAreTheChamp.m4a';
+        audioEl.volume = 0.5;
+        audioEl.autoplay = true;
+        audioEl.style.display = 'none';
+        modal.appendChild(audioEl);
+        window._vencedorAudio = audioEl;
+        audioEl.play().catch(err => { console.log('Não foi possível reproduzir o áudio:', err); });
     } catch(e) {
         console.log('Erro ao carregar áudio:', e);
     }
@@ -218,11 +230,38 @@ function mostrarPopupVencedor(numeros, nomeUsuario) {
 // Função para fechar popup de vencedor
 function fecharPopupVencedor() {
     const modal = document.getElementById('modal-vencedor');
+    console.log('🔕 fecharPopupVencedor chamado', { modalPresent: !!modal, time: Date.now() });
+    console.log(new Error('fecharPopupVencedor stack').stack);
+    if (!modal) return;
     modal.classList.remove('show');
-    
+    // esconder após animação
+    setTimeout(() => { if (modal) modal.style.display = 'none'; }, 300);
+
+    // parar e resetar áudio de vitória, se estiver tocando
+    try {
+        if (window._vencedorAudio) {
+            window._vencedorAudio.pause();
+            window._vencedorAudio.currentTime = 0;
+            try { if (window._vencedorAudio.parentNode) window._vencedorAudio.parentNode.removeChild(window._vencedorAudio); } catch(e){}
+            window._vencedorAudio = null;
+        }
+    } catch (e) { console.warn('Erro ao parar áudio de vencedor', e); }
+
     // Rolagem suave para área de jogos após fechar
     const grid = document.querySelector('.jogos-grid');
     if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    
+        // Scroll até o card vencedor e destacar visualmente
+        const winnerCard = document.querySelector('.jogo-card.ganhou');
+        if (winnerCard) {
+            // rolar suavemente até o centro da viewport
+            winnerCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // aplicar destaque contínuo (permanece até navegação/ação do usuário)
+            winnerCard.classList.add('vencedor-destaque');
+            // dar foco para acessibilidade
+            winnerCard.setAttribute('tabindex', '-1');
+            winnerCard.focus({ preventScroll: true });
+        }
 }
 
 // Função para deletar um jogo específico
@@ -265,60 +304,7 @@ function deletarJogo(jogoId) {
     });
 }
 
-// Função para abrir modal de envio
-function abrirModal() {
-    document.getElementById('modal-enviar-jogos').style.display = 'flex';
-    document.getElementById('nome-usuario-envio').focus();
-}
 
-// Função para fechar modal de envio
-function fecharModal() {
-    document.getElementById('modal-enviar-jogos').style.display = 'none';
-    document.getElementById('nome-usuario-envio').value = '';
-}
-
-// Função para enviar jogos para outro usuário
-function enviarJogos() {
-    const nomeUsuario = document.getElementById('nome-usuario-envio').value.trim();
-
-    if (!nomeUsuario) {
-        alert('Digite um nome de usuário');
-        return;
-    }
-
-    const btn = document.querySelector('.modal-footer .btn-confirmar');
-    btn.disabled = true;
-    btn.textContent = '📤 Enviando...';
-
-    fetch('/api/jogos/enviar', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ nomeUsuario: nomeUsuario })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.sucesso) {
-            alert(`✓ ${data.mensagem}`);
-            fecharModal();
-            // Redirecionar para meus envios após sucesso
-            setTimeout(() => {
-                window.location.href = '/meusenvios';
-            }, 500);
-        } else {
-            alert(`✗ ${data.mensagem}`);
-        }
-    })
-    .catch(erro => {
-        console.error('Erro:', erro);
-        alert('✗ Erro ao enviar jogos');
-    })
-    .finally(() => {
-        btn.disabled = false;
-        btn.textContent = 'Enviar';
-    });
-}
 
 // Função para deletar todas as sequências
 function deletarTodas() {
@@ -384,6 +370,27 @@ document.addEventListener('DOMContentLoaded', function() {
             if (e.target === modal) fecharModal();
         });
     }
+
+    // Garantir que os modals comecem escondidos e adicionar fechamento ao clicar fora
+    const modalVencedor = document.getElementById('modal-vencedor');
+    if (modalVencedor) {
+        // forçar escondido no carregamento
+        modalVencedor.style.display = 'none';
+        // clicar fora do conteúdo fecha o modal
+        modalVencedor.addEventListener('click', function(e) {
+            if (e.target === modalVencedor) {
+                if (typeof __fecharPopupVencedorSafe === 'function') {
+                    __fecharPopupVencedorSafe();
+                } else {
+                    fecharPopupVencedor();
+                }
+            }
+        });
+    }
+
+    // garantir modal de envio escondido por JS (só por segurança)
+    const modalEnvio = document.getElementById('modal-enviar-jogos');
+    if (modalEnvio) modalEnvio.style.display = 'none';
 });
 
 // Função para mostrar popup com todos os números
@@ -466,9 +473,9 @@ window.copiarNumeros = copiarNumeros;
 window.marcarAposta = marcarAposta;
 window.deletarJogo = deletarJogo;
 window.deletarTodas = deletarTodas;
-window.abrirModal = abrirModal;
-window.fecharModal = fecharModal;
-window.enviarJogos = enviarJogos;
+if (typeof abrirModal !== 'undefined') window.abrirModal = abrirModal;
+if (typeof fecharModal !== 'undefined') window.fecharModal = fecharModal;
+if (typeof enviarJogos !== 'undefined') window.enviarJogos = enviarJogos;
 window.mostrarTodosNumeros = mostrarTodosNumeros;
 window.fecharPopup = fecharPopup;
 window.fecharPopupVencedor = fecharPopupVencedor;

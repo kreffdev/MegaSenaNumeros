@@ -213,19 +213,49 @@ function mostrarPopupVencedor(numeros, tipo) {
     
     // Mostrar modal
     console.log('Adicionando classe .show');
+    // ensure modal is visible even if an inline style 'display: none' exists
+    try {
+        modal.style.zIndex = '20000';
+    // Observador para garantir que, caso outro script remova a classe show
+    // ou altere display, o áudio de vitória seja interrompido.
+    try {
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach(m => {
+                if (m.type === 'attributes' && (m.attributeName === 'class' || m.attributeName === 'style')) {
+                    const hasShow = modal.classList.contains('show');
+                    const isHidden = window.getComputedStyle(modal).display === 'none';
+                    if (!hasShow || isHidden) {
+                        try {
+                            if (window._vencedorAudio) {
+                                window._vencedorAudio.pause();
+                                window._vencedorAudio.currentTime = 0;
+                                window._vencedorAudio = null;
+                            }
+                        } catch (e) { /* swallow */ }
+                    }
+                }
+            });
+        });
+        observer.observe(modal, { attributes: true, attributeFilter: ['class', 'style'] });
+    } catch (e) { console.warn('MutationObserver não disponível', e); }
+        modal.style.display = 'flex';
+    } catch (e) { /* ignore */ }
     modal.classList.add('show');
     
     console.log('Classes da modal:', modal.className);
     console.log('Style display:', modal.style.display);
     
-    // Tocar música de vitória
+    // Tocar música de vitória via elemento <audio> anexado ao modal (mais robusto)
     try {
-        console.log('🎵 Tentando tocar música...');
-        const audio = new Audio('/assets/audios/weAreTheChamp.m4a');
-        audio.volume = 0.5;
-        audio.play().then(() => {
-            console.log('✅ Música tocando!');
-        }).catch(err => {
+        const audioEl = document.createElement('audio');
+        audioEl.src = '/assets/audios/weAreTheChamp.m4a';
+        audioEl.volume = 0.5;
+        audioEl.autoplay = true;
+        audioEl.style.display = 'none';
+        // anexar ao modal para que possamos sempre localizá-lo e pará-lo
+        modal.appendChild(audioEl);
+        window._vencedorAudio = audioEl;
+        audioEl.play().then(() => console.log('✅ Música tocando!')).catch(err => {
             console.log('❌ Não foi possível reproduzir o áudio:', err);
         });
     } catch(e) {
@@ -235,12 +265,72 @@ function mostrarPopupVencedor(numeros, tipo) {
 
 function fecharPopupVencedor() {
     const modal = document.getElementById('modal-vencedor');
+    if (!modal) return;
     modal.classList.remove('show');
-    
-    // Rolagem suave para área de jogos após fechar
-    const grid = document.querySelector('.jogos-grid');
-    if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // hide after animation
+    setTimeout(() => { if (modal) modal.style.display = 'none'; }, 300);
+
+    // parar e resetar áudio de vitória, se estiver tocando
+    try {
+        if (window._vencedorAudio) {
+            window._vencedorAudio.pause();
+            window._vencedorAudio.currentTime = 0;
+            // remover elemento de áudio do DOM se estiver anexado
+            try {
+                if (window._vencedorAudio.parentNode) window._vencedorAudio.parentNode.removeChild(window._vencedorAudio);
+            } catch (e) { /* ignore */ }
+            window._vencedorAudio = null;
+        }
+        // como redundância, parar quaisquer elementos <audio> na página
+        try {
+            document.querySelectorAll('audio').forEach(a => {
+                try { a.pause(); a.currentTime = 0; } catch (e) { /* ignore individual audio errors */ }
+            });
+        } catch (e) { /* ignore */ }
+    } catch (e) { console.warn('Erro ao parar áudio de vencedor', e); }
+
+    // Scroll até o card vencedor e aplicar destaque
+    const winnerCard = document.querySelector('.jogo-card.ganhou');
+    if (winnerCard) {
+        // rolar suavemente até o centro da viewport
+        winnerCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // aplicar destaque contínuo (permanece até navegação/ação do usuário)
+        winnerCard.classList.add('vencedor-destaque');
+        // foco para acessibilidade
+        winnerCard.setAttribute('tabindex', '-1');
+        winnerCard.focus({ preventScroll: true });
+    } else {
+        // fallback: rolar para grid geral
+        const grid = document.querySelector('.jogos-grid');
+        if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
 }
+
+// handler seguro que garante parada do áudio antes de delegar ao fechamento
+function __fecharPopupVencedorSafe() {
+    try {
+        if (window._vencedorAudio) {
+            window._vencedorAudio.pause();
+            window._vencedorAudio.currentTime = 0;
+            window._vencedorAudio = null;
+        }
+        // redundância: pausar todos elementos de áudio na página
+        try { document.querySelectorAll('audio').forEach(a => { try { a.pause(); a.currentTime = 0;} catch(e){} }); } catch(e){}
+    } catch (e) { console.warn('Erro ao parar áudio de vencedor (safe)', e); }
+
+    if (typeof fecharPopupVencedor === 'function') {
+        try { fecharPopupVencedor(); } catch (e) { console.warn('fecharPopupVencedor threw', e); }
+    } else {
+        const modal = document.getElementById('modal-vencedor');
+        if (modal) {
+            modal.classList.remove('show');
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
+    }
+}
+
+// Expor o handler seguro globalmente para uso no template
+window.__fecharPopupVencedorSafe = __fecharPopupVencedorSafe;
 
 function copiarNumeros(numeros) {
     navigator.clipboard.writeText(numeros).then(() => {
