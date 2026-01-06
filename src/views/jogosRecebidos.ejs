@@ -54,7 +54,7 @@
             </div>
             <div class="stat-card">
                 <span class="stat-label">Valor Total das Apostas</span>
-                <span class="stat-value">R$ <%= (jogos.length * 6).toFixed(2).replace('.', ',') %></span>
+                <span class="stat-value">R$ <%= jogos.reduce((total, jogo) => total + getInfoModalidade(jogo.modalidade || 'megasena').precoMinimo, 0).toFixed(2).replace('.', ',') %></span>
             </div>
         </div>
 
@@ -62,7 +62,7 @@
             <% jogos.forEach((jogo, index) => { %>
                                 <% const modalidadeInfo = getInfoModalidade(jogo.modalidade || 'megasena'); const dataJogo = jogo.criadoEm || jogo.dataEnvio; const data = new Date(dataJogo); const dia = String(data.getDate()).padStart(2, '0'); const mes = String(data.getMonth() + 1).padStart(2, '0'); const ano = data.getFullYear(); const horas = String(data.getHours()).padStart(2, '0'); const minutos = String(data.getMinutes()).padStart(2, '0'); const ehMaisMilionaria = jogo.modalidade === 'maismilionaria'; const ehDiaDeSorte = jogo.modalidade === 'diadesorte'; const ehTimemania = jogo.modalidade === 'timemania'; const numeros = jogo.numeros || []; const numerosPrincipais = ehMaisMilionaria && numeros.length >= 8 ? numeros.slice(0, -2) : numeros; const trevos = ehMaisMilionaria && numeros.length >= 8 ? numeros.slice(-2) : []; const numerosVisiveis = numerosPrincipais.slice(0, 6); const temMais = numerosPrincipais.length > 6; %>
                                 <div
-            class="jogo-card aposta-feita"
+            class="jogo-card <%= jogo.apostaMarcada ? 'aposta-feita' : '' %>"
             data-jogo-id="<%= jogo._id %>"
             data-modalidade="<%= jogo.modalidade || 'megasena' %>"
         >
@@ -72,7 +72,12 @@
                     <%= dia %>/<%= mes %>/<%= ano %> às <%= horas %>:<%= minutos %>
                 </div>
                 <div class="jogo-checkbox-container">
-                    <input type="checkbox" class="checkbox-aposta" checked disabled />
+                    <input 
+                        type="checkbox" 
+                        class="checkbox-aposta" 
+                        <%= jogo.apostaMarcada ? 'checked disabled' : '' %>
+                        onchange="marcarApostaRecebida(this)"
+                    />
                     <span class="aposta-label">aposta feita</span>
                 </div>
             </div>
@@ -112,7 +117,7 @@
                     <% }); %> <% if (temMais) { %>
                     <span
                         class="numero-mini mais"
-                        data-jogo-id="<%= index + 1 %>"
+                        data-jogo-id="<%= jogo._id %>"
                         data-numeros="<%= JSON.stringify(numerosPrincipais) %>"
                         data-modalidade="<%= modalidadeInfo.nome %>"
                         data-trevos="<%= JSON.stringify(trevos) %>"

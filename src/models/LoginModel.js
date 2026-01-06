@@ -80,6 +80,30 @@ const JogosEnviadosSubSchema = new mongoose.Schema({
     originalId: { type: mongoose.Schema.Types.ObjectId }
 }, { timestamps: false });
 
+// Schema para jogos realizados (apostas marcadas como feitas)
+const JogosRealizadosSubSchema = new mongoose.Schema({
+    numeros: {
+        type: [Number],
+        required: true
+    },
+    modalidade: {
+        type: String,
+        default: 'megasena'
+    },
+    mesDaSorte: { type: String },
+    timeCoracao: { type: String },
+    origem: { 
+        type: String, 
+        enum: ['proprio', 'recebido'],
+        required: true 
+    },
+    enviadoPor: { type: mongoose.Schema.Types.ObjectId, ref: 'Login' },
+    enviadoPorUsername: { type: String },
+    dataAposta: { type: Date, default: Date.now },
+    dataCriacao: { type: Date },
+    originalId: { type: mongoose.Schema.Types.ObjectId }
+}, { timestamps: false });
+
 const LoginSchema = new mongoose.Schema({
     username: { type: String, required: true },
     password: { type: String, required: true },
@@ -94,7 +118,8 @@ const LoginSchema = new mongoose.Schema({
     // Embedded arrays to group user-related jogos
     jogos: [JogosSubSchema],
     jogosRecebidos: [JogosRecebidosSubSchema],
-    jogosEnviados: [JogosEnviadosSubSchema]
+    jogosEnviados: [JogosEnviadosSubSchema],
+    jogosRealizados: [JogosRealizadosSubSchema]
 }, { timestamps: true });
 
 const LoginModel = mongoose.model('Login', LoginSchema);

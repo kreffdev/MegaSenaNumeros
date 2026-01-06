@@ -52,6 +52,7 @@
 .popup-numeros {
     width: 100%;
     max-width: 640px;
+    max-height: 90vh;
     background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(10,14,24,0.95));
     border-radius: 14px;
     padding: 1.25rem 1.4rem;
@@ -61,6 +62,9 @@
     transform: translateY(8px) scale(0.995);
     animation: modal-pop .22s cubic-bezier(.2,.9,.3,1) both;
     backdrop-filter: blur(6px) saturate(120%);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 @keyframes modal-pop {
@@ -76,6 +80,7 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 0.6rem;
+    flex-shrink: 0;
 }
 
 /* Layout improvements for winner modal header */
@@ -163,6 +168,9 @@
 .modal-body,
 .modal-vencedor-body {
     padding: 0.6rem 0.2rem 0.9rem 0.2rem;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
 }
 
 .modal-input {
@@ -183,6 +191,7 @@
     gap: 0.6rem;
     justify-content: flex-end;
     margin-top: 0.6rem;
+    flex-shrink: 0;
 }
 
 .btn-cancelar,
@@ -251,8 +260,37 @@
     font-size: 1.05rem;
 }
 
+/* Número acertado - verde */
+.vencedor-numero.acertou {
+    background: linear-gradient(135deg, rgba(16,185,129,0.3), rgba(16,185,129,0.2));
+    border-color: rgba(16,185,129,0.5);
+    box-shadow: 0 12px 36px rgba(16,185,129,0.2);
+}
+
+/* Número errado - vermelho */
+.vencedor-numero.errou {
+    background: linear-gradient(135deg, rgba(239,68,68,0.3), rgba(239,68,68,0.2));
+    border-color: rgba(239,68,68,0.5);
+    box-shadow: 0 12px 36px rgba(239,68,68,0.2);
+}
+
+/* Botão "+X" para mostrar mais números */
+.vencedor-numero.mais {
+    background: linear-gradient(135deg, rgba(255,152,0,0.3), rgba(255,152,0,0.2));
+    border-color: rgba(255,152,0,0.5);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.vencedor-numero.mais:hover {
+    transform: scale(1.15);
+    background: linear-gradient(135deg, rgba(255,152,0,0.4), rgba(255,152,0,0.3));
+    border-color: rgba(255,152,0,0.7);
+    box-shadow: 0 12px 36px rgba(255,152,0,0.3);
+}
+
 /* Ensure vencedor-numeros centers and has spacing */
-.vencedor-numeros { gap: 1rem; margin-top: 1rem; justify-content: center; }
+.vencedor-numeros { gap: 1rem; margin-top: 1rem; justify-content: center; flex-wrap: wrap; }
 
 /* Small screen adjustments */
 @media (max-width: 520px) {

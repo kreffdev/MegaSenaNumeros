@@ -358,10 +358,11 @@
 .jogos-grid {
     display: grid;
     /* garante largura mínima de card compatível com 7 números */
-    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(340px, 400px));
     gap: 1rem;
     align-items: start;
     margin-bottom: 1.25rem;
+    justify-content: start;
 }
 
 .jogo-card {

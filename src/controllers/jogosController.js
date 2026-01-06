@@ -137,7 +137,10 @@ exports.obterMeuJogos = async (req, res) => {
         }
 
         const usuario = await LoginModel.findById(req.session.user.id).lean();
-        const jogos = (usuario && usuario.jogos) ? usuario.jogos.slice().sort((a,b) => new Date(b.criadoEm) - new Date(a.criadoEm)) : [];
+        
+        // Filtrar apenas jogos NÃO marcados como feitos
+        const jogosNaoMarcados = (usuario && usuario.jogos) ? usuario.jogos.filter(j => j.apostaMarcada !== true) : [];
+        const jogos = jogosNaoMarcados.slice().sort((a,b) => new Date(b.criadoEm) - new Date(a.criadoEm));
 
         res.json({ sucesso: true, jogos: jogos, quantidade: jogos.length });
 
@@ -293,7 +296,11 @@ exports.obterJogosRecebidos = async (req, res) => {
 
         // Ler do documento de usuário (embedded)
         const usuario = await LoginModel.findById(req.session.user.id).populate('jogosRecebidos.enviadoPor', 'username').lean();
-        const jogosRecebidos = (usuario && usuario.jogosRecebidos) ? (usuario.jogosRecebidos.slice().sort((a,b) => new Date(b.dataEnvio) - new Date(a.dataEnvio))) : [];
+        
+        // Filtrar apenas jogos NÃO marcados como feitos
+        const jogosNaoMarcados = (usuario && usuario.jogosRecebidos) ? usuario.jogosRecebidos.filter(j => j.apostaMarcada !== true) : [];
+        const jogosRecebidos = jogosNaoMarcados.slice().sort((a,b) => new Date(b.dataEnvio) - new Date(a.dataEnvio));
+        
         res.json({ sucesso: true, jogos: jogosRecebidos, quantidade: jogosRecebidos.length });
 
     } catch (erro) {
@@ -407,7 +414,9 @@ exports.marcarAposta = async (req, res) => {
         }
 
         const jogoId = req.params.id;
-        const usuario = await LoginModel.findById(req.session.user.id);
+        console.log('🎯 Marcando aposta recebida - jogoId:', jogoId);
+        
+        const usuario = await LoginModel.findById(req.session.user.id).populate('jogosRecebidos.enviadoPor', 'username');
         
         if (!usuario) {
             return res.status(404).json({ 
@@ -416,24 +425,47 @@ exports.marcarAposta = async (req, res) => {
             });
         }
 
-        const jogo = usuario.jogosRecebidos.id(jogoId);
+        // Buscar o jogo usando find
+        const jogo = usuario.jogosRecebidos.find(j => j._id.toString() === jogoId.toString());
+        
         if (!jogo) {
+            console.log('❌ Jogo recebido não encontrado com ID:', jogoId);
             return res.status(404).json({ 
                 sucesso: false, 
                 mensagem: 'Jogo não encontrado' 
             });
         }
 
-        // Marcar aposta como feita
-        jogo.apostaMarcada = true;
+        console.log('✅ Jogo recebido encontrado, movendo para jogosRealizados');
+
+        // Criar entrada em jogosRealizados
+        usuario.jogosRealizados = usuario.jogosRealizados || [];
+        usuario.jogosRealizados.push({
+            numeros: jogo.numeros,
+            modalidade: jogo.modalidade || 'megasena',
+            mesDaSorte: jogo.mesDaSorte,
+            timeCoracao: jogo.timeCoracao,
+            origem: 'recebido',
+            enviadoPor: jogo.enviadoPor ? jogo.enviadoPor._id : null,
+            enviadoPorUsername: jogo.enviadoPorUsername || (jogo.enviadoPor ? jogo.enviadoPor.username : null),
+            dataAposta: new Date(),
+            dataCriacao: jogo.dataEnvio,
+            originalId: jogo._id
+        });
+
+        // Remover de jogosRecebidos
+        usuario.jogosRecebidos = usuario.jogosRecebidos.filter(j => j._id.toString() !== jogoId.toString());
+        
         await usuario.save();
+
+        console.log('💾 Aposta movida para jogosRealizados com sucesso');
 
         res.json({ 
             sucesso: true, 
             mensagem: 'Aposta marcada com sucesso!' 
         });
     } catch (e) {
-        console.error('Erro ao marcar aposta:', e);
+        console.error('❌ Erro ao marcar aposta:', e);
         res.status(500).json({ 
             sucesso: false, 
             mensagem: 'Erro ao marcar aposta' 
@@ -452,6 +484,8 @@ exports.marcarApostaPropria = async (req, res) => {
         }
 
         const jogoId = req.params.id;
+        console.log('🎯 Marcando aposta própria - jogoId:', jogoId);
+        
         const usuario = await LoginModel.findById(req.session.user.id);
         
         if (!usuario) {
@@ -461,24 +495,45 @@ exports.marcarApostaPropria = async (req, res) => {
             });
         }
 
-        const jogo = usuario.jogos.id(jogoId);
+        // Buscar o jogo usando find
+        const jogo = usuario.jogos.find(j => j._id.toString() === jogoId.toString());
+        
         if (!jogo) {
+            console.log('❌ Jogo próprio não encontrado com ID:', jogoId);
             return res.status(404).json({ 
                 sucesso: false, 
                 mensagem: 'Jogo não encontrado' 
             });
         }
 
-        // Marcar aposta como feita
-        jogo.apostaMarcada = true;
+        console.log('✅ Jogo próprio encontrado, movendo para jogosRealizados');
+
+        // Criar entrada em jogosRealizados
+        usuario.jogosRealizados = usuario.jogosRealizados || [];
+        usuario.jogosRealizados.push({
+            numeros: jogo.numeros,
+            modalidade: jogo.modalidade || 'megasena',
+            mesDaSorte: jogo.mesDaSorte,
+            timeCoracao: jogo.timeCoracao,
+            origem: 'proprio',
+            dataAposta: new Date(),
+            dataCriacao: jogo.criadoEm,
+            originalId: jogo._id
+        });
+
+        // Remover de jogos
+        usuario.jogos = usuario.jogos.filter(j => j._id.toString() !== jogoId.toString());
+        
         await usuario.save();
+
+        console.log('💾 Aposta própria movida para jogosRealizados com sucesso');
 
         res.json({ 
             sucesso: true, 
             mensagem: 'Aposta marcada com sucesso!' 
         });
     } catch (e) {
-        console.error('Erro ao marcar aposta própria:', e);
+        console.error('❌ Erro ao marcar aposta própria:', e);
         res.status(500).json({ 
             sucesso: false, 
             mensagem: 'Erro ao marcar aposta' 

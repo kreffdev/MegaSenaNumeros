@@ -114,10 +114,6 @@ function mostrarMensagemSemJogos(dados) {
 function atualizarLoteca() {
   carregarJogosLoteca();
 }
-  
-  if (progressContainer) progressContainer.style.display = 'none';
-  if (botoesContainer) botoesContainer.style.display = 'none';
-}
 
 // Renderizar jogos na interface
 function renderizarJogos() {

@@ -5,8 +5,31 @@
 
 // Função para atualizar o valor total das apostas
 function atualizarValorTotal() {
-    const totalCards = document.querySelectorAll('.jogo-card').length;
-    const valorTotal = (totalCards * 6).toFixed(2).replace('.', ',');
+    const cards = document.querySelectorAll('.jogo-card');
+    const totalCards = cards.length;
+    
+    // Mapa de preços por modalidade
+    const precos = {
+        megasena: 6.00,
+        lotofacil: 3.50,
+        quina: 3.00,
+        lotomania: 3.00,
+        duplasena: 3.00,
+        diadesorte: 2.50,
+        timemania: 3.50,
+        maismilionaria: 6.00,
+        supersete: 3.00,
+        loteca: 4.00
+    };
+    
+    // Calcular valor total baseado nas modalidades dos cards
+    let valorTotalNum = 0;
+    cards.forEach(card => {
+        const modalidade = card.getAttribute('data-modalidade') || 'megasena';
+        valorTotalNum += precos[modalidade] || 5.00;
+    });
+    
+    const valorTotal = valorTotalNum.toFixed(2).replace('.', ',');
     const statValue = document.querySelector('.stat-card:nth-child(2) .stat-value');
     if (statValue) {
         statValue.textContent = `R$ ${valorTotal}`;
@@ -27,8 +50,8 @@ function copiarNumeros(numeros) {
     });
 }
 
-// Função para marcar aposta como feita
-function marcarAposta(checkbox) {
+// Função para marcar aposta como feita (MEUS JOGOS PRÓPRIOS)
+function marcarApostaPropria(checkbox) {
     if (!checkbox.checked) {
         // Impedir desmarcar
         checkbox.checked = true;
@@ -37,6 +60,9 @@ function marcarAposta(checkbox) {
 
     const card = checkbox.closest('.jogo-card');
     const jogoId = card.getAttribute('data-jogo-id');
+    
+    console.log('🎯 marcarApostaPropria() chamada');
+    console.log('   - jogoId:', jogoId);
     
     if (!jogoId) {
         alert('✗ Erro: ID do jogo não encontrado');
@@ -48,6 +74,8 @@ function marcarAposta(checkbox) {
     checkbox.disabled = true;
     card.classList.add('aposta-feita');
 
+    console.log('📡 POST para: /api/jogos/' + jogoId + '/marcar-aposta');
+
     // Salvar no backend
     fetch(`/api/jogos/${jogoId}/marcar-aposta`, {
         method: 'POST',
@@ -58,7 +86,20 @@ function marcarAposta(checkbox) {
     .then(response => response.json())
     .then(data => {
         if (data.sucesso) {
-            console.log('Aposta marcada com sucesso');
+            console.log('✅ Aposta própria marcada com sucesso');
+            
+            // Animar e remover o card
+            card.style.animation = 'fadeOut 0.5s ease-out';
+            setTimeout(() => {
+                card.remove();
+                // Atualizar contadores
+                atualizarValorTotal();
+                
+                // Verificar se ainda há cards
+                if (document.querySelectorAll('.jogo-card').length === 0) {
+                    location.reload();
+                }
+            }, 500);
         } else {
             alert(`✗ Erro: ${data.mensagem}`);
             // Reverter em caso de erro
@@ -68,7 +109,7 @@ function marcarAposta(checkbox) {
         }
     })
     .catch(erro => {
-        console.error('Erro:', erro);
+        console.error('❌ Erro:', erro);
         alert('✗ Erro ao marcar aposta');
         // Reverter em caso de erro
         checkbox.disabled = false;
@@ -470,7 +511,7 @@ function fecharPopup(overlay) {
 
 // Expor funções globalmente
 window.copiarNumeros = copiarNumeros;
-window.marcarAposta = marcarAposta;
+window.marcarApostaPropria = marcarApostaPropria;
 window.deletarJogo = deletarJogo;
 window.deletarTodas = deletarTodas;
 if (typeof abrirModal !== 'undefined') window.abrirModal = abrirModal;

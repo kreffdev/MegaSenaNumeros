@@ -3,17 +3,17 @@ const precosModalidades = {
     megasena: {
         nome: 'Mega-Sena',
         logo: '/assets/img/logos/logo-mega.png',
-        precoMinimo: 5.00
+        precoMinimo: 6.00
     },
     lotofacil: {
         nome: 'Lotofácil',
         logo: '/assets/img/logos/logo-lotofacil.png',
-        precoMinimo: 3.00
+        precoMinimo: 3.50
     },
     quina: {
         nome: 'Quina',
         logo: '/assets/img/logos/logo-quina.png',
-        precoMinimo: 2.50
+        precoMinimo: 3.00
     },
     lotomania: {
         nome: 'Lotomania',
@@ -23,17 +23,17 @@ const precosModalidades = {
     duplasena: {
         nome: 'Dupla Sena',
         logo: '/assets/img/logos/logo-duplasena.png',
-        precoMinimo: 2.50
+        precoMinimo: 3.00
     },
     diadesorte: {
         nome: 'Dia de Sorte',
         logo: '/assets/img/logos/logo-diadasorte.png',
-        precoMinimo: 2.00
+        precoMinimo: 2.50
     },
     timemania: {
         nome: 'Timemania',
         logo: '/assets/img/logos/logo-timemania.png',
-        precoMinimo: 3.00
+        precoMinimo: 3.50
     },
     maismilionaria: {
         nome: '+Milionária',
@@ -43,12 +43,12 @@ const precosModalidades = {
     supersete: {
         nome: 'Super Sete',
         logo: '/assets/img/logos/logo-supersete.png',
-        precoMinimo: 2.50
+        precoMinimo: 3.00
     },
     loteca: {
         nome: 'Loteca',
         logo: '/assets/img/logos/logo-lototeca.png',
-        precoMinimo: 3.00
+        precoMinimo: 4.00
     }
 };
 

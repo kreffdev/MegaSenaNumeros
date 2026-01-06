@@ -229,6 +229,7 @@ function mostraNumerosPopup() {
     popup.innerHTML = `
       <div class="popup-header">
         <h3>${modalidade}</h3>
+        <span class="popup-copiar" style="display: inline-flex !important; visibility: visible !important;" title="Copiar números">📋 Copiar</span>
         <span class="popup-close">&times;</span>
       </div>
       <div class="popup-body">
@@ -245,8 +246,36 @@ function mostraNumerosPopup() {
     // show with animation class
     setTimeout(() => overlay.classList.add('active'), 10);
 
+    console.log('🔍 Popup criada, procurando botões...');
+    console.log('   HTML do header:', popup.querySelector('.popup-header').innerHTML);
+
     const btnClose = popup.querySelector('.popup-close');
-    if (btnClose) btnClose.addEventListener('click', () => closePopup(overlay));
+    if (btnClose) {
+      console.log('✅ Botão fechar encontrado');
+      btnClose.addEventListener('click', () => closePopup(overlay));
+    }
+
+    // Botão copiar números
+    const btnCopiar = popup.querySelector('.popup-copiar');
+    console.log('🔍 Botão copiar:', btnCopiar);
+    if (btnCopiar) {
+      console.log('✅ Botão copiar encontrado, adicionando listener');
+      btnCopiar.addEventListener('click', () => {
+        const numerosParaCopiar = numeros.join(', ');
+        navigator.clipboard.writeText(numerosParaCopiar).then(() => {
+          const textoOriginal = btnCopiar.textContent;
+          btnCopiar.textContent = '✓ Copiado!';
+          btnCopiar.style.backgroundColor = '#10b981';
+          setTimeout(() => {
+            btnCopiar.textContent = textoOriginal;
+            btnCopiar.style.backgroundColor = '';
+          }, 2000);
+        }).catch(err => {
+          console.error('Erro ao copiar:', err);
+          alert('✗ Erro ao copiar números');
+        });
+      });
+    }
 
     overlay.addEventListener('click', (ev) => {
       if (ev.target === overlay) closePopup(overlay);
