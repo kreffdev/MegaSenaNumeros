@@ -24,6 +24,29 @@
     padding: 0 2rem;
 }
 
+@media (max-width: 768px) {
+    .container-modalidades {
+        width: 100%;
+        max-width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+        padding: 0 0.2rem;
+        margin-bottom: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .container-modalidades {
+        width: 100%;
+        max-width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+        padding: 0 0.2rem;
+        margin-bottom: 1.5rem;
+        
+    }
+}
+
 .container-modalidades h2 {
     font-size: 2rem;
     font-weight: 700;
@@ -37,11 +60,11 @@
 
 .modalidades-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr); /* keep 5 cards per row */
+    grid-template-columns: repeat(5, 1fr);
     gap: 1rem;
     margin-bottom: 1rem;
     max-width: 100%;
-    justify-items: center;
+    justify-items: stretch;
 }
 
 .modalidades-grid::after {
@@ -62,7 +85,7 @@
     position: relative;
     overflow: hidden;
     width: 100%;
-    max-width: 320px; /* increased width for readability */
+    max-width: 320px;
 }
 
 .modalidade-card:nth-child(7) {
@@ -449,6 +472,21 @@
     transition: transform 0.3s ease;
 }
 
+@media (max-width: 768px) {
+    .popup-numeros {
+        width: 95%;
+        max-height: 85vh;
+    }
+}
+
+@media (max-width: 480px) {
+    .popup-numeros {
+        width: 98%;
+        max-height: 90vh;
+        border-radius: 0.8rem;
+    }
+}
+
 .popup-overlay.active .popup-numeros {
     transform: scale(1);
 }
@@ -464,6 +502,20 @@
     flex-wrap: nowrap;
 }
 
+@media (max-width: 768px) {
+    .popup-header {
+        padding: 1rem;
+        gap: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .popup-header {
+        padding: 0.8rem;
+        gap: 0.5rem;
+    }
+}
+
 .popup-header h3 {
     margin: 0;
     font-size: 1.5rem;
@@ -475,6 +527,18 @@
     flex: 1;
     order: 1;
     min-width: 0;
+}
+
+@media (max-width: 768px) {
+    .popup-header h3 {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .popup-header h3 {
+        font-size: 1rem;
+    }
 }
 
 .popup-copiar {
@@ -494,6 +558,20 @@
     gap: 0.3rem;
     order: 2;
     z-index: 10;
+}
+
+@media (max-width: 768px) {
+    .popup-copiar {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .popup-copiar {
+        padding: 0.35rem 0.6rem;
+        font-size: 0.8rem;
+    }
 }
 
 .popup-copiar:hover {
@@ -547,6 +625,20 @@
     grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
     gap: 0.8rem;
     justify-items: center;
+}
+
+@media (max-width: 768px) {
+    .popup-numeros-grid {
+        grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+        gap: 0.6rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .popup-numeros-grid {
+        grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+        gap: 0.5rem;
+    }
 }
 
 .numero-popup {
@@ -1073,7 +1165,7 @@ body[data-modalidade-ativa="loteca"] .meus-numeros-preview {
 .meus-numeros-preview {
     position: relative;
     width: 100%;
-    padding: 2rem;
+    padding: 3rem 2rem 2rem 2rem;
     background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(168, 85, 247, 0.15) 100%);
     border-radius: 0.8rem;
     display: flex;
@@ -1106,12 +1198,12 @@ body[data-modalidade-ativa="loteca"] .meus-numeros-preview {
 
 .label-contagem {
     position: absolute;
-    top: 0.5rem;
+    top: 0.8rem;
     right: 3.5rem;
     color: var(--text-light);
     font-size: 0.85rem;
     font-weight: bold;
-    z-index: 10;
+    z-index: 100;
 }
 
 .contagem-sequencias {
@@ -1496,6 +1588,7 @@ body[data-modalidade-ativa="loteca"] .meus-numeros-preview {
     gap: 1rem;
     max-width: 800px;
     width: 100%;
+    overflow: hidden;
 }
 
 .numeros-criador ul li {
@@ -1628,6 +1721,7 @@ body[data-modalidade-ativa="loteca"] .meus-numeros-preview {
         margin-right: 0;
         margin-bottom: 1.5rem;
         padding: 1.5rem;
+        overflow: hidden;
     }
 
     .header-criador {
@@ -1644,48 +1738,67 @@ body[data-modalidade-ativa="loteca"] .meus-numeros-preview {
     }
 
     .numeros-criador ul {
-        grid-template-columns: repeat(6, 1fr);
-        gap: 0.8rem;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 0.7rem;
+        width: 100%;
+        max-width: 100%;
     }
 
-    .mes-sorte-container {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0.8rem;
+    .numeros-criador ul li button {
+        width: 2.8rem;
+        height: 2.8rem;
+        font-size: 1.1rem;
+    }
+
+    .mes-sorte-container,
+    .time-coracao-container,
+    .trevos-container {
         padding: 1rem;
     }
 
-    .mes-sorte-container label {
+    .mes-sorte-container,
+    .time-coracao-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.8rem;
+    }
+
+    .mes-sorte-container label,
+    .time-coracao-container label {
         text-align: center;
     }
 
-    .numeros-escolhidos {
+    .trevos-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.8rem;
+    }
+
+    .trevo-btn {
+        width: 2.8rem;
+        height: 2.8rem;
+        font-size: 1.1rem;
+    }
+
+    .container-numeros-escolhidos-instrucoes {
         width: 100%;
+        margin-right: 0;
     }
 
     .escolhidos-lista {
-        padding: 1.5rem;
+        padding: 1.2rem;
         margin-bottom: 1rem;
-        border-radius: 0.5rem;
-
-    }
-
-    .escolhido-numero {
-        width: 2.5rem;
-        height: 2.5rem;
-        font-size: 1rem;
-        margin: 0.3rem;
     }
 
     .meus-numeros-preview {
         padding: 1.5rem;
         gap: 1rem;
-        max-height: 250px;
+        max-height: 280px;
     }
 
     .label-contagem {
-        right: 3rem;
+        right: 3.5rem;
         font-size: 0.75rem;
+    
     }
 
     .contagem-sequencias {
@@ -1697,38 +1810,63 @@ body[data-modalidade-ativa="loteca"] .meus-numeros-preview {
     .sequencia-item {
         padding: 0.8rem;
         gap: 0.8rem;
+        margin-top: 1rem;
     }
 
     .numero-sequencia {
-        width: 2rem;
-        height: 2rem;
-        font-size: 0.8rem;
+        width: 2.2rem;
+        height: 2.2rem;
+        font-size: 0.85rem;
     }
 
     .btn-remover-sequencia {
-        width: 1.8rem;
-        height: 1.8rem;
+        width: 2rem;
+        height: 2rem;
         font-size: 1rem;
     }
 
- 
-
     .modalidades-grid {
-        grid-template-columns: repeat(6, 1fr);
-        gap: 0.6rem;
-        overflow-x: auto;
+        grid-template-columns: 1fr !important;
+        gap: 1rem;
     }
 
     .modalidade-card {
-        padding: 0.4rem 0.8rem;
+        padding: 0.9rem 1.2rem;
+        max-width: none !important;
+        width: 100% !important;
     }
 
     .modalidade-icon {
-        font-size: 1.3rem;
+        font-size: 1.5rem;
+        height: 40px;
+    }
+
+    .modalidade-icon img {
+        max-height: 35px;
     }
 
     .modalidade-card h3 {
+        font-size: 0.95rem;
+    }
+
+    .modalidade-card p {
         font-size: 0.75rem;
+    }
+
+    .modalidade-info span {
+        font-size: 0.6rem;
+        padding: 0.25rem 0.4rem;
+    }
+
+    .numeros-sorteados {
+        grid-template-columns: repeat(6, 26px);
+        gap: 0.1rem;
+    }
+
+    .numeros-sorteados .numero-mini {
+        width: 26px !important;
+        height: 26px !important;
+        font-size: 0.75rem !important;
     }
 
     .instrucao {
@@ -1736,12 +1874,16 @@ body[data-modalidade-ativa="loteca"] .meus-numeros-preview {
     }
 
     .instrucao h4 {
-        font-size: 1.1rem;
+        font-size: 1.2rem;
     }
 
     .instrucao li {
-        font-size: 0.9rem;
-        padding: 0.6rem 0.8rem;
+        font-size: 0.95rem;
+        padding: 0.7rem 0.9rem;
+    }
+
+    .loteca-container {
+        padding: 1.5rem;
     }
 
     .loteca-jogo-item {
@@ -1766,16 +1908,29 @@ body[data-modalidade-ativa="loteca"] .meus-numeros-preview {
     }
 
     .loteca-opcao {
-        width: 50px;
-        height: 50px;
-        font-size: 1.1rem;
+        width: 55px;
+        height: 55px;
+        font-size: 1.2rem;
+    }
+
+    .btn-loteca-aleatorio,
+    .btn-loteca-limpar,
+    .btn-loteca-confirmar {
+        padding: 0.9rem 1.5rem;
+        font-size: 1rem;
     }
 }
 
 @media (max-width: 480px) {
     .main-container {
         max-width: 100%;
-        padding: 0.5rem;
+        padding: 0.8rem;
+        margin-top: 0.5rem;
+    }
+
+    .container-modalidades h2 {
+        font-size: 1.5rem;
+        margin: 1.5rem 0 1rem 0;
     }
 
     .numeros-criador {
@@ -1786,24 +1941,55 @@ body[data-modalidade-ativa="loteca"] .meus-numeros-preview {
     .header-criador {
         flex-direction: column;
         gap: 0.6rem;
+        margin-bottom: 1rem;
     }
 
     .header-criador h2 {
-        font-size: 1.2rem;
+        font-size: 1.3rem;
     }
 
     .btn-gerar-aleatorio {
         width: 100%;
-        padding: 0.5rem 1rem;
+        padding: 0.7rem 1rem;
         font-size: 0.9rem;
     }
 
     .numeros-criador ul {
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(6, 1fr);
         gap: 0.5rem;
     }
 
     .numeros-criador ul li button {
+        width: 2.3rem;
+        height: 2.3rem;
+        font-size: 0.95rem;
+    }
+
+    .mes-sorte-container,
+    .time-coracao-container,
+    .trevos-container {
+        padding: 0.8rem;
+        margin-bottom: 1rem;
+    }
+
+    .mes-sorte-container label,
+    .time-coracao-container label,
+    .trevos-container label {
+        font-size: 1rem;
+    }
+
+    .mes-sorte-select,
+    .time-coracao-select {
+        padding: 0.7rem 1rem;
+        font-size: 0.95rem;
+    }
+
+    .trevos-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.6rem;
+    }
+
+    .trevo-btn {
         width: 2.5rem;
         height: 2.5rem;
         font-size: 1rem;
@@ -1813,65 +1999,171 @@ body[data-modalidade-ativa="loteca"] .meus-numeros-preview {
         padding: 1rem;
     }
 
-    .escolhido-numero {
-        width: 2rem;
-        height: 2rem;
+    .escolhidos-lista .escolhido-numero {
+        width: 2.2rem;
+        height: 2.2rem;
         font-size: 0.9rem;
-        margin: 0.2rem;
+        margin: 0.25rem;
     }
 
     .meus-numeros-preview {
         padding: 1rem;
         gap: 0.8rem;
-        max-height: 280px;
+        max-height: 300px;
         margin-bottom: 1rem;
     }
 
     .label-contagem {
-        right: 2.5rem;
+        right: 2.8rem;
         font-size: 0.7rem;
     }
 
     .contagem-sequencias {
         right: 0.5rem;
-        padding: 0.15rem 0.5rem;
+        padding: 0.2rem 0.5rem;
         font-size: 0.7rem;
     }
 
     .sequencia-item {
-        padding: 0.6rem;
-        gap: 0.6rem;
-        flex-wrap: wrap;
+        padding: 0.7rem;
+        gap: 0.5rem;
     }
 
     .sequencia-numeros {
-        gap: 0.3rem;
-        flex: 1;
+        gap: 0.4rem;
     }
 
     .numero-sequencia {
-        width: 1.8rem;
-        height: 1.8rem;
-        font-size: 0.75rem;
+        width: 2rem;
+        height: 2rem;
+        font-size: 0.8rem;
     }
 
     .btn-remover-sequencia {
-        width: 1.6rem;
-        height: 1.6rem;
-        font-size: 0.9rem;
+        width: 1.8rem;
+        height: 1.8rem;
+        font-size: 0.95rem;
     }
 
+    .btn-registrar,
+    .btn-confirmar {
+        padding: 0.9rem;
+        font-size: 0.95rem;
+    }
 
     .modalidades-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important;
+        gap: 1rem;
+        padding: 0 0.8rem;
     }
 
-    .container-modalidades h2 {
-        font-size: 1.5rem;
+    .modalidade-card {
+        padding: 0.8rem 1rem;
+        max-width: none !important;
+        width: 100% !important;
+        max-height: 45vh;
+    }
+
+    .modalidade-card.active::after {
+        width: 18px;
+        height: 18px;
+        font-size: 0.7rem;
+    }
+
+    .modalidade-icon {
+        font-size: 1.4rem;
+        height: 38px;
+        margin-bottom: 0.3rem;
+    }
+
+    .modalidade-icon img {
+        max-height: 32px;
+    }
+
+    .modalidade-card h3 {
+        font-size: 0.95rem;
+        margin-bottom: 0.2rem;
+    }
+
+    .modalidade-card p {
+        font-size: 0.75rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .modalidade-info-dinamica {
+        margin-top: 0.5rem;
+        padding-top: 0.5rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .concurso-numero {
+        font-size: 0.65rem;
+        margin-bottom: 0.2rem;
+    }
+
+    .premio-valor {
+        font-size: 0.8rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .ultimo-resultado {
+        margin-top: 0.3rem;
+    }
+
+    .label-resultado {
+        font-size: 0.6rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .modalidade-info {
+        margin-top: 0.4rem;
+    }
+
+    .modalidade-info span {
+        font-size: 0.6rem;
+        padding: 0.25rem 0.5rem;
+    }
+
+    .numeros-sorteados {
+        grid-template-columns: repeat(7, 24px);
+        gap: 0.1rem;
+    }
+
+    .numeros-sorteados .numero-mini {
+        width: 24px !important;
+        height: 24px !important;
+        font-size: 0.7rem !important;
+    }
+
+    .instrucao {
+        padding: 1.2rem;
+    }
+
+    .instrucao h4 {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.8rem;
+    }
+
+    .instrucao li {
+        font-size: 0.9rem;
+        padding: 0.6rem 0.8rem;
     }
 
     .loteca-container {
         padding: 1rem;
+    }
+
+    .loteca-info h3 {
+        font-size: 1.4rem;
+    }
+
+    .loteca-rodada {
+        font-size: 1rem;
+    }
+
+    .loteca-data {
+        font-size: 0.85rem;
     }
 
     .loteca-legenda {
@@ -1879,13 +2171,196 @@ body[data-modalidade-ativa="loteca"] .meus-numeros-preview {
         gap: 0.5rem;
     }
 
+    .loteca-jogo-item {
+        grid-template-columns: 35px 1fr;
+        gap: 0.8rem;
+        padding: 0.8rem 1rem;
+    }
+
+    .loteca-jogo-numero {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+
+    .time-casa,
+    .time-visitante {
+        font-size: 0.9rem;
+    }
+
+    .loteca-opcao {
+        width: 50px;
+        height: 50px;
+        font-size: 1.1rem;
+    }
+
     .loteca-acoes {
         flex-direction: column;
+        gap: 0.8rem;
     }
 
     .btn-loteca-aleatorio,
     .btn-loteca-limpar,
     .btn-loteca-confirmar {
         width: 100%;
+        padding: 0.8rem 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    .loteca-aviso-container {
+        padding: 2rem 1.5rem;
+    }
+
+    .loteca-aviso-icon {
+        font-size: 3rem;
+    }
+
+    .loteca-aviso-container h4 {
+        font-size: 1.3rem;
+    }
+
+    .loteca-aviso-container p {
+        font-size: 0.95rem;
+    }
+
+    .popup-body {
+        padding: 1.5rem;
+    }
+
+    .numero-popup {
+        width: 45px;
+        height: 45px;
+        font-size: 0.95rem;
+    }
+}
+
+/* ========== RESPONSIVIDADE MODALIDADES ========== */
+
+/* Tablet (769px - 1024px) */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    .modalidades-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 0.9rem;
+    }
+    
+    .modalidade-card {
+        max-width: 100% !important;
+        padding: 0.85rem 1.1rem;
+    }
+    
+    .modalidade-icon {
+        font-size: 1.7rem;
+        height: 42px;
+    }
+    
+    .modalidade-card h3 {
+        font-size: 1rem;
+    }
+    
+    .modalidade-card p {
+        font-size: 0.78rem;
+    }
+}
+
+/* Mobile (≤768px) */
+@media screen and (max-width: 768px) {
+    .modalidades-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.2rem;
+    }
+    
+    .modalidade-card {
+        max-width: 100% !important;
+        width: 100%;
+        padding: 1rem 1.3rem;
+    }
+    
+    .modalidade-card:nth-child(7) {
+        grid-column: 1;
+    }
+    
+    .modalidade-icon {
+        font-size: 1.6rem;
+        height: 44px;
+    }
+    
+    .modalidade-card h3 {
+        font-size: 1.05rem;
+    }
+    
+    .modalidade-card p {
+        font-size: 0.82rem;
+    }
+    
+    .concurso-numero {
+        font-size: 0.68rem;
+    }
+    
+    .premio-valor {
+        font-size: 0.88rem;
+    }
+    
+    .label-resultado {
+        font-size: 0.65rem;
+    }
+    
+    .numeros-sorteados {
+        grid-template-columns: repeat(7, 26px);
+    }
+    
+    .numeros-sorteados .numero-mini {
+        width: 26px !important;
+        height: 26px !important;
+        font-size: 0.75rem !important;
+    }
+    
+    .modalidade-info span {
+        font-size: 0.65rem;
+        padding: 0.3rem 0.6rem;
+    }
+}
+
+/* Mobile pequeno (≤480px) */
+@media screen and (max-width: 480px) {
+    .container-modalidades {
+        width: 100%;
+        max-width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+        padding: 0 0.2rem;
+
+    }
+    
+    .container-modalidades h2 {
+        font-size: 1.6rem;
+        margin: 1.5rem 0 1.2rem 0;
+        text-align: center;
+    }
+    
+    .modalidades-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem;
+    }
+    
+    .modalidade-card {
+        max-width: 100% !important;
+        padding: 0.9rem 1.2rem;
+    }
+    
+    .modalidade-icon {
+        font-size: 1.5rem;
+        height: 40px;
+    }
+    
+    .modalidade-icon img {
+        max-height: 35px;
+    }
+    
+    .modalidade-card h3 {
+        font-size: 1rem;
+    }
+    
+    .modalidade-card p {
+        font-size: 0.78rem;
     }
 }

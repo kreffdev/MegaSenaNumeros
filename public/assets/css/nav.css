@@ -53,6 +53,35 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    flex-direction: column;
+    gap: 5px;
+    padding: 8px;
+}
+
+.hamburger-line {
+    display: block;
+    width: 28px;
+    height: 3px;
+    background-color: var(--text-light);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.hamburger-btn:hover .hamburger-line {
+    background-color: var(--accent-purple);
+}
+
+/* Animação quando menu está ativo */
+.hamburger-btn.active .hamburger-line:nth-child(1) {
+    transform: rotate(45deg) translateY(11px);
+}
+
+.hamburger-btn.active .hamburger-line:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-btn.active .hamburger-line:nth-child(3) {
+    transform: rotate(-45deg) translateY(-11px);
 }
 
 .nav-menu {
@@ -252,8 +281,9 @@
 .seja-premium {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
-    padding: 0.9rem 0.6rem;
+    padding: 0.7rem 1rem;
     border-radius: 9999px;
     background: transparent;
     color: #ffb84d;
@@ -265,21 +295,29 @@
     transition: transform 180ms ease, box-shadow 220ms ease, background 220ms ease, color 180ms ease;
 }
 
-.seja-premium svg { display:inline-block; width:18px; height:18px; vertical-align:middle; }
-.seja-premium svg, .seja-premium svg path { fill: currentColor !important; stroke: currentColor !important; }
+.seja-premium svg { 
+    display: inline-block; 
+    width: 20px; 
+    height: 20px; 
+    vertical-align: middle;
+}
+
+.seja-premium svg, 
+.seja-premium svg path { 
+    fill: currentColor !important; 
+    stroke: currentColor !important; 
+}
 
 .seja-premium:hover {
     box-shadow: 0 10px 30px rgba(255,174,0,0.12);
     background: linear-gradient(90deg, rgba(255,200,110,0.15), rgba(255,174,0,0.08));
     color: #ffae00;
+    transform: translateY(-2px) scale(1.05);
 }
 
-.seja-premium:active { transform: translateY(0); box-shadow: none; }
-
-/* small screens: reduce padding/icon size */
-@media (max-width: 900px) {
-    .seja-premium { padding: 0.25rem 0.45rem; font-size: 0.9rem; }
-    .seja-premium svg { width: 16px; height: 16px; }
+.seja-premium:active { 
+    transform: translateY(0); 
+    box-shadow: none; 
 }
 
 .nav-user {
@@ -389,11 +427,137 @@
 
 
 
-/* Mobile: mostrar o botão hamburger e colapsar o menu */
+/* ========== RESPONSIVIDADE ========== */
+
+/* Tablet grande */
+@media (max-width: 1024px) {
+    .main-nav {
+        padding: 1.2rem 2rem;
+    }
+    
+    .nav-menu {
+        font-size: 1.3rem;
+    }
+}
+
+/* Mobile e Tablet */
 @media (max-width: 900px) {
-    .hamburger-btn { display: inline-flex; }
-    .nav-menu { display: none; }
-    .nav-menu.active { display: flex; flex-direction: column; align-items: stretch; padding: 0.75rem 1rem; }
-    .nav-menu.active > ul { flex-direction: column; gap: 0.5rem; }
-    .nav-actions { gap: 0.5rem; }
+    .main-nav {
+        padding: 1rem 1.5rem;
+    }
+    
+    .hamburger-btn { 
+        display: inline-flex;
+    }
+    
+    .nav-menu { 
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: var(--primary-color);
+        border-top: 1px solid rgba(139, 92, 246, 0.3);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        z-index: 100;
+    }
+    
+    .nav-menu.active { 
+        display: block;
+    }
+    
+    .nav-menu > ul { 
+        flex-direction: column;
+        gap: 0;
+        padding: 1rem;
+    }
+    
+    .nav-menu ul li {
+        width: 100%;
+    }
+    
+    .nav-menu ul li a {
+        display: block;
+        padding: 0.8rem 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .nav-dropdown-btn {
+        width: 100%;
+        text-align: left;
+        padding: 0.8rem 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .nav-submenu {
+        position: static;
+        margin: 0;
+        padding: 0.5rem 0 0.5rem 2rem;
+        background: rgba(139, 92, 246, 0.05);
+        border: none;
+        border-left: 3px solid var(--accent-purple);
+        box-shadow: none;
+    }
+    
+    .nav-submenu a {
+        padding: 0.6rem 1rem;
+        font-size: 0.95rem;
+    }
+    
+    .nav-actions { 
+        gap: 0.5rem;
+    }
+    
+    .seja-premium {
+        padding: 0.6rem;
+        font-size: 0;
+        gap: 0;
+        width: 44px;
+        height: 44px;
+    }
+    
+    .seja-premium svg {
+        width: 22px;
+        height: 22px;
+    }
+}
+
+/* Mobile pequeno */
+@media (max-width: 600px) {
+    .main-nav {
+        padding: 0.8rem 1rem;
+    }
+    
+    .nav-logo {
+        font-size: 1.2rem;
+        margin-left: 0;
+    }
+    
+    .nav-logo a img {
+        height: 32px;
+    }
+    
+    .notif-icon {
+        font-size: 1.1rem;
+    }
+    
+    .seja-premium {
+        width: 40px;
+        height: 40px;
+        padding: 0.5rem;
+    }
+    
+    .seja-premium svg {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .nav-user-avatar {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .nav-username-short {
+        display: none;
+    }
 }
